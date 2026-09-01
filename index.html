@@ -19,7 +19,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Inter', 'Anek Bangla', sans-serif; background-color: #f8faf9; color: #1f2937; }
@@ -43,81 +43,67 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
-        /* 100% Exact Replica ID Card Styling */
+        /* 100% Exact Match ID Card Styling */
         .id-card-exact-replica {
-            width: 320px;
-            height: 520px;
+            width: 330px;
+            height: 540px;
             background: #ffffff;
             position: relative;
             overflow: hidden;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+            border: 2px solid #0369a1;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.22);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        /* Background Watermark Logo */
-        .id-watermark-bg {
+        /* Watermark Shifted to Student Information Area */
+        .id-info-watermark-bg {
             position: absolute;
-            top: 50%;
+            bottom: 40px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            width: 220px;
-            height: 220px;
-            opacity: 0.08;
+            transform: translateX(-50%);
+            width: 170px;
+            height: 170px;
+            opacity: 0.10;
             pointer-events: none;
             z-index: 1;
             object-fit: contain;
         }
 
-        /* Top Blue/Green Geometric Stripe */
-        .id-top-stripe {
-            height: 28px;
-            background: linear-gradient(115deg, #0284c7 0%, #0369a1 40%, #047857 40%, #059669 100%);
+        /* Professional Header Frame */
+        .id-top-frame {
+            height: 22px;
+            background: linear-gradient(135deg, #0369a1 0%, #0369a1 45%, #059669 45%, #059669 100%);
             position: relative;
-        }
-        .id-top-stripe::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: #0284c7;
+            border-bottom: 3.5px solid #0284c7;
         }
 
-        /* Bottom Blue/Green Geometric Stripe */
-        .id-bottom-stripe {
-            height: 24px;
-            background: linear-gradient(115deg, #059669 0%, #047857 60%, #0284c7 60%, #0369a1 100%);
+        /* Professional Footer Frame */
+        .id-bottom-frame {
+            height: 22px;
+            background: linear-gradient(135deg, #059669 0%, #059669 55%, #0369a1 55%, #0369a1 100%);
             position: relative;
-        }
-        .id-bottom-stripe::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: #059669;
+            border-top: 3.5px solid #059669;
         }
 
-        .id-card-badge {
-            border: 2px solid #64748b;
-            background: #ffffff;
-            color: #0f172a;
-            font-weight: 800;
-            font-size: 13px;
-            letter-spacing: 1.5px;
-            padding: 2px 20px;
+        .id-card-badge-box {
+            border: 2px solid #0369a1;
+            background: #f1f5f9;
+            color: #0369a1;
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 2px;
+            padding: 2px 24px;
             display: inline-block;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.05);
         }
 
         .id-cadet-photo-frame {
-            width: 125px;
-            height: 125px;
-            border: 3.5px solid #059669;
+            width: 135px;
+            height: 135px;
+            border: 4px solid #059669;
             border-radius: 50%;
             object-fit: cover;
             margin: 6px auto;
@@ -179,7 +165,7 @@
         </div>
     </header>
 
-    <!-- Navigation Bar (Strict 1-Line with Horizontal Scroll) -->
+    <!-- Navigation Bar (Strictly 1-Line with Smooth Horizontal Scroll) -->
     <nav class="glass-nav text-white shadow-xl sticky top-0 z-50 no-print border-b border-emerald-800/50">
         <div class="container mx-auto px-2 flex flex-nowrap overflow-x-auto justify-start md:justify-center items-center py-2 space-x-1 md:space-x-4 text-xs md:text-sm font-semibold">
             <button onclick="showPage('home')" class="hover:text-amber-300 whitespace-nowrap py-1 px-2.5 rounded-lg flex items-center gap-1.5"><i class="fa-solid fa-house text-amber-400"></i> হোম</button>
@@ -587,7 +573,7 @@
                 </div>
             </div>
 
-            <!-- DEDICATED ID CARD GENERATION STUDIO: INSTANT LOOKUP BY ID ONLY -->
+            <!-- DEDICATED ID CARD GENERATION STUDIO -->
             <div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-emerald-800 space-y-4">
                 <div class="flex flex-wrap justify-between items-center border-b pb-2">
                     <div>
@@ -701,7 +687,7 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: RESULT SPREADSHEET WITH 50/100 FULL MARKS & TIMED PUBLISH -->
+            <!-- SECTION 2: RESULT SPREADSHEET -->
             <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
                     <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-file-excel text-green-600 mr-2"></i>২. রেজাল্ট ইনপুট (৫০/১০০ পূর্ণমান ও ৪র্থ বিষয় সাপোর্ট সহ)</h3>
@@ -1011,7 +997,7 @@
             { title: 'Residential Care', desc: 'Round-the-clock teacher mentorship, nutritious meals, and high moral grooming.' }
         ];
 
-        // Isolated Database Keys (Eliminates All Memory Clashes)
+        // Isolated Database Keys (Clean & Fast)
         let registeredStudents = JSON.parse(localStorage.getItem('annur_final_db_2026')) || [];
         let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
 
@@ -1185,7 +1171,7 @@
             return { total: total, grade: grade, gpa: finalGpaNum.toFixed(2), remarks: remarks };
         }
 
-        // 1. CADET REGISTRATION (100% FIXED DUPLICATE LOGIC)
+        // 1. CADET REGISTRATION
         function handleRegisterStudent(e) {
             e.preventDefault();
             const id = document.getElementById('reg-id').value.trim().toUpperCase();
@@ -1284,7 +1270,6 @@
         // DIRECT ID CARD GENERATOR BY CADET ID
         function renderDirectIDCardFromInput() {
             const inputVal = document.getElementById('direct-idcard-input').value.trim().toUpperCase();
-            const liveBox = document.getElementById('admin-idcard-live-box');
             
             if (!inputVal) {
                 alert('অনুগ্রহ করে শিক্ষার্থীর আইডি নম্বর লিখুন!');
@@ -1300,7 +1285,7 @@
             generateIDCardModal(cadetIndex);
         }
 
-        // 100% EXACT REPLICA ID CARD GENERATION WITH BACKGROUND LOGO & BOTTOM DIRECTOR LINE
+        // 100% ACCURATE & POLISHED ID CARD WITH LOWERED WATERMARK & LARGER FONTS
         function generateIDCardModal(realIdx) {
             const s = registeredStudents[realIdx];
             if(!s) return;
@@ -1310,49 +1295,51 @@
 
             const idCardHTML = `
                 <div class="id-card-exact-replica mx-auto my-4 font-sans text-left">
-                    <!-- Watermark Emblem in Background -->
-                    <img src="${universalLogo}" class="id-watermark-bg" alt="Watermark">
-
                     <div>
-                        <!-- Top Geometric Blue & Green Stripe -->
-                        <div class="id-top-stripe"></div>
+                        <!-- Top Geometric Frame -->
+                        <div class="id-top-frame"></div>
 
                         <!-- Academy Title & Location -->
                         <div class="text-center pt-3 pb-1 px-2">
-                            <h2 class="text-[#0369a1] font-black text-sm tracking-tight font-serif uppercase leading-tight">An-Nur International Cadet Madrasah</h2>
-                            <p class="text-[10px] font-bold text-gray-800 mt-0.5">Mohara, Chandgaon, Chattogram,</p>
+                            <h2 class="text-[#0369a1] font-black text-[15px] tracking-tight font-serif uppercase leading-tight">An-Nur International Cadet Madrasah</h2>
+                            <p class="text-[11px] font-bold text-gray-800 mt-0.5">Mohara, Chandgaon, Chattogram,</p>
                         </div>
 
                         <!-- ID CARD Badge -->
-                        <div class="text-center mt-1">
-                            <span class="id-card-badge">ID CARD</span>
+                        <div class="text-center mt-1.5">
+                            <span class="id-card-badge-box">ID CARD</span>
                         </div>
 
                         <!-- Round Cadet Photograph -->
                         <img src="${s.photo}" class="id-cadet-photo-frame shadow-sm" alt="Cadet Photo">
 
-                        <!-- Cadet Full Name -->
-                        <h3 class="text-center font-black text-sm text-[#0369a1] uppercase mt-1 tracking-wide px-2">${s.name}</h3>
+                        <!-- Cadet Full Name (Enlarged) -->
+                        <h3 class="text-center font-black text-[15px] text-[#0369a1] uppercase mt-1 tracking-wide px-2">${s.name}</h3>
 
-                        <!-- Exact Field Alignments -->
-                        <div class="px-7 py-1 space-y-1.5 text-xs text-[#0369a1] font-black mt-1 relative z-10">
-                            <div class="flex"><span class="w-20 text-[#0369a1]">FATHER</span><span class="mr-1">:</span><span class="uppercase">${s.father || 'N/A'}</span></div>
-                            <div class="flex"><span class="w-20 text-[#0369a1]">LEVEL</span><span class="mr-1">:</span><span class="uppercase">${levelWord}</span></div>
-                            <div class="flex"><span class="w-20 text-[#0369a1]">ID NO</span><span class="mr-1">:</span><span>${s.id}</span></div>
-                            <div class="flex"><span class="w-20 text-[#0369a1]">MOBILE</span><span class="mr-1">:</span><span>${s.phone || 'N/A'}</span></div>
+                        <!-- Exact Field Alignments with Logo Watermark Shifted Behind Text -->
+                        <div class="relative px-7 py-2 mt-1">
+                            <!-- Watermark shifted directly behind information text -->
+                            <img src="${universalLogo}" class="id-info-watermark-bg" alt="Watermark">
+
+                            <div class="space-y-2 text-[13px] text-[#0369a1] font-black relative z-10 leading-snug">
+                                <div class="flex"><span class="w-24 text-[#0369a1]">FATHER</span><span class="mr-2">:</span><span class="uppercase">${s.father || 'N/A'}</span></div>
+                                <div class="flex"><span class="w-24 text-[#0369a1]">LEVEL</span><span class="mr-2">:</span><span class="uppercase">${levelWord}</span></div>
+                                <div class="flex"><span class="w-24 text-[#0369a1]">ID NO</span><span class="mr-2">:</span><span>${s.id}</span></div>
+                                <div class="flex"><span class="w-24 text-[#0369a1]">MOBILE</span><span class="mr-2">:</span><span>${s.phone || 'N/A'}</span></div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Bottom Section with Director Signature & Stripe -->
                     <div class="w-full">
-                        <div class="flex justify-end pr-6 pb-2">
+                        <div class="flex justify-end pr-6 pb-2.5">
                             <div class="text-center">
                                 <span class="font-serif italic text-xs text-black block font-bold">A.Majed</span>
                                 <div class="w-16 border-t border-dashed border-black"></div>
-                                <span class="text-[10px] text-black font-black block tracking-wider">Director</span>
+                                <span class="text-[11px] text-black font-black block tracking-wider">Director</span>
                             </div>
                         </div>
-                        <div class="id-bottom-stripe"></div>
+                        <div class="id-bottom-frame"></div>
                     </div>
                 </div>
             `;
