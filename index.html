@@ -18,6 +18,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js CDN for Direct PDF Downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;900&family=Montserrat:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
     
@@ -52,10 +54,14 @@
             position: relative;
             overflow: hidden;
             border: 1.5px solid #cbd5e1;
-            box-shadow: 0 16px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 16px 35px rgba(0,0,0,0.18);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-sizing: border-box;
+            background-color: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         /* Top Corner Decorative Geometric Angle */
@@ -116,13 +122,6 @@
             background: #f8fafc;
             position: relative;
             z-index: 5;
-        }
-
-        @media print {
-            body * { visibility: hidden !important; }
-            #printable-area, #printable-area * { visibility: visible !important; }
-            #printable-area { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; }
-            .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -583,13 +582,13 @@
                 <div class="flex flex-wrap justify-between items-center border-b pb-2">
                     <div>
                         <h3 class="text-lg font-bold text-emerald-950 flex items-center gap-2"><i class="fa-solid fa-id-card text-amber-600 text-xl"></i> আইডি কার্ড প্রিন্ট ও ডাউনলোড স্টুডিও</h3>
-                        <p class="text-xs text-gray-500">শুধুমাত্র শিক্ষার্থীর আইডি নম্বর লিখে নিচের বাটনে চাপুন; এখানেই কার্ড তৈরি ও প্রিন্ট করা যাবে</p>
+                        <p class="text-xs text-gray-500">শিক্ষার্থীর আইডি নম্বর লিখুন; এখান থেকেই সরাসরি কার্ড ভিউ, প্রিন্ট বা PDF ডাউনলোড করুন</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col md:flex-row gap-3 items-center max-w-xl">
                     <input type="text" id="direct-idcard-input" placeholder="ক্যাডেট আইডি লিখুন (যেমন: A26181 বা H250334)..." class="w-full p-3 border-2 border-emerald-700 rounded-xl outline-none font-bold uppercase text-xs md:text-sm">
-                    <button onclick="renderDirectIDCardFromInput()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 px-6 rounded-xl shadow whitespace-nowrap text-xs md:text-sm transition"><i class="fa-solid fa-id-badge mr-1"></i> কার্ড বের করুন</button>
+                    <button onclick="renderDirectIDCardFromInput()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 px-6 rounded-xl shadow whitespace-nowrap text-xs md:text-sm transition"><i class="fa-solid fa-id-badge mr-1"></i> কার্ড প্রস্তুত করুন</button>
                 </div>
 
                 <!-- Live ID Card Render Box INSIDE Admin Panel Only -->
@@ -967,6 +966,9 @@
         </div>
     </footer>
 
+    <!-- Hidden iframe for 100% Reliable Print Isolation -->
+    <iframe id="isolated-print-frame" style="display:none; position:fixed; left:-9999px;"></iframe>
+
     <!-- JavaScript Application Logic -->
     <script>
         let adminPassword = localStorage.getItem('annur_admin_pass') || '1234';
@@ -1296,12 +1298,10 @@
             if(!s) return;
 
             const liveBox = document.getElementById('admin-idcard-live-box');
-            const printArea = document.getElementById('printable-area');
-
             const levelWord = s.class.replace('LEVEL-', '').replace('10', 'TEN').replace('9', 'NINE').replace('8', 'EIGHT').replace('7', 'SEVEN').replace('6', 'SIX').replace('5', 'FIVE').replace('4', 'FOUR').replace('3', 'THREE').replace('2', 'TWO').replace('1', 'ONE');
 
             const idCardHTML = `
-                <div class="id-card-exact-replica mx-auto font-sans text-left">
+                <div id="target-id-card-node" class="id-card-exact-replica mx-auto font-sans text-left">
                     <!-- Top Geometric Blue/Green SVG Stripe -->
                     <svg class="id-top-decor" viewBox="0 0 335 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 0 H180 L140 44 H0 Z" fill="#0369a1"/>
@@ -1331,10 +1331,9 @@
 
                         <!-- Cadet Info Box WITH WATERMARK LIMITED TO THIS SECTION ONLY -->
                         <div class="relative px-7 py-2.5 mt-1 border-y border-gray-100 bg-slate-50/40">
-                            <!-- Watermark strictly limited to student info lines -->
                             <img src="${universalLogo}" class="id-info-watermark-bg" alt="Watermark">
 
-                            <!-- Info Fields (Font Size +2px Enlarged) -->
+                            <!-- Info Fields (+2px Enlarged) -->
                             <div class="space-y-2 text-[14px] text-[#0369a1] font-black relative z-10 leading-snug">
                                 <div class="flex"><span class="w-24 text-[#0369a1]">FATHER</span><span class="mr-2">:</span><span class="uppercase">${s.father || 'N/A'}</span></div>
                                 <div class="flex"><span class="w-24 text-[#0369a1]">LEVEL</span><span class="mr-2">:</span><span class="uppercase">${levelWord}</span></div>
@@ -1369,21 +1368,83 @@
 
             liveBox.classList.remove('hidden');
             liveBox.innerHTML = idCardHTML + `
-                <div class="mt-4 no-print flex gap-3 justify-center">
-                    <button onclick="printGeneratedIDCard()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition"><i class="fa-solid fa-print mr-1.5"></i> Print / Download PDF</button>
-                    <button onclick="document.getElementById('admin-idcard-live-box').classList.add('hidden')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow transition">Close</button>
+                <div class="mt-4 no-print flex flex-wrap gap-3 justify-center">
+                    <button onclick="executeIsolatedIDCardPrint()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> সরাসরি প্রিন্ট (Print Card)</button>
+                    <button onclick="executeDirectIDCardPDFDownload('${s.id}', '${s.name}')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> ডাউনলোড PDF (Download PDF)</button>
+                    <button onclick="document.getElementById('admin-idcard-live-box').classList.add('hidden')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow transition">বন্ধ করুন (Close)</button>
                 </div>
             `;
 
-            printArea.innerHTML = idCardHTML;
             liveBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function printGeneratedIDCard() {
-            const printArea = document.getElementById('printable-area');
-            printArea.classList.remove('hidden');
-            window.print();
-            printArea.classList.add('hidden');
+        // 1. ISOLATED 100% RELIABLE PRINT (NO WHITE PAGE ERROR)
+        function executeIsolatedIDCardPrint() {
+            const cardElement = document.getElementById('target-id-card-node');
+            if(!cardElement) return;
+
+            const printFrame = document.getElementById('isolated-print-frame');
+            const frameDoc = printFrame.contentWindow.document;
+
+            frameDoc.open();
+            frameDoc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print ID Card</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@600;800;900&display=swap" rel="stylesheet">
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <style>
+                        @page { size: auto; margin: 8mm; }
+                        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
+                        .id-card-exact-replica {
+                            width: 335px !important;
+                            height: 550px !important;
+                            border: 1.5px solid #cbd5e1 !important;
+                            border-radius: 8px !important;
+                            background-color: #ffffff !important;
+                            position: relative !important;
+                            overflow: hidden !important;
+                            display: flex !important;
+                            flex-direction: column !important;
+                            justify-content: space-between !important;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        .id-top-decor { position: absolute; top: 0; left: 0; width: 100%; height: 48px; }
+                        .id-bottom-decor { position: absolute; bottom: 0; right: 0; width: 100%; height: 42px; }
+                        .id-info-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 155px; height: 155px; opacity: 0.08; }
+                        .id-card-badge-box { border: 2px solid #005a8c; background: #e2e8f0; color: #003865; font-weight: 900; font-size: 15px; letter-spacing: 2px; padding: 3px 22px; display: inline-block; }
+                        .id-cadet-photo-frame { width: 140px; height: 140px; border: 4px solid #047857; border-radius: 50%; object-fit: cover; margin: 6px auto; display: block; }
+                    </style>
+                </head>
+                <body>
+                    ${cardElement.outerHTML}
+                </body>
+                </html>
+            `);
+            frameDoc.close();
+
+            setTimeout(() => {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+            }, 600);
+        }
+
+        // 2. DIRECT CLIENT-SIDE PDF DOWNLOAD
+        function executeDirectIDCardPDFDownload(cadetId, cadetName) {
+            const element = document.getElementById('target-id-card-node');
+            if(!element) return;
+
+            const opt = {
+                margin:       [5, 5, 5, 5],
+                filename:     `ID_Card_${cadetId}_${cadetName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: [95, 155], orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
         }
 
         function openStudentEditModal(realIdx) {
@@ -2056,7 +2117,7 @@
                         <h3 class="text-sm font-bold text-amber-600 mt-0.5 uppercase tracking-wide">${selectedExam} - TABULATION SHEET</h3>
                         <p class="text-xs text-gray-600 font-bold">Level: <span class="text-emerald-900">${selectedClass}</span> | Session: <span class="text-emerald-900">${selectedSession}</span></p>
                     </div>
-                    <table class="w-full border-collapse border border-gray-300 text-xs md:text-sm">
+                    <table class="w-full border-collapse border-gray-300 text-xs md:text-sm">
                         <thead>${tableHeaderHTML}</thead>
                         <tbody>${rowsHTML}</tbody>
                     </table>
