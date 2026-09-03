@@ -76,6 +76,17 @@
             object-fit: contain;
         }
 
+        /* Student Photo on Marksheet */
+        .marksheet-student-photo {
+            width: 96px;
+            height: 115px;
+            object-fit: cover;
+            border: 3px solid #064e3b;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            background: #f8fafc;
+        }
+
         /* 100% Exact Geometric ID Card Replica */
         .id-card-exact-replica {
             width: 335px;
@@ -1279,7 +1290,6 @@
             return { total: total, grade: grade, gpa: finalGpaNum.toFixed(2), remarks: remarks };
         }
 
-        // Helper for subject-wise grade calculation
         function getSubjectGradeInfo(markVal, fullMark) {
             if (markVal === undefined || markVal === null || String(markVal).trim() === '' || String(markVal).trim() === '-') {
                 return { lg: '-', gp: '-' };
@@ -2251,7 +2261,7 @@
             printArea.innerHTML = sheetHTML;
         }
 
-        // 100% BALANCED FULL-PAGE A4 ACADEMIC TRANSCRIPT WITH ENLARGED FONTS & PER-SUBJECT GRADE
+        // 100% BALANCED FULL-PAGE A4 ACADEMIC TRANSCRIPT WITH STUDENT PHOTO & DETAILED GRADING
         function searchResult() {
             const inputId = document.getElementById('search-student-id').value.trim().toUpperCase();
             const inputClass = document.getElementById('search-student-class').value;
@@ -2275,19 +2285,18 @@
                 (s.exam === inputExam || !s.exam)
             );
 
-            // If not found in results spreadsheet, auto-detect student from registration list
-            if (!student) {
-                const regS = registeredStudents.find(r => r.id === inputId);
-                if (regS) {
-                    student = {
-                        id: regS.id,
-                        name: regS.name,
-                        class: regS.class,
-                        session: inputSession,
-                        exam: inputExam,
-                        marks: []
-                    };
-                }
+            // Fetch registration info for photo, father's name and verification
+            const regS = registeredStudents.find(r => r.id === inputId);
+
+            if (!student && regS) {
+                student = {
+                    id: regS.id,
+                    name: regS.name,
+                    class: regS.class,
+                    session: inputSession,
+                    exam: inputExam,
+                    marks: []
+                };
             }
 
             if (!student) {
@@ -2296,9 +2305,12 @@
                 return;
             }
 
+            // Student photo from registration database
+            const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            const studentFather = (regS && regS.father) ? regS.father : 'N/A';
+
             const subjectCount = subjectConfig.length;
-            // Adaptive vertical padding and font size for subjects (+3px larger fonts)
-            const rowPadClass = subjectCount <= 6 ? 'py-3.5 px-4 text-base md:text-lg' : (subjectCount <= 9 ? 'py-2.5 px-3 text-sm md:text-base' : 'py-1.5 px-3 text-xs md:text-sm');
+            const rowPadClass = subjectCount <= 6 ? 'py-3 px-4 text-base md:text-lg' : (subjectCount <= 9 ? 'py-2 px-3 text-sm md:text-base' : 'py-1.5 px-3 text-xs md:text-sm');
 
             let subjectRowsHTML = '';
             subjectConfig.forEach((subObj, sIdx) => {
@@ -2332,43 +2344,50 @@
                                 <span>Date of Issue: <span class="text-amber-800 font-black">${currentDateStr}</span></span>
                             </div>
 
-                            <!-- 1. BISMILLAH (Authentic Arabic Calligraphy, No Gaps) -->
+                            <!-- 1. BISMILLAH (Calligraphic, Zero Gaps) -->
                             <div class="text-center">
                                 <h2 class="arabic-calligraphy text-3xl md:text-4xl text-emerald-900 leading-tight">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</h2>
                             </div>
 
                             <!-- 2. LOGO UNDER BISMILLAH -->
-                            <div class="my-2 text-center">
-                                <img src="${universalLogo}" alt="Logo" class="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
+                            <div class="my-1.5 text-center">
+                                <img src="${universalLogo}" alt="Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
                             </div>
 
                             <!-- 3. MADRASAH NAME (Wide, bold, elegant 1-Line) -->
                             <div class="text-center space-y-1">
-                                <h1 class="font-brand text-xl sm:text-2xl md:text-[26px] font-black text-emerald-950 tracking-wider whitespace-nowrap">AN-NUR INTERNATIONAL CADET MADRASAH</h1>
+                                <h1 class="font-brand text-lg sm:text-xl md:text-[25px] font-black text-emerald-950 tracking-wider whitespace-nowrap">AN-NUR INTERNATIONAL CADET MADRASAH</h1>
                                 <p class="text-xs md:text-sm text-emerald-800 font-bold">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram, Bangladesh</p>
                                 <div class="inline-block bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-emerald-950 px-6 py-1 rounded-full font-black text-xs md:text-sm tracking-wider shadow-sm mt-1 uppercase font-montserrat">
                                     OFFICIAL ACADEMIC TRANSCRIPT - ${student.exam || 'ANNUAL EXAMINATION'}
                                 </div>
                             </div>
 
-                            <!-- Cadet Information Card (Enlarged and Clear) -->
-                            <div class="grid grid-cols-2 gap-3 text-sm md:text-base bg-emerald-50/85 p-4 rounded-xl border-2 border-emerald-300 mt-4 font-bold">
-                                <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.name}</span></p>
-                                <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.id}</span></p>
-                                <p><span class="text-gray-600 font-medium">Class / Level:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.class}</span></p>
-                                <p><span class="text-gray-600 font-medium">Academic Session:</span> <span class="text-emerald-950 font-black text-base md:text-lg">${student.session || '2026'}</span></p>
+                            <!-- Cadet Information Card With Official Photograph -->
+                            <div class="bg-emerald-50/85 p-3 md:p-3.5 rounded-xl border-2 border-emerald-300 mt-3 font-bold flex items-center justify-between gap-4">
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:text-sm md:text-base flex-grow">
+                                    <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase">${student.name}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase">${student.id}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Father's Name:</span> <span class="text-emerald-950 font-black uppercase">${studentFather}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Class / Level:</span> <span class="text-emerald-950 font-black uppercase">${student.class}</span></p>
+                                    <p class="col-span-2"><span class="text-gray-600 font-medium">Academic Session:</span> <span class="text-emerald-950 font-black">${student.session || '2026'}</span></p>
+                                </div>
+                                <div class="shrink-0 text-center">
+                                    <img src="${studentPhoto}" class="marksheet-student-photo" alt="Cadet Photo">
+                                    <span class="block text-[9px] font-montserrat text-emerald-900 mt-0.5 tracking-wider">OFFICIAL</span>
+                                </div>
                             </div>
 
                             <!-- Dynamic Subject Marks Table with LG & GP -->
-                            <div class="mt-4">
+                            <div class="mt-3.5">
                                 <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden bg-white/70">
                                     <thead>
                                         <tr class="bg-emerald-950 text-white uppercase text-xs md:text-sm font-montserrat">
-                                            <th class="py-2.5 px-4 text-left border-r border-emerald-800">Course / Subject Title</th>
-                                            <th class="py-2.5 px-2 text-center w-24 border-r border-emerald-800">Full Marks</th>
-                                            <th class="py-2.5 px-2 text-center w-28 border-r border-emerald-800">Marks Obtained</th>
-                                            <th class="py-2.5 px-2 text-center w-20 border-r border-emerald-800">Grade</th>
-                                            <th class="py-2.5 px-2 text-center w-20">GP</th>
+                                            <th class="py-2 px-4 text-left border-r border-emerald-800">Course / Subject Title</th>
+                                            <th class="py-2 px-2 text-center w-24 border-r border-emerald-800">Full Marks</th>
+                                            <th class="py-2 px-2 text-center w-28 border-r border-emerald-800">Marks Obtained</th>
+                                            <th class="py-2 px-2 text-center w-20 border-r border-emerald-800">Grade</th>
+                                            <th class="py-2 px-2 text-center w-20">GP</th>
                                         </tr>
                                     </thead>
                                     <tbody>${subjectRowsHTML}</tbody>
@@ -2376,7 +2395,7 @@
                             </div>
 
                             <!-- Guaranteed Visible Academic Performance Summary -->
-                            <div class="bg-amber-50/95 border-2 border-amber-500 p-4 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-4">
+                            <div class="bg-amber-50/95 border-2 border-amber-500 p-3.5 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-3.5">
                                 <div class="text-center px-2">
                                     <span class="text-gray-600 block text-xs uppercase font-montserrat">Total Marks</span>
                                     <span class="text-2xl md:text-3xl text-amber-700 font-black">${stats.total}</span>
@@ -2397,7 +2416,7 @@
                         </div>
 
                         <!-- Authentic Signature Section -->
-                        <div class="pt-12 pb-2 flex justify-between text-xs md:text-sm text-gray-800 font-bold relative z-10">
+                        <div class="pt-10 pb-2 flex justify-between text-xs md:text-sm text-gray-800 font-bold relative z-10">
                             <div class="text-center">
                                 <div class="w-32 border-t-2 border-gray-600 mb-1"></div>
                                 <span class="font-montserrat text-xs md:text-sm">Guardian Signature</span>
@@ -2469,6 +2488,13 @@
                             width: 520px !important;
                             height: 520px !important;
                             opacity: 0.08 !important;
+                        }
+                        .marksheet-student-photo {
+                            width: 96px !important;
+                            height: 115px !important;
+                            object-fit: cover !important;
+                            border: 3px solid #064e3b !important;
+                            border-radius: 6px !important;
                         }
                         .arabic-calligraphy { font-family: 'Amiri', 'Traditional Arabic', serif !important; }
                         .font-brand { font-family: 'Cinzel', serif !important; }
