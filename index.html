@@ -43,11 +43,11 @@
         .slide-fade { transition: opacity 0.8s ease-in-out; }
         .glass-nav { background: rgba(4, 47, 36, 0.96); backdrop-filter: blur(10px); }
 
-        /* Royal Islamic A4 Transcript Sheet with Border Safeguard */
+        /* Royal Islamic A4 Transcript Sheet with Extra Bottom Margin Protection */
         .islamic-a4-sheet {
             width: 100%;
             max-width: 794px;
-            min-height: 1100px;
+            min-height: 1080px;
             background: #ffffff !important;
             border: 12px double #064e3b;
             outline: 4px solid #d97706;
@@ -58,7 +58,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 26px 30px;
+            padding: 28px 32px 32px 32px;
             margin: 0 auto;
         }
 
@@ -83,7 +83,7 @@
             background-color: transparent !important;
         }
 
-        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.8) !important; }
+        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.85) !important; }
         .marksheet-info-card { background: rgba(236, 253, 245, 0.9) !important; }
         .marksheet-summary-box { background: rgba(254, 243, 199, 0.95) !important; }
 
@@ -123,7 +123,7 @@
 
         @page {
             size: A4 portrait;
-            margin: 0mm;
+            margin: 5mm;
         }
 
         @media print {
@@ -147,10 +147,10 @@
                 box-shadow: none !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                height: 100vh !important;
+                height: 96vh !important;
                 page-break-inside: avoid !important;
                 page-break-after: avoid !important;
-                padding: 18px 22px !important;
+                padding: 20px 24px 28px 24px !important;
             }
         }
     </style>
@@ -2379,7 +2379,7 @@
                                 </div>
                             </div>
 
-                            <div class="marksheet-info-card p-4 md:p-4.5 rounded-xl border-2 border-emerald-300 mt-4 font-bold flex items-center justify-between gap-4">
+                            <div class="marksheet-info-card p-4 md:p-4.5 rounded-xl border-2 border-emerald-300 mt-3 font-bold flex items-center justify-between gap-4">
                                 <div class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm md:text-base flex-grow">
                                     <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.name}</span></p>
                                     <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.id}</span></p>
@@ -2393,7 +2393,7 @@
                                 </div>
                             </div>
 
-                            <div class="mt-5">
+                            <div class="mt-4">
                                 <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden">
                                     <thead>
                                         <tr class="bg-emerald-950 text-white uppercase text-xs md:text-sm font-montserrat">
@@ -2408,7 +2408,7 @@
                                 </table>
                             </div>
 
-                            <div class="marksheet-summary-box border-2 border-amber-500 p-4.5 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-5">
+                            <div class="marksheet-summary-box border-2 border-amber-500 p-4 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-4">
                                 <div class="text-center px-2">
                                     <span class="text-gray-700 block text-xs uppercase font-montserrat">Total Marks</span>
                                     <span class="text-2xl md:text-3xl text-amber-700 font-black">${stats.total}</span>
@@ -2428,7 +2428,7 @@
                             </div>
                         </div>
 
-                        <div class="pt-12 pb-2 flex justify-between text-xs md:text-sm text-gray-800 font-bold relative z-10">
+                        <div class="pt-10 pb-1 flex justify-between text-xs md:text-sm text-gray-800 font-bold relative z-10">
                             <div class="text-center">
                                 <div class="w-32 border-t-2 border-gray-600 mb-1"></div>
                                 <span class="font-montserrat text-xs md:text-sm">Guardian Signature</span>
@@ -2457,7 +2457,7 @@
             printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // ISOLATED PRINT WITH 100% RELIABLE STYLING & BORDER SAFEGUARD
+        // ISOLATED PRINT WITH SAFEGUARD MARGINS
         function executeIsolatedTranscriptPrint() {
             const transcriptNode = document.getElementById('target-transcript-a4-node');
             if(!transcriptNode) return;
@@ -2474,12 +2474,12 @@
                     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Amiri:wght@700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     <style>
-                        @page { size: A4 portrait; margin: 2mm; }
+                        @page { size: A4 portrait; margin: 4mm; }
                         body { margin: 0; padding: 0; background: #fff; display: flex; justify-content: center; }
                         .islamic-a4-sheet {
                             width: 100% !important;
                             max-width: 100% !important;
-                            height: 99vh !important;
+                            height: 97vh !important;
                             border: 10px double #064e3b !important;
                             outline: 3px solid #d97706 !important;
                             outline-offset: -6px !important;
@@ -2488,7 +2488,7 @@
                             justify-content: space-between !important;
                             position: relative !important;
                             box-sizing: border-box !important;
-                            padding: 16px 20px !important;
+                            padding: 20px 24px 26px 24px !important;
                             font-family: "Times New Roman", Times, serif !important;
                             background-color: #ffffff !important;
                             -webkit-print-color-adjust: exact !important;
@@ -2499,9 +2499,9 @@
                             top: 52% !important;
                             left: 50% !important;
                             transform: translate(-50%, -50%) !important;
-                            width: 500px !important;
-                            height: 500px !important;
-                            opacity: 0.16 !important;
+                            width: 480px !important;
+                            height: 480px !important;
+                            opacity: 0.14 !important;
                         }
                         .islamic-a4-sheet table, 
                         .islamic-a4-sheet th, 
@@ -2510,7 +2510,7 @@
                         .marksheet-summary-box {
                             background-color: transparent !important;
                         }
-                        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.8) !important; }
+                        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.85) !important; }
                         .marksheet-info-card { background: rgba(236, 253, 245, 0.9) !important; }
                         .marksheet-summary-box { background: rgba(254, 243, 199, 0.95) !important; }
                         .marksheet-student-photo {
@@ -2537,7 +2537,7 @@
             }, 600);
         }
 
-        // RELIABLE PDF DOWNLOAD WITH DELAYED RENDERING (ZERO BLANK PAGES)
+        // RELIABLE PDF DOWNLOAD
         function executeTranscriptPDFDownload(studentId, studentName) {
             const element = document.getElementById('target-transcript-a4-node');
             if(!element) return;
@@ -2548,7 +2548,7 @@
 
             setTimeout(() => {
                 const opt = {
-                    margin:       [2, 2, 2, 2],
+                    margin:       [4, 4, 4, 4],
                     filename:     `Academic_Transcript_${studentId}_${studentName.replace(/\s+/g, '_')}.pdf`,
                     image:        { type: 'jpeg', quality: 0.98 },
                     html2canvas:  { scale: 2.5, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
