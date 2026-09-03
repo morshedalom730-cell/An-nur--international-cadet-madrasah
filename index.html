@@ -20,6 +20,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- html2pdf.js CDN for Direct PDF Downloading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Firebase SDKs (Compat version for stable standalone browser usage) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;900&family=Montserrat:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
     
@@ -40,7 +45,7 @@
         /* Islamic Royal A4 Marksheet Sheet Frame */
         .islamic-a4-sheet {
             width: 100%;
-            max-width: 794px; /* Exact 210mm A4 ratio */
+            max-width: 794px;
             min-height: 1080px;
             background: #ffffff;
             border: 10px double #064e3b;
@@ -62,9 +67,9 @@
             top: 52%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 440px;
-            height: 440px;
-            opacity: 0.07;
+            width: 480px;
+            height: 480px;
+            opacity: 0.08;
             pointer-events: none;
             z-index: 1;
             object-fit: contain;
@@ -188,8 +193,6 @@
 
         <!-- 1. HOME PAGE -->
         <div id="page-home" class="space-y-8 no-print">
-
-            <!-- PROMINENT GUARDIAN / PARENT PORTAL -->
             <div class="bg-gradient-to-r from-emerald-900 via-emerald-950 to-emerald-900 border-2 border-amber-400 p-6 md:p-8 rounded-3xl shadow-2xl text-white">
                 <div class="text-center max-w-2xl mx-auto mb-6">
                     <span class="bg-amber-500 text-emerald-950 font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider">Parent & Student Portal</span>
@@ -551,7 +554,10 @@
         <!-- 10. FULL SECURE PRIVATE ADMIN PANEL VIEW (#admin) -->
         <div id="page-admin" class="hidden space-y-8 no-print">
             <div class="bg-red-950 text-white p-4 rounded-2xl flex justify-between items-center shadow-xl">
-                <h2 class="text-lg font-bold"><i class="fa-solid fa-user-shield text-amber-400 mr-2"></i>ADMIN CONTROL PANEL (Private)</h2>
+                <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-bold"><i class="fa-solid fa-user-shield text-amber-400 mr-2"></i>ADMIN CONTROL PANEL (Online Cloud Synced)</h2>
+                    <span id="cloud-status-indicator" class="bg-green-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Cloud Connected</span>
+                </div>
                 <div class="flex gap-2">
                     <button onclick="clearAllSystemStorageWithPassword()" class="bg-red-700 hover:bg-red-600 text-xs px-3 py-1.5 rounded-lg text-white font-bold transition shadow"><i class="fa-solid fa-lock mr-1"></i> পুরানো সব ডাটা রিসেট (পাসওয়ার্ড সুরক্ষিত)</button>
                     <button onclick="showPage('home')" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-1.5 rounded-lg text-white font-bold transition">প্যানেল বন্ধ</button>
@@ -612,7 +618,7 @@
                         <input type="text" id="reg-father" required placeholder="MD. ALI AKBAR" class="w-full p-2.5 border rounded-xl font-medium uppercase">
                     </div>
                     <div>
-                        <label class="block font-bold text-emerald-900 mb-1">আইডি নম্বর (ID No) * (আবশ্যক)</label>
+                        <label class="block font-bold text-emerald-900 mb-1">Student ID * (আবশ্যক)</label>
                         <input type="text" id="reg-id" required placeholder="যেমন: A26181 বা H250334" class="w-full p-2.5 border rounded-xl font-bold uppercase">
                     </div>
                     <div>
@@ -749,7 +755,7 @@
                         <tbody id="excel-table-body" class="bg-emerald-50/20"></tbody>
                     </table>
                 </div>
-                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md hover:bg-emerald-900 w-full md:w-auto"><i class="fa-solid fa-floppy-disk mr-1"></i> এই ক্লাসের রেজাল্ট সেভ করুন</button>
+                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md hover:bg-emerald-900 w-full md:w-auto"><i class="fa-solid fa-floppy-disk mr-1"></i> এই ক্লাসের রেজাল্ট ক্লাউডে সেভ করুন</button>
 
                 <!-- Saved Results Review Table -->
                 <div class="pt-6 border-t border-gray-200">
@@ -969,19 +975,30 @@
     <!-- Hidden iframe for Print Isolation -->
     <iframe id="isolated-print-frame" style="display:none; position:fixed; left:-9999px;"></iframe>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Application Logic with Firebase Realtime Database Integration -->
     <script>
+        // Firebase Cloud Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDG57Z-2T1KqzTzF-DuP7Mfk84D2SRPMZ4",
+            authDomain: "annur-international-madrasah.firebaseapp.com",
+            databaseURL: "https://annur-international-madrasah-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "annur-international-madrasah",
+            storageBucket: "annur-international-madrasah.firebasestorage.app",
+            messagingSenderId: "85025774102",
+            appId: "1:85025774102:web:9f15c8aa9fa59b49f33337",
+            measurementId: "G-30375YV4ZP"
+        };
+
+        // Initialize Firebase Realtime Database
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let adminPassword = localStorage.getItem('annur_admin_pass') || '1234';
-
-        // Universal Central Logo
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
+        let resultPublishStatus = 'PUBLISHED';
+        let resultPublishDatetime = '';
 
-        // Result Publish Timer Controls
-        let resultPublishStatus = localStorage.getItem('annur_pub_status_v12') || 'PUBLISHED';
-        let resultPublishDatetime = localStorage.getItem('annur_pub_datetime_v12') || '';
-
-        // Standard English Medium Subjects
-        let subjectConfig = JSON.parse(localStorage.getItem('annur_sub_config_v12')) || [
+        let subjectConfig = [
             { name: 'Holy Quran & Tajweed', full: 100, type: 'Main' },
             { name: 'English Language', full: 100, type: 'Main' },
             { name: 'Mathematics', full: 100, type: 'Main' },
@@ -989,31 +1006,69 @@
             { name: 'General Science & ICT', full: 50, type: 'Optional' }
         ];
 
-        let sliderImages = JSON.parse(localStorage.getItem('annur_slides_v12')) || [
+        let sliderImages = [
             'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1200&q=80',
             'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1200&q=80'
         ];
         let currentSlideIdx = 0;
 
-        let galleryPhotos = JSON.parse(localStorage.getItem('annur_gallery_v12')) || [
+        let galleryPhotos = [
             { title: 'Cadet Campus Building', url: 'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=600&q=80' }
         ];
 
-        let featuresList = JSON.parse(localStorage.getItem('annur_features_v12')) || [
+        let featuresList = [
             { title: 'International Hifz Wing', desc: 'Authentic phonetics & systematic revision under certified international Huffaz.' },
             { title: 'Cadet Curriculum', desc: 'Standard English medium coursework combined with military physical drills and discipline.' },
             { title: 'Residential Care', desc: 'Round-the-clock teacher mentorship, nutritious meals, and high moral grooming.' }
         ];
 
-        // Isolated Database Keys
-        let registeredStudents = JSON.parse(localStorage.getItem('annur_final_db_2026')) || [];
-        let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
+        let registeredStudents = [];
+        let excelStudents = [];
+        let notices = [];
+        let footerText = "Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram. Contact: +8801820270788. Email: info@annur.edu.bd";
 
-        let notices = JSON.parse(localStorage.getItem('annur_notices_v12')) || [
-            { id: 1, title: 'Annual Examination 2026 Routine Announced.', date: '2026-10-15', details: 'All cadets are instructed to collect their admit cards.' }
-        ];
+        // REAL-TIME CLOUD LISTENERS
+        function initFirebaseSync() {
+            db.ref('settings/universalLogo').on('value', snap => {
+                if (snap.exists()) {
+                    universalLogo = snap.val();
+                    applyUniversalLogo();
+                }
+            });
 
-        let footerText = localStorage.getItem('annur_footer_v12') || "Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram. Contact: +8801820270788. Email: info@annur.edu.bd";
+            db.ref('settings/publishStatus').on('value', snap => {
+                if (snap.exists()) resultPublishStatus = snap.val();
+                loadPublishSettings();
+            });
+
+            db.ref('settings/publishDatetime').on('value', snap => {
+                if (snap.exists()) resultPublishDatetime = snap.val();
+                loadPublishSettings();
+            });
+
+            db.ref('settings/subjects').on('value', snap => {
+                if (snap.exists()) subjectConfig = snap.val();
+                renderExcelTable();
+            });
+
+            db.ref('students').on('value', snap => {
+                registeredStudents = snap.exists() ? Object.values(snap.val()) : [];
+                renderStudentDBTable();
+            });
+
+            db.ref('results').on('value', snap => {
+                excelStudents = snap.exists() ? Object.values(snap.val()) : [];
+                renderExcelTable();
+            });
+
+            db.ref('notices').on('value', snap => {
+                notices = snap.exists() ? Object.values(snap.val()) : [
+                    { id: 1, title: 'Annual Examination 2026 Routine Announced.', date: '2026-10-15', details: 'All cadets are instructed to collect their admit cards.' }
+                ];
+                renderNotices();
+                renderAdminNotices();
+            });
+        }
 
         function showPage(pageId) {
             ['home','about','departments','admission','result','public-student-search','notices','gallery','contact','admin'].forEach(p => {
@@ -1047,17 +1102,17 @@
         window.addEventListener('hashchange', checkAdminHash);
 
         function clearAllSystemStorageWithPassword() {
-            const pass = prompt('সুরক্ষা যাচাই: পুরানো সব ডাটা মুছে ফেলতে এডমিন পাসওয়ার্ড লিখুন:');
+            const pass = prompt('সুরক্ষা যাচাই: পুরানো সব ক্লাউড ডাটা মুছে ফেলতে এডমিন পাসওয়ার্ড লিখুন:');
             if (pass === adminPassword) {
-                if (confirm('আপনি কি চূড়ান্তভাবে নিশ্চিত যে সকল ডাটা মুছে সম্পূর্ণ ফ্রেশ শুরু করতে চান?')) {
+                if (confirm('আপনি কি চূড়ান্তভাবে নিশ্চিত যে ক্লাউডের সমস্ত ছাত্র ও রেজাল্ট মুছে সম্পূর্ণ ফ্রেশ শুরু করতে চান?')) {
+                    db.ref('students').remove();
+                    db.ref('results').remove();
                     registeredStudents = [];
                     excelStudents = [];
-                    localStorage.removeItem('annur_final_db_2026');
-                    localStorage.removeItem('annur_final_results_2026');
                     renderStudentDBTable();
                     renderExcelTable();
                     document.getElementById('admin-idcard-live-box').classList.add('hidden');
-                    alert('সফলভাবে সমস্ত ডাটা মুছে দেওয়া হয়েছে!');
+                    alert('সফলভাবে সমস্ত ক্লাউড ডাটা মুছে দেওয়া হয়েছে!');
                 }
             } else {
                 alert('ভুল পাসওয়ার্ড! ডাটা রিসেট বাতিল করা হয়েছে।');
@@ -1080,9 +1135,9 @@
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     universalLogo = evt.target.result;
-                    localStorage.setItem('annur_universal_logo', universalLogo);
+                    db.ref('settings/universalLogo').set(universalLogo);
                     applyUniversalLogo();
-                    alert('Crest Logo updated successfully across all ID cards, Marksheets, and Website headers!');
+                    alert('Crest Logo updated successfully in the cloud!');
                     fileInput.value = '';
                 };
                 reader.readAsDataURL(fileInput.files[0]);
@@ -1104,9 +1159,9 @@
             resultPublishStatus = document.getElementById('admin-publish-status').value;
             resultPublishDatetime = document.getElementById('admin-publish-datetime').value;
 
-            localStorage.setItem('annur_pub_status_v12', resultPublishStatus);
-            localStorage.setItem('annur_pub_datetime_v12', resultPublishDatetime);
-            alert('Publication schedule updated successfully!');
+            db.ref('settings/publishStatus').set(resultPublishStatus);
+            db.ref('settings/publishDatetime').set(resultPublishDatetime);
+            alert('Publication schedule synchronized across all devices!');
         }
 
         function isResultAccessible() {
@@ -1179,7 +1234,7 @@
             return { total: total, grade: grade, gpa: finalGpaNum.toFixed(2), remarks: remarks };
         }
 
-        // 1. CADET REGISTRATION
+        // 1. CADET REGISTRATION (Firebase Cloud Direct)
         function handleRegisterStudent(e) {
             e.preventDefault();
             const id = document.getElementById('reg-id').value.trim().toUpperCase();
@@ -1197,22 +1252,22 @@
             }
 
             const processRegistration = (photoBase64) => {
-                registeredStudents.unshift({ 
+                const newStudent = { 
                     id, name, father, class: stdClass, phone, status, 
                     photo: photoBase64 || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' 
-                });
-                localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-                localStorage.setItem('annur_sticky_class', stdClass);
-                
-                renderStudentDBTable();
-                syncRegisteredStudentsToResults(false);
+                };
 
-                document.getElementById('reg-name').value = '';
-                document.getElementById('reg-father').value = '';
-                document.getElementById('reg-id').value = '';
-                document.getElementById('reg-phone').value = '';
-                photoInput.value = '';
-                alert(`ক্যাডেট ${name} (ID: ${id}) সফলভাবে নিবন্ধিত হয়েছে!`);
+                db.ref('students/' + id).set(newStudent).then(() => {
+                    localStorage.setItem('annur_sticky_class', stdClass);
+                    syncRegisteredStudentsToResults(false);
+
+                    document.getElementById('reg-name').value = '';
+                    document.getElementById('reg-father').value = '';
+                    document.getElementById('reg-id').value = '';
+                    document.getElementById('reg-phone').value = '';
+                    photoInput.value = '';
+                    alert(`ক্যাডেট ${name} (ID: ${id}) ক্লাউডে সফলভাবে নিবন্ধিত হয়েছে!`);
+                });
             };
 
             if (photoInput.files && photoInput.files[0]) {
@@ -1268,14 +1323,13 @@
                         <td class="p-2 border text-center whitespace-nowrap space-x-1">
                             <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i> কার্ড প্রিন্ট</button>
                             <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRegisteredStudent(${realIdx})" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        // DIRECT ID CARD LOOKUP STRICTLY INSIDE ADMIN PANEL
         function renderDirectIDCardFromInput() {
             const inputVal = document.getElementById('direct-idcard-input').value.trim().toUpperCase();
             if (!inputVal) {
@@ -1292,7 +1346,6 @@
             renderIDCardDirectlyInAdmin(cadetIndex);
         }
 
-        // RENDER ID CARD IN-PLACE INSIDE ADMIN STUDIO BOX
         function renderIDCardDirectlyInAdmin(realIdx) {
             const s = registeredStudents[realIdx];
             if(!s) return;
@@ -1369,7 +1422,6 @@
             liveBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // ISOLATED ID CARD PRINT
         function executeIsolatedIDCardPrint() {
             const cardElement = document.getElementById('target-id-card-node');
             if(!cardElement) return;
@@ -1422,7 +1474,6 @@
             }, 600);
         }
 
-        // DIRECT PDF DOWNLOAD
         function executeDirectIDCardPDFDownload(cadetId, cadetName) {
             const element = document.getElementById('target-id-card-node');
             if(!element) return;
@@ -1463,30 +1514,30 @@
             const s = registeredStudents[realIdx];
             if(!s) return;
 
-            s.id = document.getElementById('edit-std-id').value.trim().toUpperCase();
-            s.name = document.getElementById('edit-std-name').value.trim().toUpperCase();
-            s.father = document.getElementById('edit-std-father').value.trim().toUpperCase();
-            s.class = document.getElementById('edit-std-class').value;
-            s.phone = document.getElementById('edit-std-phone').value.trim();
-            s.status = document.getElementById('edit-std-status').value;
+            const updatedData = {
+                id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
+                name: document.getElementById('edit-std-name').value.trim().toUpperCase(),
+                father: document.getElementById('edit-std-father').value.trim().toUpperCase(),
+                class: document.getElementById('edit-std-class').value,
+                phone: document.getElementById('edit-std-phone').value.trim(),
+                status: document.getElementById('edit-std-status').value,
+                photo: s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+            };
 
-            localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-            renderStudentDBTable();
-            syncRegisteredStudentsToResults(false);
-            closeStudentEditModal();
-            alert('ক্যাডেট তথ্য সফলভাবে সংশোধন করা হয়েছে!');
+            db.ref('students/' + updatedData.id).set(updatedData).then(() => {
+                closeStudentEditModal();
+                alert('ক্যাডেট তথ্য ক্লাউডে সফলভাবে সংশোধন করা হয়েছে!');
+            });
         }
 
-        function deleteRegisteredStudent(realIdx) {
-            if(confirm('আপনি কি এই ক্যাডেটের তথ্য সম্পূর্ণ ডাটাবেজ থেকে মুছে ফেলতে চান?')) {
-                registeredStudents.splice(realIdx, 1);
-                localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-                renderStudentDBTable();
-                document.getElementById('admin-idcard-live-box').classList.add('hidden');
+        function deleteRegisteredStudent(studentId) {
+            if(confirm('আপনি কি এই ক্যাডেটের তথ্য সম্পূর্ণ ক্লাউড ডাটাবেজ থেকে মুছে ফেলতে চান?')) {
+                db.ref('students/' + studentId).remove().then(() => {
+                    document.getElementById('admin-idcard-live-box').classList.add('hidden');
+                });
             }
         }
 
-        // PUBLIC CADET SEARCH
         function renderPublicStudentSearch() {
             const q = document.getElementById('public-search-input').value.toUpperCase().trim();
             const container = document.getElementById('public-student-results');
@@ -1521,7 +1572,7 @@
             });
         }
 
-        // 2. RESULT DATA SPREADSHEET & PREVIEW
+        // 2. RESULT DATA SPREADSHEET (Cloud Synced)
         function syncRegisteredStudentsToResults(showAlert = true) {
             registeredStudents.forEach(reg => {
                 const existing = excelStudents.find(s => s.id === reg.id);
@@ -1540,7 +1591,6 @@
                     existing.class = reg.class;
                 }
             });
-            localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
             renderExcelTable();
             if(showAlert) alert('সেন্ট্রাল ক্যাডেট তালিকা রেজাল্ট বোর্ডে সিঙ্ক হয়েছে!');
         }
@@ -1686,13 +1736,13 @@
 
         function updateSubjectFullMark(sIdx, newFull) {
             subjectConfig[sIdx].full = parseInt(newFull);
-            localStorage.setItem('annur_sub_config_v12', JSON.stringify(subjectConfig));
+            db.ref('settings/subjects').set(subjectConfig);
             renderExcelTable();
         }
 
         function updateSubjectType(sIdx, newType) {
             subjectConfig[sIdx].type = newType;
-            localStorage.setItem('annur_sub_config_v12', JSON.stringify(subjectConfig));
+            db.ref('settings/subjects').set(subjectConfig);
             renderExcelTable();
         }
 
@@ -1703,8 +1753,8 @@
                 if(!s.marks) s.marks = [];
                 s.marks.push('');
             });
-            localStorage.setItem('annur_sub_config_v12', JSON.stringify(subjectConfig));
-            localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
+            db.ref('settings/subjects').set(subjectConfig);
+            db.ref('results').set(excelStudents);
             renderExcelTable();
         }
 
@@ -1719,8 +1769,8 @@
                 excelStudents.forEach(s => {
                     if(s.marks) s.marks.splice(subIdx, 1);
                 });
-                localStorage.setItem('annur_sub_config_v12', JSON.stringify(subjectConfig));
-                localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
+                db.ref('settings/subjects').set(subjectConfig);
+                db.ref('results').set(excelStudents);
                 renderExcelTable();
             }
         }
@@ -1728,7 +1778,7 @@
         function deleteExcelRow(realIdx) {
             if (confirm('এই ক্যাডেটের রেজাল্ট মুছে ফেলবেন?')) {
                 excelStudents.splice(realIdx, 1);
-                localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
+                db.ref('results').set(excelStudents);
                 renderExcelTable();
             }
         }
@@ -1741,7 +1791,7 @@
             headerInputs.forEach((input, i) => {
                 if(subjectConfig[i]) subjectConfig[i].name = input.value.trim() || 'Subject';
             });
-            localStorage.setItem('annur_sub_config_v12', JSON.stringify(subjectConfig));
+            db.ref('settings/subjects').set(subjectConfig);
 
             const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
             const rows = document.querySelectorAll('#excel-table-body tr');
@@ -1769,9 +1819,10 @@
             });
 
             excelStudents = [...otherClassStudents, ...updatedCurrentClassStudents];
-            localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
-            renderExcelTable();
-            if(showAlert) alert(`${currentSelectedClass} এর রেজাল্ট সফলভাবে সেভ হয়েছে!`);
+            db.ref('results').set(excelStudents).then(() => {
+                renderExcelTable();
+                if(showAlert) alert(`${currentSelectedClass} এর রেজাল্ট ক্লাউডে সফলভাবে সেভ হয়েছে!`);
+            });
         }
 
         // 3. FEATURES
@@ -1810,7 +1861,6 @@
             const desc = document.getElementById('feat-desc').value.trim();
             if(title && desc) {
                 featuresList.push({ title, desc });
-                localStorage.setItem('annur_features_v12', JSON.stringify(featuresList));
                 renderFeatures(); renderAdminFeatures();
                 e.target.reset();
             }
@@ -1819,7 +1869,6 @@
         function deleteFeature(idx) {
             if(confirm('মুছে ফেলতে চান?')) {
                 featuresList.splice(idx, 1);
-                localStorage.setItem('annur_features_v12', JSON.stringify(featuresList));
                 renderFeatures(); renderAdminFeatures();
             }
         }
@@ -1869,7 +1918,6 @@
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     sliderImages.push(evt.target.result);
-                    localStorage.setItem('annur_slides_v12', JSON.stringify(sliderImages));
                     renderSlider(); renderAdminSlides();
                     fileInput.value = '';
                 };
@@ -1880,7 +1928,6 @@
         function deleteSlide(idx) {
             if(confirm('স্লাইডার ছবি ডিলিট করবেন?')) {
                 sliderImages.splice(idx, 1);
-                localStorage.setItem('annur_slides_v12', JSON.stringify(sliderImages));
                 renderSlider(); renderAdminSlides();
             }
         }
@@ -1923,7 +1970,6 @@
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     galleryPhotos.unshift({ title, url: evt.target.result });
-                    localStorage.setItem('annur_gallery_v12', JSON.stringify(galleryPhotos));
                     renderGallery(); renderAdminGallery();
                     e.target.reset();
                 };
@@ -1934,7 +1980,6 @@
         function deleteGalleryPhoto(idx) {
             if(confirm('গ্যালারির ছবি ডিলিট করবেন?')) {
                 galleryPhotos.splice(idx, 1);
-                localStorage.setItem('annur_gallery_v12', JSON.stringify(galleryPhotos));
                 renderGallery(); renderAdminGallery();
             }
         }
@@ -1948,18 +1993,18 @@
             }
         }
 
-        // NOTICES & FOOTER
+        // NOTICES & FOOTER (Cloud Synced)
         function handleAddNotice(e) {
             e.preventDefault();
             const title = document.getElementById('notice-title').value.trim();
             const details = document.getElementById('notice-details').value.trim() || title;
             const date = document.getElementById('notice-date').value;
+            const id = Date.now().toString();
             
-            notices.unshift({ id: Date.now(), title, date, details });
-            localStorage.setItem('annur_notices_v12', JSON.stringify(notices));
-            renderNotices(); renderAdminNotices();
-            e.target.reset();
-            alert('Notice published!');
+            db.ref('notices/' + id).set({ id, title, date, details }).then(() => {
+                e.target.reset();
+                alert('Notice published globally!');
+            });
         }
 
         function renderNotices() {
@@ -1990,7 +2035,7 @@
                 adminList.innerHTML += `
                     <li class="py-2 flex justify-between items-center text-xs">
                         <span class="font-bold truncate pr-2">${n.title}</span>
-                        <button onclick="deleteNotice(${idx})" class="text-red-600 font-bold hover:text-red-800 px-2 py-0.5" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="deleteNotice('${n.id}')" class="text-red-600 font-bold hover:text-red-800 px-2 py-0.5" title="Delete"><i class="fa-solid fa-trash"></i></button>
                     </li>
                 `;
             });
@@ -2007,11 +2052,9 @@
 
         function closeNoticeDetailsModal() { document.getElementById('notice-details-modal').classList.add('hidden'); }
 
-        function deleteNotice(idx) {
+        function deleteNotice(noticeId) {
             if(confirm('Delete notice?')) {
-                notices.splice(idx, 1);
-                localStorage.setItem('annur_notices_v12', JSON.stringify(notices));
-                renderNotices(); renderAdminNotices();
+                db.ref('notices/' + noticeId).remove();
             }
         }
 
@@ -2154,7 +2197,6 @@
             }
 
             const subjectCount = subjectConfig.length;
-            // Adaptive compact row padding: ensures up to 12 subjects strictly fit inside single A4 page
             const tdPadClass = subjectCount > 8 ? 'py-1 px-2 text-[11px]' : (subjectCount > 6 ? 'py-1.5 px-2.5 text-xs' : 'py-2 px-3 text-xs md:text-sm');
 
             let subjectRowsHTML = '';
@@ -2162,7 +2204,7 @@
                 const mVal = (student.marks && student.marks[sIdx]) ? student.marks[sIdx].trim() : '-';
                 const typeLabel = subObj.type === 'Optional' ? ' <span class="text-[9px] bg-amber-100 text-amber-900 px-1 py-0.2 rounded ml-1 font-bold">Optional</span>' : '';
                 subjectRowsHTML += `
-                    <tr class="border-b border-gray-200">
+                    <tr class="border-b border-gray-200 bg-transparent">
                         <td class="${tdPadClass} border-r border-gray-200 font-semibold text-gray-800">${subObj.name}${typeLabel}</td>
                         <td class="${tdPadClass} text-center font-bold text-gray-600 w-24 border-r border-gray-200">${subObj.full}</td>
                         <td class="${tdPadClass} text-center font-bold text-emerald-900 w-28">${mVal}</td>
@@ -2175,26 +2217,21 @@
 
             const resultHTML = `
                 <div id="target-transcript-a4-node" class="islamic-a4-sheet font-sans text-left">
-                    <!-- Big Islamic Watermark Logo Across Page Body -->
                     <img src="${universalLogo}" class="marksheet-large-watermark" alt="Watermark">
 
                     <div class="relative z-10 w-full">
-                        <!-- Top Margin Date (Directly under top margin, on the right side) -->
                         <div class="flex justify-end pr-1 text-[11px] font-bold text-emerald-950 mb-1">
                             <span>Date of Issue: <span class="text-amber-800 font-black">${currentDateStr}</span></span>
                         </div>
 
-                        <!-- 1. BISMILLAH AT THE TOP -->
                         <div class="text-center">
                             <h2 class="arabic-font text-2xl md:text-3xl text-emerald-900 leading-tight">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h2>
                         </div>
 
-                        <!-- 2. CENTRAL LOGO UNDER BISMILLAH -->
                         <div class="my-1 text-center">
                             <img src="${universalLogo}" alt="Logo" class="w-16 h-16 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
                         </div>
 
-                        <!-- 3. MADRASAH NAME UNDER LOGO -->
                         <div class="text-center space-y-0.5">
                             <h1 class="font-brand text-lg md:text-xl font-black text-emerald-950 tracking-wide">AN-NUR INTERNATIONAL CADET MADRASAH</h1>
                             <p class="text-[11px] text-emerald-800 font-semibold">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram, Bangladesh</p>
@@ -2203,17 +2240,15 @@
                             </div>
                         </div>
 
-                        <!-- Student Particulars with STUDENT ID -->
-                        <div class="grid grid-cols-2 gap-2 text-xs bg-emerald-50/90 p-2.5 rounded-xl border border-emerald-300 mt-2.5 font-medium">
+                        <div class="grid grid-cols-2 gap-2 text-xs bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-300 mt-2.5 font-medium">
                             <p><span class="text-gray-600">Student Name:</span> <span class="text-emerald-950 font-bold uppercase">${student.name}</span></p>
                             <p><span class="text-gray-600">Student ID:</span> <span class="text-emerald-950 font-bold uppercase">${student.id}</span></p>
                             <p><span class="text-gray-600">Class / Level:</span> <span class="text-emerald-950 font-bold uppercase">${student.class}</span></p>
                             <p><span class="text-gray-600">Academic Session:</span> <span class="text-emerald-950 font-bold">${student.session || '2026'}</span></p>
                         </div>
 
-                        <!-- Dynamic Responsive Subjects Table (Fits up to 12 subjects seamlessly) -->
                         <div class="mt-2.5">
-                            <table class="w-full border-collapse border-2 border-emerald-900 rounded-lg overflow-hidden bg-white/90">
+                            <table class="w-full border-collapse border-2 border-emerald-900 rounded-lg overflow-hidden bg-white/70">
                                 <thead>
                                     <tr class="bg-emerald-900 text-white uppercase text-[11px]">
                                         <th class="py-1.5 px-3 text-left border-r border-emerald-800">Course / Subject Title</th>
@@ -2225,8 +2260,7 @@
                             </table>
                         </div>
 
-                        <!-- Academic Performance Summary -->
-                        <div class="bg-amber-50/95 border-2 border-amber-500 p-2.5 rounded-xl shadow-sm flex justify-between items-center text-xs font-bold text-emerald-950 mt-2.5">
+                        <div class="bg-amber-50/90 border-2 border-amber-500 p-2.5 rounded-xl shadow-sm flex justify-between items-center text-xs font-bold text-emerald-950 mt-2.5">
                             <div>
                                 <span class="text-gray-600 block text-[10px] uppercase">Aggregate Score</span>
                                 <span class="text-lg text-amber-700 font-black">${stats.total}</span>
@@ -2246,7 +2280,6 @@
                         </div>
                     </div>
 
-                    <!-- Authentic Signatures Fixed at the Bottom of Single A4 Sheet -->
                     <div class="pt-6 pb-2 flex justify-between text-xs text-gray-800 font-bold relative z-10">
                         <div class="text-center">
                             <div class="w-24 border-t-2 border-gray-500 mb-1"></div>
@@ -2275,7 +2308,6 @@
             printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // ISOLATED TRANSCRIPT PRINT FUNCTION (Zero Leakage, Single A4)
         function executeIsolatedTranscriptPrint() {
             const transcriptNode = document.getElementById('target-transcript-a4-node');
             if(!transcriptNode) return;
@@ -2315,8 +2347,8 @@
                             top: 52% !important;
                             left: 50% !important;
                             transform: translate(-50%, -50%) !important;
-                            width: 440px !important;
-                            height: 440px !important;
+                            width: 480px !important;
+                            height: 480px !important;
                             opacity: 0.08 !important;
                         }
                     </style>
@@ -2334,7 +2366,6 @@
             }, 600);
         }
 
-        // DIRECT CLIENT-SIDE TRANSCRIPT PDF DOWNLOAD
         function executeTranscriptPDFDownload(studentId, studentName) {
             const element = document.getElementById('target-transcript-a4-node');
             if(!element) return;
@@ -2362,6 +2393,7 @@
                 document.getElementById('reg-class').value = lastClass;
             }
 
+            initFirebaseSync();
             applyUniversalLogo();
             renderFeatures();
             renderSlider();
