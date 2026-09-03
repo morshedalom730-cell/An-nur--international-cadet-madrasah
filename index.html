@@ -43,7 +43,7 @@
         .slide-fade { transition: opacity 0.8s ease-in-out; }
         .glass-nav { background: rgba(4, 47, 36, 0.96); backdrop-filter: blur(10px); }
 
-        /* Royal Islamic A4 Transcript Sheet */
+        /* Royal Islamic A4 Transcript Sheet with Border Safeguard */
         .islamic-a4-sheet {
             width: 100%;
             max-width: 794px;
@@ -58,25 +58,23 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 24px 28px;
+            padding: 26px 30px;
             margin: 0 auto;
         }
 
-        /* Perfectly Clear & Balanced Watermark */
         .marksheet-large-watermark {
             position: absolute;
             top: 52%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 520px;
-            height: 520px;
-            opacity: 0.16;
+            width: 480px;
+            height: 480px;
+            opacity: 0.14;
             pointer-events: none;
             z-index: 1;
             object-fit: contain;
         }
 
-        /* Transparent Table Elements to Ensure Watermark visibility */
         .islamic-a4-sheet table, 
         .islamic-a4-sheet th, 
         .islamic-a4-sheet td, 
@@ -85,17 +83,9 @@
             background-color: transparent !important;
         }
 
-        .islamic-a4-sheet table {
-            background: rgba(255, 255, 255, 0.75) !important;
-        }
-
-        .marksheet-info-card {
-            background: rgba(236, 253, 245, 0.85) !important;
-        }
-
-        .marksheet-summary-box {
-            background: rgba(254, 243, 199, 0.9) !important;
-        }
+        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.8) !important; }
+        .marksheet-info-card { background: rgba(236, 253, 245, 0.9) !important; }
+        .marksheet-summary-box { background: rgba(254, 243, 199, 0.95) !important; }
 
         .marksheet-student-photo {
             width: 90px;
@@ -133,7 +123,7 @@
 
         @page {
             size: A4 portrait;
-            margin: 4mm;
+            margin: 0mm;
         }
 
         @media print {
@@ -145,6 +135,7 @@
                 left: 0 !important; 
                 top: 0 !important; 
                 width: 100% !important; 
+                height: 100% !important;
                 margin: 0 !important; 
                 padding: 0 !important; 
             }
@@ -159,7 +150,7 @@
                 height: 100vh !important;
                 page-break-inside: avoid !important;
                 page-break-after: avoid !important;
-                padding: 16px 20px !important;
+                padding: 18px 22px !important;
             }
         }
     </style>
@@ -2483,12 +2474,12 @@
                     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Amiri:wght@700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     <style>
-                        @page { size: A4 portrait; margin: 3mm; }
+                        @page { size: A4 portrait; margin: 2mm; }
                         body { margin: 0; padding: 0; background: #fff; display: flex; justify-content: center; }
                         .islamic-a4-sheet {
                             width: 100% !important;
                             max-width: 100% !important;
-                            height: 100vh !important;
+                            height: 99vh !important;
                             border: 10px double #064e3b !important;
                             outline: 3px solid #d97706 !important;
                             outline-offset: -6px !important;
@@ -2519,9 +2510,9 @@
                         .marksheet-summary-box {
                             background-color: transparent !important;
                         }
-                        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.75) !important; }
-                        .marksheet-info-card { background: rgba(236, 253, 245, 0.85) !important; }
-                        .marksheet-summary-box { background: rgba(254, 243, 199, 0.9) !important; }
+                        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.8) !important; }
+                        .marksheet-info-card { background: rgba(236, 253, 245, 0.9) !important; }
+                        .marksheet-summary-box { background: rgba(254, 243, 199, 0.95) !important; }
                         .marksheet-student-photo {
                             width: 90px !important;
                             height: 110px !important;
