@@ -43,12 +43,12 @@
         .slide-fade { transition: opacity 0.8s ease-in-out; }
         .glass-nav { background: rgba(4, 47, 36, 0.96); backdrop-filter: blur(10px); }
 
-        /* Royal Islamic A4 Transcript Sheet with Print Margin Safeguard */
+        /* Royal Islamic A4 Transcript Sheet */
         .islamic-a4-sheet {
             width: 100%;
             max-width: 794px;
             min-height: 1100px;
-            background: #ffffff;
+            background: #ffffff !important;
             border: 12px double #064e3b;
             outline: 4px solid #d97706;
             outline-offset: -8px;
@@ -62,17 +62,39 @@
             margin: 0 auto;
         }
 
+        /* Perfectly Clear & Balanced Watermark */
         .marksheet-large-watermark {
             position: absolute;
             top: 52%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 500px;
-            height: 500px;
-            opacity: 0.12;
+            width: 520px;
+            height: 520px;
+            opacity: 0.16;
             pointer-events: none;
             z-index: 1;
             object-fit: contain;
+        }
+
+        /* Transparent Table Elements to Ensure Watermark visibility */
+        .islamic-a4-sheet table, 
+        .islamic-a4-sheet th, 
+        .islamic-a4-sheet td, 
+        .marksheet-info-card, 
+        .marksheet-summary-box {
+            background-color: transparent !important;
+        }
+
+        .islamic-a4-sheet table {
+            background: rgba(255, 255, 255, 0.75) !important;
+        }
+
+        .marksheet-info-card {
+            background: rgba(236, 253, 245, 0.85) !important;
+        }
+
+        .marksheet-summary-box {
+            background: rgba(254, 243, 199, 0.9) !important;
         }
 
         .marksheet-student-photo {
@@ -2366,7 +2388,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-emerald-50/90 p-4 md:p-4.5 rounded-xl border-2 border-emerald-300 mt-4 font-bold flex items-center justify-between gap-4">
+                            <div class="marksheet-info-card p-4 md:p-4.5 rounded-xl border-2 border-emerald-300 mt-4 font-bold flex items-center justify-between gap-4">
                                 <div class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm md:text-base flex-grow">
                                     <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.name}</span></p>
                                     <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.id}</span></p>
@@ -2376,12 +2398,12 @@
                                 </div>
                                 <div class="shrink-0 text-center">
                                     <img src="${studentPhoto}" class="marksheet-student-photo" alt="Cadet Photo">
-                                    <span class="block text-[10px] font-montserrat text-emerald-900 mt-1 tracking-wider font-extrabold">Student Picture</span>
+                                    <span class="block text-[10px] font-montserrat text-emerald-950 mt-1 tracking-wider font-black">Student Picture</span>
                                 </div>
                             </div>
 
                             <div class="mt-5">
-                                <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden bg-white/90">
+                                <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden">
                                     <thead>
                                         <tr class="bg-emerald-950 text-white uppercase text-xs md:text-sm font-montserrat">
                                             <th class="py-3 px-4 text-left border-r border-emerald-800">Course / Subject Title</th>
@@ -2395,22 +2417,22 @@
                                 </table>
                             </div>
 
-                            <div class="bg-amber-50/95 border-2 border-amber-500 p-4.5 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-5">
+                            <div class="marksheet-summary-box border-2 border-amber-500 p-4.5 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-5">
                                 <div class="text-center px-2">
-                                    <span class="text-gray-600 block text-xs uppercase font-montserrat">Total Marks</span>
+                                    <span class="text-gray-700 block text-xs uppercase font-montserrat">Total Marks</span>
                                     <span class="text-2xl md:text-3xl text-amber-700 font-black">${stats.total}</span>
                                 </div>
-                                <div class="text-center border-x-2 border-amber-300 px-6">
-                                    <span class="text-gray-600 block text-xs uppercase font-montserrat">GPA</span>
+                                <div class="text-center border-x-2 border-amber-400 px-6">
+                                    <span class="text-gray-700 block text-xs uppercase font-montserrat">GPA</span>
                                     <span class="text-2xl md:text-3xl text-emerald-900 font-black">${stats.gpa}</span>
                                 </div>
-                                <div class="text-center border-r-2 border-amber-300 pr-6">
-                                    <span class="text-gray-600 block text-xs uppercase font-montserrat">Letter Grade</span>
+                                <div class="text-center border-r-2 border-amber-400 pr-6">
+                                    <span class="text-gray-700 block text-xs uppercase font-montserrat">Letter Grade</span>
                                     <span class="text-2xl md:text-3xl text-emerald-900 font-black">${stats.grade}</span>
                                 </div>
                                 <div class="text-right px-2">
-                                    <span class="text-gray-600 block text-xs uppercase font-montserrat">Remarks</span>
-                                    <span class="text-lg md:text-xl text-emerald-800 font-black">${stats.remarks}</span>
+                                    <span class="text-gray-700 block text-xs uppercase font-montserrat">Remarks</span>
+                                    <span class="text-lg md:text-xl text-emerald-900 font-black">${stats.remarks}</span>
                                 </div>
                             </div>
                         </div>
@@ -2444,7 +2466,7 @@
             printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // ISOLATED PRINT WITH 100% RELIABLE STYLING
+        // ISOLATED PRINT WITH 100% RELIABLE STYLING & BORDER SAFEGUARD
         function executeIsolatedTranscriptPrint() {
             const transcriptNode = document.getElementById('target-transcript-a4-node');
             if(!transcriptNode) return;
@@ -2461,12 +2483,12 @@
                     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Amiri:wght@700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     <style>
-                        @page { size: A4 portrait; margin: 4mm; }
+                        @page { size: A4 portrait; margin: 3mm; }
                         body { margin: 0; padding: 0; background: #fff; display: flex; justify-content: center; }
                         .islamic-a4-sheet {
                             width: 100% !important;
                             max-width: 100% !important;
-                            height: 98vh !important;
+                            height: 100vh !important;
                             border: 10px double #064e3b !important;
                             outline: 3px solid #d97706 !important;
                             outline-offset: -6px !important;
@@ -2477,6 +2499,7 @@
                             box-sizing: border-box !important;
                             padding: 16px 20px !important;
                             font-family: "Times New Roman", Times, serif !important;
+                            background-color: #ffffff !important;
                             -webkit-print-color-adjust: exact !important;
                             print-color-adjust: exact !important;
                         }
@@ -2487,8 +2510,18 @@
                             transform: translate(-50%, -50%) !important;
                             width: 500px !important;
                             height: 500px !important;
-                            opacity: 0.12 !important;
+                            opacity: 0.16 !important;
                         }
+                        .islamic-a4-sheet table, 
+                        .islamic-a4-sheet th, 
+                        .islamic-a4-sheet td, 
+                        .marksheet-info-card, 
+                        .marksheet-summary-box {
+                            background-color: transparent !important;
+                        }
+                        .islamic-a4-sheet table { background: rgba(255, 255, 255, 0.75) !important; }
+                        .marksheet-info-card { background: rgba(236, 253, 245, 0.85) !important; }
+                        .marksheet-summary-box { background: rgba(254, 243, 199, 0.9) !important; }
                         .marksheet-student-photo {
                             width: 90px !important;
                             height: 110px !important;
