@@ -1105,7 +1105,19 @@
 
             db.ref('results').on('value', snap => {
                 if (snap.exists()) {
-                    excelStudents = Object.values(snap.val());
+                    const rawData = snap.val();
+                    // Clean duplicate entries by unique student ID and class
+                    const uniqueMap = new Map();
+                    if (Array.isArray(rawData)) {
+                        rawData.forEach(item => {
+                            if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item);
+                        });
+                    } else if (typeof rawData === 'object') {
+                        Object.values(rawData).forEach(item => {
+                            if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item);
+                        });
+                    }
+                    excelStudents = Array.from(uniqueMap.values());
                     localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
                 }
                 renderExcelTable();
@@ -1411,7 +1423,7 @@
                         <td class="p-2 border text-center whitespace-nowrap space-x-1">
                             <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i> কার্ড প্রিন্ট</button>
                             <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -2285,7 +2297,6 @@
                 (s.exam === inputExam || !s.exam)
             );
 
-            // Fetch registration info for photo, father's name and verification
             const regS = registeredStudents.find(r => r.id === inputId);
 
             if (!student && regS) {
@@ -2305,12 +2316,11 @@
                 return;
             }
 
-            // Student photo from registration database
             const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             const studentFather = (regS && regS.father) ? regS.father : 'N/A';
 
             const subjectCount = subjectConfig.length;
-            const rowPadClass = subjectCount <= 6 ? 'py-3 px-4 text-base md:text-lg' : (subjectCount <= 9 ? 'py-2 px-3 text-sm md:text-base' : 'py-1.5 px-3 text-xs md:text-sm');
+            const rowPadClass = subjectCount <= 6 ? 'py-3.5 px-4 text-base md:text-lg font-bold' : (subjectCount <= 9 ? 'py-2.5 px-3 text-sm md:text-base font-bold' : 'py-2 px-3 text-xs md:text-sm font-bold');
 
             let subjectRowsHTML = '';
             subjectConfig.forEach((subObj, sIdx) => {
@@ -2320,11 +2330,11 @@
                 
                 subjectRowsHTML += `
                     <tr class="border-b border-gray-300 bg-transparent">
-                        <td class="${rowPadClass} border-r border-gray-300 font-bold text-gray-900">${subObj.name}${typeLabel}</td>
-                        <td class="${rowPadClass} text-center font-bold text-gray-700 w-24 border-r border-gray-300">${subObj.full}</td>
-                        <td class="${rowPadClass} text-center font-black text-emerald-950 w-28 border-r border-gray-300">${mVal}</td>
-                        <td class="${rowPadClass} text-center font-black text-emerald-900 w-20 border-r border-gray-300 font-montserrat">${gradeInfo.lg}</td>
-                        <td class="${rowPadClass} text-center font-black text-emerald-900 w-20 font-montserrat">${gradeInfo.gp}</td>
+                        <td class="${rowPadClass} border-r border-gray-300 text-gray-900">${subObj.name}${typeLabel}</td>
+                        <td class="${rowPadClass} text-center text-gray-700 w-24 border-r border-gray-300">${subObj.full}</td>
+                        <td class="${rowPadClass} text-center text-emerald-950 w-28 border-r border-gray-300">${mVal}</td>
+                        <td class="${rowPadClass} text-center text-emerald-900 w-20 border-r border-gray-300 font-montserrat">${gradeInfo.lg}</td>
+                        <td class="${rowPadClass} text-center text-emerald-900 w-20 font-montserrat">${gradeInfo.gp}</td>
                     </tr>
                 `;
             });
@@ -2334,27 +2344,22 @@
 
             const resultHTML = `
                 <div id="target-transcript-a4-node" class="islamic-a4-sheet font-serif-roman text-left">
-                    <!-- Big 70% Transparent Watermark in Center -->
                     <img src="${universalLogo}" class="marksheet-large-watermark" alt="Watermark">
 
                     <div class="relative z-10 w-full flex-grow flex flex-col justify-between">
                         <div>
-                            <!-- Issue Date Top Right Margin -->
                             <div class="flex justify-end pr-2 text-xs md:text-sm font-bold text-emerald-950 mb-1 font-montserrat">
                                 <span>Date of Issue: <span class="text-amber-800 font-black">${currentDateStr}</span></span>
                             </div>
 
-                            <!-- 1. BISMILLAH (Calligraphic, Zero Gaps) -->
                             <div class="text-center">
                                 <h2 class="arabic-calligraphy text-3xl md:text-4xl text-emerald-900 leading-tight">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</h2>
                             </div>
 
-                            <!-- 2. LOGO UNDER BISMILLAH -->
                             <div class="my-1.5 text-center">
                                 <img src="${universalLogo}" alt="Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
                             </div>
 
-                            <!-- 3. MADRASAH NAME (Wide, bold, elegant 1-Line) -->
                             <div class="text-center space-y-1">
                                 <h1 class="font-brand text-lg sm:text-xl md:text-[25px] font-black text-emerald-950 tracking-wider whitespace-nowrap">AN-NUR INTERNATIONAL CADET MADRASAH</h1>
                                 <p class="text-xs md:text-sm text-emerald-800 font-bold">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram, Bangladesh</p>
@@ -2363,39 +2368,36 @@
                                 </div>
                             </div>
 
-                            <!-- Cadet Information Card With Official Photograph -->
-                            <div class="bg-emerald-50/85 p-3 md:p-3.5 rounded-xl border-2 border-emerald-300 mt-3 font-bold flex items-center justify-between gap-4">
+                            <div class="bg-emerald-50/85 p-3.5 md:p-4 rounded-xl border-2 border-emerald-300 mt-3 font-bold flex items-center justify-between gap-4">
                                 <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:text-sm md:text-base flex-grow">
-                                    <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase">${student.name}</span></p>
-                                    <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase">${student.id}</span></p>
-                                    <p><span class="text-gray-600 font-medium">Father's Name:</span> <span class="text-emerald-950 font-black uppercase">${studentFather}</span></p>
-                                    <p><span class="text-gray-600 font-medium">Class / Level:</span> <span class="text-emerald-950 font-black uppercase">${student.class}</span></p>
-                                    <p class="col-span-2"><span class="text-gray-600 font-medium">Academic Session:</span> <span class="text-emerald-950 font-black">${student.session || '2026'}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.name}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.id}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Father's Name:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${studentFather}</span></p>
+                                    <p><span class="text-gray-600 font-medium">Class / Level:</span> <span class="text-emerald-950 font-black uppercase text-base md:text-lg">${student.class}</span></p>
+                                    <p class="col-span-2"><span class="text-gray-600 font-medium">Academic Session:</span> <span class="text-emerald-950 font-black text-base md:text-lg">${student.session || '2026'}</span></p>
                                 </div>
                                 <div class="shrink-0 text-center">
                                     <img src="${studentPhoto}" class="marksheet-student-photo" alt="Cadet Photo">
-                                    <span class="block text-[9px] font-montserrat text-emerald-900 mt-0.5 tracking-wider">OFFICIAL</span>
+                                    <span class="block text-[9px] font-montserrat text-emerald-900 mt-0.5 tracking-wider font-bold">OFFICIAL</span>
                                 </div>
                             </div>
 
-                            <!-- Dynamic Subject Marks Table with LG & GP -->
-                            <div class="mt-3.5">
-                                <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden bg-white/70">
+                            <div class="mt-4">
+                                <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden bg-white/80">
                                     <thead>
                                         <tr class="bg-emerald-950 text-white uppercase text-xs md:text-sm font-montserrat">
-                                            <th class="py-2 px-4 text-left border-r border-emerald-800">Course / Subject Title</th>
-                                            <th class="py-2 px-2 text-center w-24 border-r border-emerald-800">Full Marks</th>
-                                            <th class="py-2 px-2 text-center w-28 border-r border-emerald-800">Marks Obtained</th>
-                                            <th class="py-2 px-2 text-center w-20 border-r border-emerald-800">Grade</th>
-                                            <th class="py-2 px-2 text-center w-20">GP</th>
+                                            <th class="py-2.5 px-4 text-left border-r border-emerald-800">Course / Subject Title</th>
+                                            <th class="py-2.5 px-2 text-center w-24 border-r border-emerald-800">Full Marks</th>
+                                            <th class="py-2.5 px-2 text-center w-28 border-r border-emerald-800">Marks Obtained</th>
+                                            <th class="py-2.5 px-2 text-center w-20 border-r border-emerald-800">Grade</th>
+                                            <th class="py-2.5 px-2 text-center w-20">GP</th>
                                         </tr>
                                     </thead>
                                     <tbody>${subjectRowsHTML}</tbody>
                                 </table>
                             </div>
 
-                            <!-- Guaranteed Visible Academic Performance Summary -->
-                            <div class="bg-amber-50/95 border-2 border-amber-500 p-3.5 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-3.5">
+                            <div class="bg-amber-50/95 border-2 border-amber-500 p-4 rounded-xl shadow-md flex justify-between items-center text-sm md:text-base font-bold text-emerald-950 mt-4">
                                 <div class="text-center px-2">
                                     <span class="text-gray-600 block text-xs uppercase font-montserrat">Total Marks</span>
                                     <span class="text-2xl md:text-3xl text-amber-700 font-black">${stats.total}</span>
@@ -2415,7 +2417,6 @@
                             </div>
                         </div>
 
-                        <!-- Authentic Signature Section -->
                         <div class="pt-10 pb-2 flex justify-between text-xs md:text-sm text-gray-800 font-bold relative z-10">
                             <div class="text-center">
                                 <div class="w-32 border-t-2 border-gray-600 mb-1"></div>
