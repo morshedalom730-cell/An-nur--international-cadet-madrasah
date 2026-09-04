@@ -43,28 +43,28 @@
         .slide-fade { transition: opacity 0.8s ease-in-out; }
         .glass-nav { background: rgba(4, 47, 36, 0.96); backdrop-filter: blur(10px); }
 
-        /* Compact & Safe A4 Transcript Sheet Layout (No cutoff) */
+        /* Perfected A4 Sheet for PDF/Print (No cutoff) */
         .islamic-a4-sheet {
             width: 794px;
-            min-height: 1060px; /* Reduced from 1120px to bring borders safely inside */
+            height: 1122px; /* Fixed exact A4 pixel height */
             background: #ffffff !important;
-            border: 4px solid #d97706; /* Outer Gold Border */
+            border: 4px solid #d97706;
             padding: 4px; 
             position: relative;
             box-sizing: border-box;
             box-shadow: 0 25px 50px rgba(0,0,0,0.18);
             margin: 0 auto;
+            overflow: hidden;
             page-break-after: avoid;
             page-break-inside: avoid;
         }
 
         /* Inner Green Border Wrap */
         .islamic-inner-border {
-            border: 8px double #064e3b; /* Inner Green Border */
+            border: 8px double #064e3b;
             width: 100%;
             height: 100%;
-            min-height: 1040px; /* Safe zone */
-            padding: 20px 24px 24px 24px; /* Balanced inner padding */
+            padding: 24px 28px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -177,7 +177,7 @@
             }
             .islamic-inner-border {
                 border: 6px double #064e3b !important;
-                padding: 14px 18px 18px 18px !important;
+                padding: 16px 20px 20px 20px !important;
                 height: 100% !important;
             }
         }
@@ -2312,7 +2312,7 @@
             printArea.innerHTML = sheetHTML;
         }
 
-        // 100% SECURE SINGLE-PAGE TRANSCRIPT
+        // 100% RELIABLE SINGLE-PAGE TRANSCRIPT SEARCH & PDF EXPORT
         function searchResult() {
             const inputId = document.getElementById('search-student-id').value.trim().toUpperCase();
             const inputClass = document.getElementById('search-student-class').value;
@@ -2359,7 +2359,7 @@
             const studentFather = (regS && regS.father) ? regS.father : 'N/A';
 
             const subjectCount = subjectConfig.length;
-            const rowPadClass = subjectCount <= 6 ? 'py-3.5 px-4 text-sm md:text-base font-bold' : (subjectCount <= 10 ? 'py-2 px-3 text-xs md:text-sm font-bold' : 'py-1 px-2 text-[11px] font-bold');
+            const rowPadClass = subjectCount <= 6 ? 'py-3 px-4 text-sm md:text-base font-bold' : (subjectCount <= 10 ? 'py-2 px-3 text-xs md:text-sm font-bold' : 'py-1 px-2 text-[11px] font-bold');
 
             let subjectRowsHTML = '';
             subjectConfig.forEach((subObj, sIdx) => {
@@ -2397,7 +2397,7 @@
                                 </div>
 
                                 <div class="my-1 text-center">
-                                    <img src="${universalLogo}" alt="Logo" class="w-12 h-12 md:w-14 md:h-14 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
+                                    <img src="${universalLogo}" alt="Logo" class="w-14 h-14 md:w-16 md:h-16 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
                                 </div>
 
                                 <div class="text-center space-y-0.5">
@@ -2422,7 +2422,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-2.5">
+                                <div class="mt-3">
                                     <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden">
                                         <thead>
                                             <tr class="bg-emerald-950 text-white uppercase text-[11px] md:text-xs font-montserrat">
@@ -2437,7 +2437,7 @@
                                     </table>
                                 </div>
 
-                                <div class="marksheet-summary-box border-2 border-amber-500 p-3 rounded-xl shadow-sm flex justify-between items-center text-xs md:text-sm font-bold text-emerald-950 mt-2.5">
+                                <div class="marksheet-summary-box border-2 border-amber-500 p-3 rounded-xl shadow-sm flex justify-between items-center text-xs md:text-sm font-bold text-emerald-950 mt-3">
                                     <div class="text-center px-1">
                                         <span class="text-gray-700 block text-[10px] uppercase font-montserrat">Total Marks</span>
                                         <span class="text-xl md:text-2xl text-amber-700 font-black">${stats.total}</span>
@@ -2487,7 +2487,7 @@
             printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // ISOLATED PRINT WITH 100% SAFE MARGIN
+        // ISOLATED PRINT WITH 100% SINGLE PAGE & BORDER SAFEGUARD
         function executeIsolatedTranscriptPrint() {
             const transcriptNode = document.getElementById('target-transcript-a4-node');
             if(!transcriptNode) return;
@@ -2504,38 +2504,35 @@
                     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Amiri:wght@700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     <style>
-                        @page { size: A4 portrait; margin: 5mm; }
+                        @page { size: A4 portrait; margin: 0; }
                         body { margin: 0; padding: 0; background: #fff; display: flex; justify-content: center; align-items: center; width: 210mm; height: 297mm; overflow: hidden; }
                         .islamic-a4-sheet {
                             width: 210mm !important;
                             height: 297mm !important;
                             max-height: 297mm !important;
-                            border: 4px solid #d97706 !important;
+                            border: 8px double #064e3b !important;
+                            outline: 2px solid #d97706 !important;
+                            outline-offset: -5px !important;
                             display: flex !important;
                             flex-direction: column !important;
                             justify-content: space-between !important;
                             position: relative !important;
                             box-sizing: border-box !important;
-                            padding: 3px !important;
+                            padding: 12px 18px 14px 18px !important;
                             font-family: "Times New Roman", Times, serif !important;
                             background-color: #ffffff !important;
                             -webkit-print-color-adjust: exact !important;
                             print-color-adjust: exact !important;
                             overflow: hidden !important;
                         }
-                        .islamic-inner-border {
-                            border: 6px double #064e3b !important;
-                            padding: 14px 18px 18px 18px !important;
-                            height: 100% !important;
-                        }
                         .marksheet-large-watermark {
                             position: absolute !important;
                             top: 52% !important;
                             left: 50% !important;
                             transform: translate(-50%, -50%) !important;
-                            width: 480px !important;
-                            height: 480px !important;
-                            opacity: 0.16 !important;
+                            width: 420px !important;
+                            height: 420px !important;
+                            opacity: 0.14 !important;
                         }
                         .islamic-a4-sheet table, 
                         .islamic-a4-sheet th, 
@@ -2571,11 +2568,12 @@
             }, 600);
         }
 
-        // PERFECT PDF RENDER WITHOUT BLANK PAGE ISSUE
+        // RELIABLE PDF DOWNLOAD WITH ZERO BLANK PAGES
         function executeTranscriptPDFDownload(studentId, studentName) {
             const element = document.getElementById('target-transcript-a4-node');
             if(!element) return;
 
+            // Scroll to Top to prevent blank canvas issue in html2canvas
             window.scrollTo(0, 0);
 
             const btn = event.target;
@@ -2584,14 +2582,17 @@
 
             setTimeout(() => {
                 const opt = {
-                    margin:       5,
+                    margin:       [0, 0, 0, 0],
                     filename:     `Academic_Transcript_${studentId}_${studentName.replace(/\s+/g, '_')}.pdf`,
                     image:        { type: 'jpeg', quality: 1.0 },
                     html2canvas:  { 
                         scale: 2, 
                         useCORS: true, 
+                        allowTaint: true, 
                         backgroundColor: '#ffffff',
-                        scrollY: 0
+                        scrollY: 0,
+                        scrollX: 0,
+                        windowWidth: 794
                     },
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
@@ -2603,7 +2604,7 @@
                     btn.innerHTML = originalText;
                     alert('PDF generation failed. Please try again.');
                 });
-            }, 800);
+            }, 800); // Wait enough time for layout to stabilize
         }
 
         function handleOnlineAdmission(e) {
