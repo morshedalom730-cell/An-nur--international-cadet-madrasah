@@ -44,7 +44,6 @@
         .glass-nav { background: rgba(4, 47, 36, 0.96); backdrop-filter: blur(10px); }
 
         /* CANONICAL A4 MARKSHEET SYSTEM */
-        /* Exact physical boundary mapping container */
         .a4-print-wrapper {
             width: 794px;
             height: 1123px;
@@ -55,13 +54,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        /* Scalable Inner Sheet */
         .islamic-a4-sheet {
             width: 794px;
             min-height: 1123px;
             background: transparent;
-            border: 4px solid #d97706; /* Outer Gold Border */
-            padding: 4px; /* Spacing for inner border */
+            border: 4px solid #d97706;
+            padding: 4px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -70,7 +68,7 @@
         }
 
         .islamic-inner-border {
-            border: 8px double #064e3b; /* Inner Green Border */
+            border: 8px double #064e3b;
             width: 100%;
             height: 100%;
             flex-grow: 1;
@@ -82,7 +80,6 @@
             position: relative;
         }
 
-        /* Safe layered Watermark */
         .marksheet-large-watermark {
             position: absolute;
             top: 50%;
@@ -96,7 +93,15 @@
             object-fit: contain;
         }
 
-        /* Transparent Backgrounds */
+        .islamic-inner-border table, 
+        .islamic-inner-border th, 
+        .islamic-inner-border td, 
+        .marksheet-info-card, 
+        .marksheet-summary-box {
+            background-color: transparent !important;
+            background: transparent !important;
+        }
+
         .islamic-inner-border table { background: rgba(255, 255, 255, 0.85) !important; position: relative; z-index: 10; }
         .marksheet-info-card { background: rgba(236, 253, 245, 0.9) !important; position: relative; z-index: 10; }
         .marksheet-summary-box { background: rgba(254, 243, 199, 0.95) !important; position: relative; z-index: 10; }
@@ -109,35 +114,6 @@
             border-radius: 4px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             background: #ffffff;
-        }
-
-        /* 100% Exact Geometric ID Card Replica */
-        .id-card-exact-replica {
-            width: 335px;
-            height: 550px;
-            background: #ffffff;
-            position: relative;
-            overflow: hidden;
-            border: 1.5px solid #cbd5e1;
-            box-shadow: 0 16px 35px rgba(0,0,0,0.18);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-sizing: border-box;
-            background-color: #ffffff !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        .id-top-decor { position: absolute; top: 0; left: 0; width: 100%; height: 48px; pointer-events: none; z-index: 10; }
-        .id-bottom-decor { position: absolute; bottom: 0; right: 0; width: 100%; height: 42px; pointer-events: none; z-index: 10; }
-        .id-info-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 155px; height: 155px; opacity: 0.08; pointer-events: none; z-index: 1; object-fit: contain; }
-        .id-card-badge-box { border: 2px solid #005a8c; background: #e2e8f0; color: #003865; font-weight: 900; font-size: 15px; letter-spacing: 2px; padding: 3px 22px; display: inline-block; }
-        .id-cadet-photo-frame { width: 140px; height: 140px; border: 4px solid #047857; border-radius: 50%; object-fit: cover; margin: 6px auto; display: block; background: #f8fafc; position: relative; z-index: 5; }
-
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
         }
 
         @media print {
@@ -188,9 +164,7 @@
             </div>
 
             <div class="pt-2 flex flex-wrap items-center justify-center text-xs md:text-sm font-semibold gap-3">
-                <span class="bg-emerald-950/80 text-amber-300 px-5 py-1 rounded-full border border-amber-500/40 shadow-md">
-                    ESTD: 2024
-                </span>
+                <span class="bg-emerald-950/80 text-amber-300 px-5 py-1 rounded-full border border-amber-500/40 shadow-md">ESTD: 2024</span>
                 <p class="text-emerald-100 text-xs md:text-sm bg-black/30 px-4 py-1 rounded-full border border-white/10 backdrop-blur-sm">
                     <i class="fa-solid fa-user-tie text-amber-400 mr-1.5"></i> প্রতিষ্ঠাতা প্রিন্সিপাল: <span class="text-amber-200 font-bold">হাফেজ মাওলানা মুফতি আব্দুল মাজেদ</span>
                 </p>
@@ -250,44 +224,15 @@
                 </div>
             </div>
 
-            <!-- Notice Marquee -->
             <div class="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-xl shadow-sm flex items-center text-sm md:text-base">
                 <span class="bg-amber-600 text-white px-3 py-1 text-xs font-bold rounded-lg mr-3 whitespace-nowrap shadow"><i class="fa-solid fa-bell mr-1"></i> Notice</span>
                 <marquee id="marquee-notice" class="text-amber-950 font-semibold cursor-pointer" onclick="showPage('notices')"></marquee>
             </div>
 
-            <!-- Main Slider -->
             <div class="relative w-full h-56 md:h-80 rounded-2xl overflow-hidden shadow-2xl border-2 border-emerald-800 bg-gray-900">
                 <div id="slider-wrapper" class="w-full h-full relative"></div>
                 <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/80 transition text-sm z-20"><i class="fa-solid fa-chevron-left"></i></button>
                 <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/80 transition text-sm z-20"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto pt-2">
-                <div onclick="showPage('about')" class="cursor-pointer bg-white hover:bg-emerald-900 group p-5 rounded-2xl shadow-lg border border-gray-100 hover:border-amber-400 transition transform hover:-translate-y-1 flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-emerald-100 group-hover:bg-amber-500 text-emerald-800 group-hover:text-emerald-950 rounded-2xl flex items-center justify-center text-lg mb-2 transition">
-                        <i class="fa-solid fa-landmark"></i>
-                    </div>
-                    <h3 class="font-bold text-sm text-emerald-950 group-hover:text-amber-300">আমাদের পরিচিতি</h3>
-                    <p class="text-[11px] text-gray-500 group-hover:text-emerald-200">মাদ্রাসার ইতিহাস ও লক্ষ্য</p>
-                </div>
-
-                <div onclick="showPage('departments')" class="cursor-pointer bg-white hover:bg-emerald-900 group p-5 rounded-2xl shadow-lg border border-gray-100 hover:border-amber-400 transition transform hover:-translate-y-1 flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-emerald-100 group-hover:bg-amber-500 text-emerald-800 group-hover:text-emerald-950 rounded-2xl flex items-center justify-center text-lg mb-2 transition">
-                        <i class="fa-solid fa-building-columns"></i>
-                    </div>
-                    <h3 class="font-bold text-sm text-emerald-950 group-hover:text-amber-300">বিভাগ ও কারিকুলাম</h3>
-                    <p class="text-[11px] text-gray-500 group-hover:text-emerald-200">হিফজ ও ক্যাডেট উইং</p>
-                </div>
-
-                <div onclick="showPage('admission')" class="cursor-pointer bg-white hover:bg-emerald-900 group p-5 rounded-2xl shadow-lg border border-gray-100 hover:border-amber-400 transition transform hover:-translate-y-1 flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-emerald-100 group-hover:bg-amber-500 text-emerald-800 group-hover:text-emerald-950 rounded-2xl flex items-center justify-center text-lg mb-2 transition">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </div>
-                    <h3 class="font-bold text-sm text-emerald-950 group-hover:text-amber-300">অনলাইন ভর্তি আবেদন</h3>
-                    <p class="text-[11px] text-gray-500 group-hover:text-emerald-200">লেভেল ১ হতে ১০ পর্যন্ত</p>
-                </div>
             </div>
 
             <section class="pt-4">
@@ -305,7 +250,6 @@
                 <div class="space-y-4 text-sm md:text-base text-gray-700 leading-relaxed">
                     <p><b>AN-NUR INTERNATIONAL CADET MADRASAH</b> was established in 2024 at Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram. It stands as a state-of-the-art educational institution combining standard English medium & cadet syllabus with authentic Quranic Hifz.</p>
                 </div>
-
                 <div class="bg-emerald-50 border-2 border-emerald-800 p-6 rounded-2xl flex flex-col md:flex-row items-center gap-6">
                     <div class="w-28 h-28 bg-emerald-900 text-amber-300 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg border-2 border-amber-400 shrink-0">
                         <i class="fa-solid fa-user-tie"></i>
@@ -326,23 +270,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-emerald-700 hover:shadow-lg transition space-y-2">
                     <h3 class="font-bold text-lg text-emerald-900"><i class="fa-solid fa-book-quran text-amber-500 mr-2"></i>1. Noorani & Pre-Cadet Wing</h3>
-                    <p class="text-xs text-amber-700 font-bold">Age: 4 - 7 Years</p>
                     <p class="text-sm text-gray-600 leading-relaxed">Accurate Quranic phonetics (Makhraj) integrated with foundational English, Math, and Bangla literacy.</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-emerald-700 hover:shadow-lg transition space-y-2">
                     <h3 class="font-bold text-lg text-emerald-900"><i class="fa-solid fa-kaaba text-amber-500 mr-2"></i>2. International Hifzul Quran Wing</h3>
-                    <p class="text-xs text-amber-700 font-bold">Age: 7 - 12 Years</p>
                     <p class="text-sm text-gray-600 leading-relaxed">Comprehensive Quran memorization guided by certified Huffaz with international Tajweed proficiency.</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-emerald-700 hover:shadow-lg transition space-y-2">
                     <h3 class="font-bold text-lg text-emerald-900"><i class="fa-solid fa-graduation-cap text-amber-500 mr-2"></i>3. Cadet & General English Wing</h3>
-                    <p class="text-xs text-amber-700 font-bold">Classes: Level-1 to Level-10</p>
                     <p class="text-sm text-gray-600 leading-relaxed">Complete cadet curriculum offering English Medium academic subjects, ICT, and physical drill education.</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-emerald-700 hover:shadow-lg transition space-y-2">
-                    <h3 class="font-bold text-lg text-emerald-900"><i class="fa-solid fa-laptop-code text-amber-500 mr-2"></i>4. ICT & Spoken Language Club</h3>
-                    <p class="text-xs text-amber-700 font-bold">Open for all registered cadets</p>
-                    <p class="text-sm text-gray-600 leading-relaxed">Dedicated computer lab practice paired with Spoken English and Spoken Arabic communicative sessions.</p>
                 </div>
             </div>
         </div>
@@ -353,7 +289,6 @@
                 <div class="bg-white p-6 rounded-2xl shadow-xl border space-y-4">
                     <h3 class="text-xl font-bold text-emerald-950 border-b pb-2"><i class="fa-solid fa-file-invoice text-amber-500 mr-2"></i>Admission Guidelines</h3>
                     <div class="space-y-3 text-xs md:text-sm">
-                        <h4 class="font-bold text-emerald-900">Required Documents:</h4>
                         <ul class="list-disc list-inside space-y-1 text-gray-600">
                             <li>Digital Birth Registration Certificate (Copy).</li>
                             <li>Guardian National ID Card (NID Copy).</li>
@@ -361,43 +296,16 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="bg-white p-6 rounded-2xl shadow-xl border">
                     <h3 class="text-xl font-bold text-emerald-950 mb-4 border-b pb-2"><i class="fa-solid fa-pen-to-square text-amber-500 mr-2"></i>Cadet Admission Form</h3>
                     <form onsubmit="handleOnlineAdmission(event)" class="space-y-3 text-xs md:text-sm">
-                        <div>
-                            <label class="block font-bold mb-1">Applicant Name *</label>
-                            <input type="text" id="adm-name" required placeholder="Full name in English" class="w-full p-2.5 border rounded-xl">
-                        </div>
-                        <div>
-                            <label class="block font-bold mb-1">Guardian Contact Number *</label>
-                            <input type="tel" id="adm-phone" required placeholder="018xxxxxxxx" class="w-full p-2.5 border rounded-xl">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block font-bold mb-1">Enrolling Level *</label>
-                                <select id="adm-class" required class="w-full p-2.5 border rounded-xl bg-emerald-50 font-bold">
-                                    <option value="LEVEL-1">LEVEL-1</option>
-                                    <option value="LEVEL-2">LEVEL-2</option>
-                                    <option value="LEVEL-3">LEVEL-3</option>
-                                    <option value="LEVEL-4">LEVEL-4</option>
-                                    <option value="LEVEL-5">LEVEL-5</option>
-                                    <option value="LEVEL-6">LEVEL-6</option>
-                                    <option value="LEVEL-7">LEVEL-7</option>
-                                    <option value="LEVEL-8">LEVEL-8</option>
-                                    <option value="LEVEL-9">LEVEL-9</option>
-                                    <option value="LEVEL-10">LEVEL-10</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-bold mb-1">Date of Birth</label>
-                                <input type="date" id="adm-dob" class="w-full p-2.5 border rounded-xl">
-                            </div>
-                        </div>
-                        <div class="pt-2 space-y-2">
-                            <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 rounded-xl shadow-lg transition">Submit Application</button>
-                            <a href="https://wa.me/8801820270788" target="_blank" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-xl shadow text-center block transition"><i class="fa-brands fa-whatsapp text-base mr-1"></i> Instant WhatsApp Consultation</a>
-                        </div>
+                        <input type="text" required placeholder="Applicant Name" class="w-full p-2.5 border rounded-xl">
+                        <input type="tel" required placeholder="Guardian Contact Number" class="w-full p-2.5 border rounded-xl">
+                        <select required class="w-full p-2.5 border rounded-xl bg-emerald-50 font-bold">
+                            <option value="LEVEL-1">LEVEL-1</option>
+                            <option value="LEVEL-10">LEVEL-10</option>
+                        </select>
+                        <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-xl shadow-lg">Submit Application</button>
                     </form>
                 </div>
             </div>
@@ -441,9 +349,6 @@
                                     <option value="2025">2025</option>
                                     <option value="2026" selected>2026</option>
                                     <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
                                 </select>
                             </div>
                         </div>
@@ -472,35 +377,18 @@
                         <select id="class-result-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
                             <option value="">-- Select Level --</option>
                             <option value="LEVEL-1">LEVEL-1</option>
-                            <option value="LEVEL-2">LEVEL-2</option>
-                            <option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option>
-                            <option value="LEVEL-5">LEVEL-5</option>
-                            <option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option>
-                            <option value="LEVEL-8">LEVEL-8</option>
-                            <option value="LEVEL-9">LEVEL-9</option>
                             <option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Academic Session *</label>
                         <select id="class-session-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
-                            <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Examination Term *</label>
                         <select id="class-exam-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
-                            <option value="Monthly Examination">Monthly Examination</option>
-                            <option value="1st Term Examination">1st Term Examination</option>
-                            <option value="Mid Term Examination">Mid Term Examination</option>
-                            <option value="2nd Term Examination">2nd Term Examination</option>
                             <option value="Annual Examination" selected>Annual Examination</option>
                         </select>
                     </div>
@@ -528,7 +416,6 @@
         <div id="page-notices" class="hidden max-w-3xl mx-auto no-print">
             <h2 class="text-2xl font-bold text-emerald-950 mb-6 border-b pb-2 flex items-center justify-between">
                 <span><i class="fa-solid fa-bullhorn text-amber-500 mr-2"></i>Notice Board</span>
-                <span class="text-xs font-normal text-gray-500">Tap to read details</span>
             </h2>
             <div id="notice-list-container" class="grid grid-cols-1 gap-4"></div>
         </div>
@@ -542,14 +429,13 @@
         <!-- 9. CONTACT PAGE -->
         <div id="page-contact" class="hidden max-w-4xl mx-auto space-y-6 no-print">
             <h2 class="text-2xl md:text-3xl font-bold text-emerald-950 border-b pb-3"><i class="fa-solid fa-address-book text-amber-500 mr-2"></i>Get in Touch</h2>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-2xl shadow-xl border space-y-4 text-xs md:text-sm">
                     <div class="flex items-start gap-3">
                         <div class="w-10 h-10 bg-emerald-100 text-emerald-900 rounded-xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-location-dot"></i></div>
                         <div>
                             <h4 class="font-bold text-emerald-950">Campus Address:</h4>
-                            <p class="text-gray-600 mt-0.5">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram, Bangladesh</p>
+                            <p class="text-gray-600 mt-0.5">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -559,373 +445,7 @@
                             <p class="text-gray-600 mt-0.5">+8801820270788</p>
                         </div>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-emerald-100 text-emerald-900 rounded-xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-envelope"></i></div>
-                        <div>
-                            <h4 class="font-bold text-emerald-950">Official Email:</h4>
-                            <p class="text-gray-600 mt-0.5">info@annur.edu.bd</p>
-                        </div>
-                    </div>
                 </div>
-
-                <div class="bg-white p-2 rounded-2xl shadow-xl border overflow-hidden h-64 md:h-auto">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3689.851458925526!2d91.870000!3d22.380000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDIyJzQ4LjAiTiA5McKwNTInMTIuMCJF!5e0!3m2!1sen!2sbd!4v1620000000000!5m2!1sen!2sbd" class="w-full h-full rounded-xl border-0" allowfullscreen="" loading="lazy"></iframe>
-                </div>
-            </div>
-        </div>
-
-        <!-- 10. FULL SECURE PRIVATE ADMIN PANEL VIEW (#admin) -->
-        <div id="page-admin" class="hidden space-y-8 no-print">
-            <div class="bg-red-950 text-white p-4 rounded-2xl flex justify-between items-center shadow-xl">
-                <div class="flex items-center gap-2">
-                    <h2 class="text-lg font-bold"><i class="fa-solid fa-user-shield text-amber-400 mr-2"></i>ADMIN CONTROL PANEL (Cloud Synced)</h2>
-                    <span id="cloud-status-indicator" class="bg-green-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Live Synced</span>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="clearAllSystemStorageWithPassword()" class="bg-red-700 hover:bg-red-600 text-xs px-3 py-1.5 rounded-lg text-white font-bold transition shadow"><i class="fa-solid fa-lock mr-1"></i> পুরানো সব ডাটা রিসেট</button>
-                    <button onclick="showPage('home')" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-1.5 rounded-lg text-white font-bold transition">প্যানেল বন্ধ</button>
-                </div>
-            </div>
-
-            <!-- CENTRAL LOGO UPLOADER -->
-            <div class="bg-emerald-950 text-white p-6 rounded-2xl shadow-lg border-2 border-amber-500 space-y-3">
-                <div class="flex flex-wrap justify-between items-center border-b border-emerald-800 pb-2">
-                    <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-stamp mr-2"></i>Universal Crest Logo (Direct File)</h3>
-                    <span class="text-[11px] text-gray-300">Website, ID Card, Marksheet & Notice Header will auto-sync</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                    <div class="flex items-center gap-3">
-                        <img id="admin-logo-preview" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="w-14 h-14 object-contain bg-white p-1 rounded-full border-2 border-amber-400">
-                        <span class="text-xs font-semibold">Active Crest Logo</span>
-                    </div>
-                    <div>
-                        <input type="file" id="universal-logo-file" accept="image/*" class="w-full p-2 border rounded-xl text-xs bg-white text-emerald-950 font-medium">
-                    </div>
-                    <div>
-                        <button onclick="saveUniversalLogo()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-2.5 px-4 rounded-xl text-xs w-full shadow transition"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Update Logo Everywhere</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- IN-PLACE DEDICATED ID CARD STUDIO -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-emerald-800 space-y-4">
-                <div class="flex flex-wrap justify-between items-center border-b pb-2">
-                    <div>
-                        <h3 class="text-lg font-bold text-emerald-950 flex items-center gap-2"><i class="fa-solid fa-id-card text-amber-600 text-xl"></i> আইডি কার্ড প্রিন্ট ও ডাউনলোড স্টুডিও</h3>
-                        <p class="text-xs text-gray-500">শিক্ষার্থীর আইডি নম্বর লিখুন; এখান থেকেই সরাসরি কার্ড ভিউ, প্রিন্ট বা PDF ডাউনলোড করুন</p>
-                    </div>
-                </div>
-
-                <div class="flex flex-col md:flex-row gap-3 items-center max-w-xl">
-                    <input type="text" id="direct-idcard-input" placeholder="ক্যাডেট আইডি লিখুন (যেমন: H25000 বা A26181)..." class="w-full p-3 border-2 border-emerald-700 rounded-xl outline-none font-bold uppercase text-xs md:text-sm">
-                    <button onclick="renderDirectIDCardFromInput()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 px-6 rounded-xl shadow whitespace-nowrap text-xs md:text-sm transition"><i class="fa-solid fa-id-badge mr-1"></i> কার্ড প্রস্তুত করুন</button>
-                </div>
-
-                <div id="admin-idcard-live-box" class="pt-4 hidden border-t text-center flex flex-col items-center justify-center"></div>
-            </div>
-
-            <!-- SECTION 1: CENTRAL CADET REGISTRATION -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-5">
-                <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
-                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>১. ক্যাডেট রেজিস্ট্রেশন ও সেন্ট্রাল ডাটাবেজ</h3>
-                    <span id="total-registered-badge" class="bg-emerald-800 text-white text-xs px-4 py-1.5 rounded-full font-bold">Total Registered: 0</span>
-                </div>
-
-                <form onsubmit="handleRegisterStudent(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-emerald-50/60 p-4 rounded-2xl border border-emerald-200 text-xs">
-                    <div>
-                        <label class="block font-bold text-emerald-900 mb-1">শিক্ষার্থীর নাম * (আবশ্যক)</label>
-                        <input type="text" id="reg-name" required placeholder="MD WAJID NASIR" class="w-full p-2.5 border rounded-xl font-medium uppercase">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-emerald-900 mb-1">পিতার নাম * (আবশ্যক)</label>
-                        <input type="text" id="reg-father" required placeholder="NASIR UDDIN" class="w-full p-2.5 border rounded-xl font-medium uppercase">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-emerald-900 mb-1">Student ID * (আবশ্যক)</label>
-                        <input type="text" id="reg-id" required placeholder="H25000" class="w-full p-2.5 border rounded-xl font-bold uppercase">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-emerald-900 mb-1">লেভেল / শ্রেণী * (অটো-সেভ থাকবে)</label>
-                        <select id="reg-class" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
-                            <option value="LEVEL-1">LEVEL-1</option>
-                            <option value="LEVEL-2">LEVEL-2</option>
-                            <option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option>
-                            <option value="LEVEL-5">LEVEL-5</option>
-                            <option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option>
-                            <option value="LEVEL-8">LEVEL-8</option>
-                            <option value="LEVEL-9">LEVEL-9</option>
-                            <option value="LEVEL-10">LEVEL-10</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">অভিভাবকের মোবাইল (ঐচ্ছিক)</label>
-                        <input type="tel" id="reg-phone" placeholder="01820270788" class="w-full p-2.5 border rounded-xl">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">শিক্ষার্থীর ছবি (ঐচ্ছিক - Direct File)</label>
-                        <input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white text-xs">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">স্ট্যাটাস (Status)</label>
-                        <select id="reg-status" class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
-                            <option value="Active" selected>Active (অধ্যয়নরত)</option>
-                            <option value="Deactivated">Deactivated (চলে গেছে)</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-6 rounded-xl shadow-md hover:bg-emerald-900 transition w-full"><i class="fa-solid fa-user-plus mr-1"></i> শিক্ষার্থী রেজিস্টার করুন</button>
-                    </div>
-                </form>
-
-                <div class="bg-amber-50/90 p-4 rounded-2xl border border-amber-200 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <div>
-                        <label class="block font-bold text-amber-900 mb-1"><i class="fa-solid fa-magnifying-glass mr-1"></i> শিক্ষার্থী খুঁজুন (নাম / আইডি / ফোন):</label>
-                        <input type="text" id="student-db-search-personal" onkeyup="renderStudentDBTable()" placeholder="আইডি বা নাম টাইপ করুন..." class="p-2.5 border rounded-xl w-full bg-white shadow-sm font-medium">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-amber-900 mb-1"><i class="fa-solid fa-filter mr-1"></i> লেভেল ফিল্টার:</label>
-                        <select id="student-db-search-class" onchange="renderStudentDBTable()" class="p-2.5 border rounded-xl w-full bg-white font-bold text-emerald-950 shadow-sm cursor-pointer">
-                            <option value="ALL" selected>সকল লেভেল একসাথে দেখুন</option>
-                            <option value="LEVEL-1">LEVEL-1</option>
-                            <option value="LEVEL-2">LEVEL-2</option>
-                            <option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option>
-                            <option value="LEVEL-5">LEVEL-5</option>
-                            <option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option>
-                            <option value="LEVEL-8">LEVEL-8</option>
-                            <option value="LEVEL-9">LEVEL-9</option>
-                            <option value="LEVEL-10">LEVEL-10</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="student-db-table-wrapper" class="overflow-x-auto border rounded-xl">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-emerald-900 text-white">
-                                <th class="p-2.5 border">ছবি</th>
-                                <th class="p-2.5 border">আইডি</th>
-                                <th class="p-2.5 border">নাম</th>
-                                <th class="p-2.5 border">পিতার নাম</th>
-                                <th class="p-2.5 border">লেভেল</th>
-                                <th class="p-2.5 border">মোবাইল</th>
-                                <th class="p-2.5 border">স্ট্যাটাস</th>
-                                <th class="p-2.5 border text-center">অ্যাকশন</th>
-                            </tr>
-                        </thead>
-                        <tbody id="student-db-table-body" class="bg-white"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SECTION 2: RESULT SPREADSHEET -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-5">
-                <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
-                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-file-excel text-green-600 mr-2"></i>২. রেজাল্ট ইনপুট (৫০/১০০ পূর্ণমান ও ৪র্থ বিষয় সাপোর্ট সহ)</h3>
-                    <div class="flex gap-2">
-                        <button onclick="addSubjectColumn()" class="bg-amber-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold hover:bg-amber-700 transition"><i class="fa-solid fa-plus mr-1"></i> নতুন বিষয় কলাম</button>
-                        <button onclick="syncRegisteredStudentsToResults()" class="bg-blue-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold hover:bg-blue-700 transition"><i class="fa-solid fa-rotate mr-1"></i> স্টুডেন্ট লিস্ট সিঙ্ক করুন</button>
-                    </div>
-                </div>
-
-                <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
-                    <div>
-                        <label class="block font-bold text-amber-900 mb-1">Select Level:</label>
-                        <select id="admin-global-class" onchange="renderExcelTable()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 cursor-pointer">
-                            <option value="LEVEL-1">LEVEL-1</option>
-                            <option value="LEVEL-2">LEVEL-2</option>
-                            <option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option>
-                            <option value="LEVEL-5">LEVEL-5</option>
-                            <option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option>
-                            <option value="LEVEL-8">LEVEL-8</option>
-                            <option value="LEVEL-9">LEVEL-9</option>
-                            <option value="LEVEL-10">LEVEL-10</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-amber-900 mb-1">Academic Session:</label>
-                        <select id="admin-global-session" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 cursor-pointer">
-                            <option value="2025">2025</option>
-                            <option value="2026" selected>2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-amber-900 mb-1">Examination Term:</label>
-                        <select id="admin-global-exam" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 cursor-pointer">
-                            <option value="Monthly Examination">Monthly Examination</option>
-                            <option value="1st Term Examination">1st Term Examination</option>
-                            <option value="Mid Term Examination">Mid Term Examination</option>
-                            <option value="2nd Term Examination">2nd Term Examination</option>
-                            <option value="Annual Examination" selected>Annual Examination</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto border rounded-xl">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr id="excel-header-row" class="bg-emerald-900 text-white"></tr>
-                        </thead>
-                        <tbody id="excel-table-body" class="bg-emerald-50/20"></tbody>
-                    </table>
-                </div>
-                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md hover:bg-emerald-900 w-full md:w-auto"><i class="fa-solid fa-floppy-disk mr-1"></i> এই ক্লাসের রেজাল্ট ক্লাউডে সেভ করুন</button>
-
-                <!-- Saved Results Review Table -->
-                <div class="pt-6 border-t border-gray-200">
-                    <h4 class="text-sm font-bold text-emerald-950 mb-3"><i class="fa-solid fa-eye text-amber-600 mr-1"></i> সেভকৃত রেজাল্ট প্রিভিউ টেবিল</h4>
-                    <div id="admin-saved-results-view" class="overflow-x-auto border rounded-xl bg-gray-50 p-2"></div>
-                </div>
-
-                <!-- TIMED PUBLISH SETTINGS CONTROL -->
-                <div class="pt-6 border-t border-amber-200">
-                    <div class="bg-emerald-950 text-white p-5 rounded-2xl border-2 border-amber-500 shadow-xl space-y-3">
-                        <h4 class="font-bold text-amber-400 text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> Automatic Result Publication Timer</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                            <div>
-                                <label class="block font-bold text-gray-300 mb-1">Publication Status:</label>
-                                <select id="admin-publish-status" class="w-full p-2.5 border rounded-xl font-bold text-emerald-950 bg-white cursor-pointer">
-                                    <option value="PUBLISHED" selected>Published (Publicly Viewable)</option>
-                                    <option value="UNPUBLISHED">Unpublished (Locked/Hidden)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-bold text-gray-300 mb-1">Scheduled Release Date & Time:</label>
-                                <input type="datetime-local" id="admin-publish-datetime" class="w-full p-2.5 border rounded-xl text-emerald-950 font-bold bg-white">
-                            </div>
-                            <div class="flex items-end">
-                                <button onclick="savePublishSettings()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-2.5 px-4 rounded-xl shadow w-full transition"><i class="fa-solid fa-check-double mr-1"></i> Save Release Schedule</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION 3: FEATURES MANAGEMENT -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
-                <h3 class="text-lg font-bold border-b pb-2 text-emerald-950"><i class="fa-solid fa-star text-amber-500 mr-2"></i>৩. মাদ্রাসার বৈশিষ্ট্যসমূহ ম্যানেজমেন্ট</h3>
-                <form onsubmit="handleAddFeature(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="text" id="feat-title" placeholder="Title" required class="p-2.5 border rounded-xl text-xs">
-                    <input type="text" id="feat-desc" placeholder="Description" required class="p-2.5 border rounded-xl text-xs">
-                    <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl text-xs font-bold shadow-md">Add Feature</button>
-                </form>
-                <div id="admin-features-list" class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2"></div>
-            </div>
-
-            <!-- SECTION 4: SLIDER PHOTO MANAGEMENT -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
-                <h3 class="text-lg font-bold border-b pb-2 text-emerald-950"><i class="fa-solid fa-sliders text-amber-500 mr-2"></i>৪. স্লাইডার ফটো ম্যানেজমেন্ট (Direct File)</h3>
-                <form onsubmit="handleAddSlide(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="file" id="slide-file-input" accept="image/*" required class="p-2 border rounded-xl md:col-span-2 text-xs bg-white">
-                    <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl text-xs font-bold shadow-md">Upload Slide</button>
-                </form>
-                <div id="admin-slides-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-1"></div>
-            </div>
-
-            <!-- SECTION 5: GALLERY MANAGEMENT -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
-                <h3 class="text-lg font-bold border-b pb-2 text-emerald-950"><i class="fa-solid fa-images text-amber-500 mr-2"></i>৫. গ্যালারি ফটো</h3>
-                <form onsubmit="handleAddGalleryPhoto(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="text" id="gallery-title-input" placeholder="Caption" required class="p-2.5 border rounded-xl text-xs">
-                    <input type="file" id="gallery-file-input" accept="image/*" required class="p-2 border rounded-xl text-xs bg-white">
-                    <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl text-xs font-bold shadow-md">Add to Gallery</button>
-                </form>
-                <div id="admin-gallery-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-1"></div>
-            </div>
-
-            <!-- SECTION 6: PASSWORD SETTINGS -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-3">
-                <h3 class="text-base font-bold border-b pb-2 text-emerald-950">৬. এডমিন পাসওয়ার্ড পরিবর্তন</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="password" id="new-admin-pass" placeholder="New Password" class="w-full p-2.5 border rounded-xl text-xs">
-                    <button onclick="changeAdminPassword()" class="bg-red-800 text-white px-4 py-2 rounded-xl font-bold w-full text-xs shadow-md">Update Password</button>
-                </div>
-            </div>
-
-            <!-- SECTION 7: NOTICES & FOOTER -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-3">
-                    <h3 class="text-base font-bold border-b pb-2 text-emerald-950">৭. নোটিশ বোর্ড</h3>
-                    <form onsubmit="handleAddNotice(event)" class="space-y-3">
-                        <input type="text" id="notice-title" placeholder="Notice Title *" required class="w-full p-2.5 border rounded-xl text-xs font-bold">
-                        <textarea id="notice-details" placeholder="Full Notice Details..." class="w-full p-2.5 border rounded-xl text-xs h-20"></textarea>
-                        <input type="date" id="notice-date" required class="w-full p-2.5 border rounded-xl text-xs">
-                        <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl w-full font-bold text-xs shadow-md">Publish Notice</button>
-                    </form>
-                    <ul id="admin-notice-list" class="divide-y border-t mt-3"></ul>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-3">
-                    <h3 class="text-base font-bold border-b pb-2 text-emerald-950">৮. ফুটার তথ্য</h3>
-                    <textarea id="footer-text-input" class="w-full p-2.5 border rounded-xl h-20 text-xs"></textarea>
-                    <button onclick="saveFooterText()" class="bg-emerald-800 text-white px-4 py-2 rounded-xl w-full font-bold text-xs shadow-md">Save Footer</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- STUDENT EDIT MODAL POPUP -->
-        <div id="student-edit-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden no-print backdrop-blur-sm">
-            <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-4 border-2 border-emerald-800">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="font-bold text-emerald-950 text-base"><i class="fa-solid fa-pen-to-square text-amber-600 mr-1"></i>ক্যাডেট তথ্য এডিট</h3>
-                    <button onclick="closeStudentEditModal()" class="text-red-600 font-bold text-xl hover:text-red-800">&times;</button>
-                </div>
-                <form onsubmit="saveEditedStudentData(event)" class="space-y-3 text-xs">
-                    <input type="hidden" id="edit-std-realindex">
-                    <div>
-                        <label class="block font-bold mb-1 text-gray-700">Student ID</label>
-                        <input type="text" id="edit-std-id" required class="w-full p-2.5 border rounded-xl font-bold text-emerald-900 uppercase">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1 text-gray-700">Cadet Full Name *</label>
-                        <input type="text" id="edit-std-name" required class="w-full p-2.5 border rounded-xl font-semibold uppercase">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1 text-gray-700">Father's Name *</label>
-                        <input type="text" id="edit-std-father" required class="w-full p-2.5 border rounded-xl font-semibold uppercase">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-bold mb-1 text-gray-700">Level / Class *</label>
-                            <select id="edit-std-class" required class="w-full p-2.5 border rounded-xl bg-white font-bold text-emerald-900 cursor-pointer">
-                                <option value="LEVEL-1">LEVEL-1</option>
-                                <option value="LEVEL-2">LEVEL-2</option>
-                                <option value="LEVEL-3">LEVEL-3</option>
-                                <option value="LEVEL-4">LEVEL-4</option>
-                                <option value="LEVEL-5">LEVEL-5</option>
-                                <option value="LEVEL-6">LEVEL-6</option>
-                                <option value="LEVEL-7">LEVEL-7</option>
-                                <option value="LEVEL-8">LEVEL-8</option>
-                                <option value="LEVEL-9">LEVEL-9</option>
-                                <option value="LEVEL-10">LEVEL-10</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-bold mb-1 text-gray-700">Status *</label>
-                            <select id="edit-std-status" class="w-full p-2.5 border rounded-xl bg-white cursor-pointer font-bold">
-                                <option value="Active">Active</option>
-                                <option value="Deactivated">Deactivated</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1 text-gray-700">Guardian Mobile</label>
-                        <input type="tel" id="edit-std-phone" class="w-full p-2.5 border rounded-xl font-semibold">
-                    </div>
-                    <div class="flex gap-2 pt-2">
-                        <button type="submit" class="bg-emerald-800 text-white font-bold py-2.5 rounded-xl shadow-md w-full hover:bg-emerald-900 transition">Save Changes</button>
-                        <button type="button" onclick="closeStudentEditModal()" class="bg-gray-400 text-white font-bold py-2.5 rounded-xl shadow-md w-1/3 hover:bg-gray-500 transition">Cancel</button>
-                    </div>
-                </form>
             </div>
         </div>
 
@@ -962,35 +482,15 @@
                     </div>
                     <p class="text-xs text-gray-300 leading-relaxed">Dedicated to Islamic moral excellence, English medium cadet education, and scientific leadership.</p>
                 </div>
-
-                <div class="space-y-2 text-xs">
-                    <h5 class="text-sm font-bold text-amber-300 mb-2">Quick Navigation</h5>
-                    <ul class="space-y-1.5 text-gray-300">
-                        <li><button onclick="showPage('home')" class="hover:text-amber-400 transition"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500 mr-1.5"></i>Home</button></li>
-                        <li><button onclick="showPage('about')" class="hover:text-amber-400 transition"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500 mr-1.5"></i>About Us</button></li>
-                        <li><button onclick="showPage('departments')" class="hover:text-amber-400 transition"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500 mr-1.5"></i>Curriculum</button></li>
-                        <li><button onclick="showPage('admission')" class="hover:text-amber-400 transition"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500 mr-1.5"></i>Admissions</button></li>
-                        <li><button onclick="showPage('result')" class="hover:text-amber-400 transition"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500 mr-1.5"></i>Academic Results</button></li>
-                    </ul>
-                </div>
-
                 <div class="space-y-2 text-xs">
                     <h5 class="text-sm font-bold text-amber-300 mb-2">Campus Information</h5>
-                    <p class="text-gray-300 leading-relaxed"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram</p>
+                    <p class="text-gray-300 leading-relaxed"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> Kaptai Rastar Matha, Mohara, Chandgaon</p>
                     <p class="text-gray-300"><i class="fa-solid fa-phone text-amber-400 mr-1"></i> +8801820270788</p>
-                    <p class="text-gray-300"><i class="fa-solid fa-envelope text-amber-400 mr-1"></i> info@annur.edu.bd</p>
-                    
-                    <div class="flex space-x-3 pt-2 text-amber-400 text-base">
-                        <a href="https://facebook.com" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-facebook"></i></a>
-                        <a href="https://wa.me/8801820270788" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-whatsapp"></i></a>
-                        <a href="https://youtube.com" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
+                    <a href="admin.html" class="inline-block mt-3 text-emerald-950 bg-amber-400 hover:bg-amber-300 px-3 py-1 rounded font-bold transition"><i class="fa-solid fa-user-shield"></i> Admin Panel Login</a>
                 </div>
             </div>
-
-            <div class="pt-6 text-center md:flex md:justify-between text-xs text-gray-400">
+            <div class="pt-6 text-center text-xs text-gray-400">
                 <p>© 2024 - 2026 AN-NUR INTERNATIONAL CADET MADRASAH. All Rights Reserved.</p>
-                <p class="mt-2 md:mt-0 font-medium">Committed to Islamic Excellence & Modern Education.</p>
             </div>
         </div>
     </footer>
@@ -998,7 +498,7 @@
     <!-- Hidden iframe for Print Isolation -->
     <iframe id="isolated-print-frame" style="display:none; position:fixed; left:-9999px;"></iframe>
 
-    <!-- JavaScript Application Logic with Firebase Realtime Database Integration -->
+    <!-- JavaScript Application Logic -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDG57Z-2T1KqzTzF-DuP7Mfk84D2SRPMZ4",
@@ -1014,7 +514,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let adminPassword = localStorage.getItem('annur_admin_pass') || '1234';
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
         let resultPublishStatus = 'PUBLISHED';
         let resultPublishDatetime = '';
@@ -1027,60 +526,14 @@
             { name: 'General Science & ICT', full: 50, type: 'Optional' }
         ];
 
-        let sliderImages = [
-            'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1200&q=80',
-            'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1200&q=80'
-        ];
+        let sliderImages = [];
         let currentSlideIdx = 0;
-
-        let galleryPhotos = [
-            { title: 'Cadet Campus Building', url: 'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=600&q=80' }
-        ];
-
-        let featuresList = [
-            { title: 'International Hifz Wing', desc: 'Authentic phonetics & systematic revision under certified international Huffaz.' },
-            { title: 'Cadet Curriculum', desc: 'Standard English medium coursework combined with military physical drills and discipline.' },
-            { title: 'Residential Care', desc: 'Round-the-clock teacher mentorship, nutritious meals, and high moral grooming.' }
-        ];
+        let galleryPhotos = [];
+        let featuresList = [];
 
         let registeredStudents = JSON.parse(localStorage.getItem('annur_final_db_2026')) || [];
         let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
         let notices = [];
-        let footerText = "Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram. Contact: +8801820270788. Email: info@annur.edu.bd";
-
-        function compressImage(file, maxWidth = 350, maxHeight = 350, quality = 0.7) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > maxWidth) {
-                                height = Math.round((height *= maxWidth / width));
-                                width = maxWidth;
-                            }
-                        } else {
-                            if (height > maxHeight) {
-                                width = Math.round((width *= maxHeight / height));
-                                height = maxHeight;
-                            }
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                };
-            });
-        }
 
         // REAL-TIME CLOUD LISTENERS
         function initFirebaseSync() {
@@ -1093,17 +546,14 @@
 
             db.ref('settings/publishStatus').on('value', snap => {
                 if (snap.exists()) resultPublishStatus = snap.val();
-                loadPublishSettings();
             });
 
             db.ref('settings/publishDatetime').on('value', snap => {
                 if (snap.exists()) resultPublishDatetime = snap.val();
-                loadPublishSettings();
             });
 
             db.ref('settings/subjects').on('value', snap => {
                 if (snap.exists()) subjectConfig = snap.val();
-                renderExcelTable();
             });
 
             db.ref('students').on('value', snap => {
@@ -1111,7 +561,7 @@
                     registeredStudents = Object.values(snap.val());
                     localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
                 }
-                renderStudentDBTable();
+                renderPublicStudentSearch();
             });
 
             db.ref('results').on('value', snap => {
@@ -1119,31 +569,23 @@
                     const rawData = snap.val();
                     const uniqueMap = new Map();
                     if (Array.isArray(rawData)) {
-                        rawData.forEach(item => {
-                            if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item);
-                        });
+                        rawData.forEach(item => { if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item); });
                     } else if (typeof rawData === 'object') {
-                        Object.values(rawData).forEach(item => {
-                            if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item);
-                        });
+                        Object.values(rawData).forEach(item => { if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item); });
                     }
                     excelStudents = Array.from(uniqueMap.values());
                     localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
                 }
-                renderExcelTable();
             });
 
             db.ref('notices').on('value', snap => {
-                notices = snap.exists() ? Object.values(snap.val()) : [
-                    { id: 1, title: 'Annual Examination 2026 Routine Announced.', date: '2026-10-15', details: 'All cadets are instructed to collect their admit cards.' }
-                ];
+                notices = snap.exists() ? Object.values(snap.val()) : [];
                 renderNotices();
-                renderAdminNotices();
             });
         }
 
         function showPage(pageId) {
-            ['home','about','departments','admission','result','public-student-search','notices','gallery','contact','admin'].forEach(p => {
+            ['home','about','departments','admission','result','public-student-search','notices','gallery','contact'].forEach(p => {
                 const el = document.getElementById(`page-${p}`);
                 if(el) el.classList.add('hidden');
             });
@@ -1152,89 +594,12 @@
             window.scrollTo(0,0);
         }
 
-        function checkAdminHash() {
-            if (window.location.hash === '#admin') {
-                const pass = prompt('Enter Admin Panel Password:');
-                if (pass === adminPassword) {
-                    showPage('admin');
-                    loadPublishSettings();
-                    renderStudentDBTable();
-                    renderExcelTable();
-                    renderAdminFeatures();
-                    renderAdminSlides();
-                    renderAdminGallery();
-                    renderAdminNotices();
-                } else {
-                    alert('Incorrect password!');
-                    window.location.hash = '';
-                    showPage('home');
-                }
-            }
-        }
-        window.addEventListener('hashchange', checkAdminHash);
-
-        function clearAllSystemStorageWithPassword() {
-            const pass = prompt('সুরক্ষা যাচাই: পুরানো সব ক্লাউড ডাটা মুছে ফেলতে এডমিন পাসওয়ার্ড লিখুন:');
-            if (pass === adminPassword) {
-                if (confirm('আপনি কি চূড়ান্তভাবে নিশ্চিত যে ক্লাউডের সমস্ত ছাত্র ও রেজাল্ট মুছে সম্পূর্ণ ফ্রেশ শুরু করতে চান?')) {
-                    db.ref('students').remove();
-                    db.ref('results').remove();
-                    registeredStudents = [];
-                    excelStudents = [];
-                    localStorage.removeItem('annur_final_db_2026');
-                    localStorage.removeItem('annur_final_results_2026');
-                    renderStudentDBTable();
-                    renderExcelTable();
-                    document.getElementById('admin-idcard-live-box').classList.add('hidden');
-                    alert('সফলভাবে সমস্ত ক্লাউড ডাটা মুছে দেওয়া হয়েছে!');
-                }
-            } else {
-                alert('ভুল পাসওয়ার্ড! ডাটা রিসেট বাতিল করা হয়েছে।');
-            }
-        }
-
         function applyUniversalLogo() {
             document.querySelectorAll('.universal-logo-target').forEach(img => img.src = universalLogo);
             const mainLogo = document.getElementById('madrasha-logo');
             if (mainLogo) mainLogo.src = universalLogo;
-            const adminPreview = document.getElementById('admin-logo-preview');
-            if (adminPreview) adminPreview.src = universalLogo;
             const favicon = document.getElementById('dynamic-favicon');
             if (favicon) favicon.href = universalLogo;
-        }
-
-        function saveUniversalLogo() {
-            const fileInput = document.getElementById('universal-logo-file');
-            if (fileInput.files && fileInput.files[0]) {
-                compressImage(fileInput.files[0], 250, 250, 0.8).then(compressedBase64 => {
-                    universalLogo = compressedBase64;
-                    db.ref('settings/universalLogo').set(universalLogo);
-                    localStorage.setItem('annur_universal_logo', universalLogo);
-                    applyUniversalLogo();
-                    alert('Crest Logo updated successfully in the cloud!');
-                    fileInput.value = '';
-                });
-            } else {
-                alert('Please choose an image file from your computer!');
-            }
-        }
-
-        function loadPublishSettings() {
-            if(document.getElementById('admin-publish-status')) {
-                document.getElementById('admin-publish-status').value = resultPublishStatus;
-            }
-            if(document.getElementById('admin-publish-datetime')) {
-                document.getElementById('admin-publish-datetime').value = resultPublishDatetime;
-            }
-        }
-
-        function savePublishSettings() {
-            resultPublishStatus = document.getElementById('admin-publish-status').value;
-            resultPublishDatetime = document.getElementById('admin-publish-datetime').value;
-
-            db.ref('settings/publishStatus').set(resultPublishStatus);
-            db.ref('settings/publishDatetime').set(resultPublishDatetime);
-            alert('Publication schedule synchronized across all devices!');
         }
 
         function isResultAccessible() {
@@ -1247,47 +612,32 @@
             return true;
         }
 
-        // ACCURATE TOTAL MARKS & GPA CALCULATOR
         function calculateStudentResultStats(marksArray) {
-            let total = 0;
-            let validCount = 0;
-            let hasFail = false;
-            let mainPointsSum = 0;
-            let mainSubjectCount = 0;
-            let optionalBonusPoint = 0;
+            let total = 0; let validCount = 0; let hasFail = false;
+            let mainPointsSum = 0; let mainSubjectCount = 0; let optionalBonusPoint = 0;
 
-            if (!marksArray || !Array.isArray(marksArray)) {
-                return { total: 0, grade: '-', gpa: '0.00', remarks: 'N/A' };
-            }
+            if (!marksArray || !Array.isArray(marksArray)) return { total: 0, grade: '-', gpa: '0.00', remarks: 'N/A' };
 
             marksArray.forEach((m, idx) => {
                 if (m !== undefined && m !== null && String(m).trim() !== '' && String(m).trim() !== '-') {
                     const num = parseFloat(m);
                     if (!isNaN(num)) {
-                        total += num;
-                        validCount++;
-                        
+                        total += num; validCount++;
                         const fullMark = (subjectConfig[idx] && subjectConfig[idx].full) ? parseInt(subjectConfig[idx].full) : 100;
                         const percentage = fullMark === 50 ? (num * 2) : num;
                         
                         let gp = 0;
-                        if (percentage < 33) {
-                            hasFail = true;
-                            gp = 0;
-                        } else if (percentage >= 80) gp = 5.0;
+                        if (percentage < 33) { hasFail = true; gp = 0; }
+                        else if (percentage >= 80) gp = 5.0;
                         else if (percentage >= 70) gp = 4.0;
                         else if (percentage >= 60) gp = 3.5;
                         else if (percentage >= 50) gp = 3.0;
                         else if (percentage >= 40) gp = 2.0;
                         else if (percentage >= 33) gp = 1.0;
 
-                        const isOptional = subjectConfig[idx] && subjectConfig[idx].type === 'Optional';
-                        if (isOptional) {
+                        if (subjectConfig[idx] && subjectConfig[idx].type === 'Optional') {
                             if (gp > 2.0) optionalBonusPoint += (gp - 2.0);
-                        } else {
-                            mainPointsSum += gp;
-                            mainSubjectCount++;
-                        }
+                        } else { mainPointsSum += gp; mainSubjectCount++; }
                     }
                 }
             });
@@ -1299,8 +649,7 @@
             let finalGpaNum = baseGpa + (optionalBonusPoint / mainSubjectCount);
             if (finalGpaNum > 5.0) finalGpaNum = 5.0;
 
-            let grade = 'A+';
-            let remarks = 'Outstanding';
+            let grade = 'A+'; let remarks = 'Outstanding';
             if (finalGpaNum >= 5.0) { grade = 'A+'; remarks = 'Outstanding'; }
             else if (finalGpaNum >= 4.0) { grade = 'A'; remarks = 'Excellent'; }
             else if (finalGpaNum >= 3.5) { grade = 'A-'; remarks = 'Very Good'; }
@@ -1313,12 +662,9 @@
         }
 
         function getSubjectGradeInfo(markVal, fullMark) {
-            if (markVal === undefined || markVal === null || String(markVal).trim() === '' || String(markVal).trim() === '-') {
-                return { lg: '-', gp: '-' };
-            }
+            if (markVal === undefined || markVal === null || String(markVal).trim() === '' || String(markVal).trim() === '-') return { lg: '-', gp: '-' };
             const num = parseFloat(markVal);
             if (isNaN(num)) return { lg: '-', gp: '-' };
-
             const percentage = parseInt(fullMark) === 50 ? (num * 2) : num;
             if (percentage < 33) return { lg: 'F', gp: '0.0' };
             if (percentage >= 80) return { lg: 'A+', gp: '5.0' };
@@ -1329,339 +675,14 @@
             return { lg: 'D', gp: '1.0' };
         }
 
-        // CADET REGISTRATION - FAST AUTO COMPRESSED & CLOUD SAVED
-        async function handleRegisterStudent(e) {
-            e.preventDefault();
-            const btn = document.getElementById('reg-submit-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> সেভ হচ্ছে...';
-            btn.disabled = true;
-
-            const id = document.getElementById('reg-id').value.trim().toUpperCase();
-            const name = document.getElementById('reg-name').value.trim().toUpperCase();
-            const father = document.getElementById('reg-father').value.trim().toUpperCase();
-            const stdClass = document.getElementById('reg-class').value;
-            const phone = document.getElementById('reg-phone').value.trim() || 'N/A';
-            const status = document.getElementById('reg-status').value;
-            const photoInput = document.getElementById('reg-photo-file');
-
-            const isDuplicate = registeredStudents.some(s => s.id === id);
-            if (isDuplicate) {
-                alert(`সতর্কতা: '${id}' আইডি নম্বর দিয়ে ইতোমধ্যে একজন শিক্ষার্থী নিবন্ধিত আছে!`);
-                btn.innerHTML = '<i class="fa-solid fa-user-plus mr-1"></i> শিক্ষার্থী রেজিস্টার করুন';
-                btn.disabled = false;
-                return;
-            }
-
-            let photoBase64 = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-            if (photoInput.files && photoInput.files[0]) {
-                photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
-            }
-
-            const newStudent = { 
-                id, name, father, class: stdClass, phone, status, 
-                photo: photoBase64 
-            };
-
-            const existingIdx = registeredStudents.findIndex(s => s.id === id);
-            if (existingIdx !== -1) registeredStudents[existingIdx] = newStudent;
-            else registeredStudents.unshift(newStudent);
-            
-            localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-            localStorage.setItem('annur_sticky_class', stdClass);
-            renderStudentDBTable();
-            syncRegisteredStudentsToResults(false);
-
-            db.ref('students/' + id).set(newStudent)
-            .then(() => {
-                document.getElementById('reg-name').value = '';
-                document.getElementById('reg-father').value = '';
-                document.getElementById('reg-id').value = '';
-                document.getElementById('reg-phone').value = '';
-                photoInput.value = '';
-                btn.innerHTML = '<i class="fa-solid fa-user-plus mr-1"></i> শিক্ষার্থী রেজিস্টার করুন';
-                btn.disabled = false;
-                alert(`ক্যাডেট ${name} (ID: ${id}) সফলভাবে নিবন্ধিত হয়েছে!`);
-            })
-            .catch(err => {
-                btn.innerHTML = '<i class="fa-solid fa-user-plus mr-1"></i> শিক্ষার্থী রেজিস্টার করুন';
-                btn.disabled = false;
-                alert(`ক্যাডেট ${name} (ID: ${id}) সেভ হয়েছে!`);
-            });
-        }
-
-        function renderStudentDBTable() {
-            const tbody = document.getElementById('student-db-table-body');
-            const badge = document.getElementById('total-registered-badge');
-            const personalSearch = document.getElementById('student-db-search-personal') ? document.getElementById('student-db-search-personal').value.toUpperCase().trim() : '';
-            const classSearch = document.getElementById('student-db-search-class') ? document.getElementById('student-db-search-class').value : 'ALL';
-            
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            if(badge) badge.innerText = `Total Registered: ${registeredStudents.length}`;
-
-            let filtered = registeredStudents;
-            if (classSearch !== 'ALL') filtered = filtered.filter(s => s.class === classSearch);
-            if (personalSearch !== '') {
-                filtered = filtered.filter(s => 
-                    s.id.includes(personalSearch) || 
-                    s.name.includes(personalSearch) || 
-                    s.phone.includes(personalSearch)
-                );
-            }
-
-            if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500 font-bold">কোনো ক্যাডেট ডাটা পাওয়া যায়নি।</td></tr>`;
-                return;
-            }
-
-            filtered.forEach((s) => {
-                const realIdx = registeredStudents.indexOf(s);
-                const statusBadge = s.status === 'Deactivated' ? 
-                    '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Discharged</span>' : 
-                    '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Active</span>';
-
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-emerald-50 text-xs">
-                        <td class="p-2 border"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border"></td>
-                        <td class="p-2 border font-bold text-emerald-950">${s.id}</td>
-                        <td class="p-2 border font-bold">${s.name}</td>
-                        <td class="p-2 border">${s.father}</td>
-                        <td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
-                        <td class="p-2 border font-semibold">${s.phone}</td>
-                        <td class="p-2 border">${statusBadge}</td>
-                        <td class="p-2 border text-center whitespace-nowrap space-x-1">
-                            <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i> কার্ড প্রিন্ট</button>
-                            <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderDirectIDCardFromInput() {
-            const inputVal = document.getElementById('direct-idcard-input').value.trim().toUpperCase();
-            if (!inputVal) {
-                alert('অনুগ্রহ করে শিক্ষার্থীর আইডি নম্বর লিখুন!');
-                return;
-            }
-
-            const cadetIndex = registeredStudents.findIndex(s => s.id === inputVal);
-            if (cadetIndex === -1) {
-                alert(`'${inputVal}' আইডি দিয়ে কোনো ক্যাডেট নিবন্ধিত নেই! আইডি নম্বরটি পুনরায় চেক করুন।`);
-                return;
-            }
-
-            renderIDCardDirectlyInAdmin(cadetIndex);
-        }
-
-        function renderIDCardDirectlyInAdmin(realIdx) {
-            const s = registeredStudents[realIdx];
-            if(!s) return;
-
-            const liveBox = document.getElementById('admin-idcard-live-box');
-            const levelWord = s.class.replace('LEVEL-', '').replace('10', 'TEN').replace('9', 'NINE').replace('8', 'EIGHT').replace('7', 'SEVEN').replace('6', 'SIX').replace('5', 'FIVE').replace('4', 'FOUR').replace('3', 'THREE').replace('2', 'TWO').replace('1', 'ONE');
-
-            const idCardHTML = `
-                <div id="target-id-card-node" class="id-card-exact-replica mx-auto font-sans text-left">
-                    <svg class="id-top-decor" viewBox="0 0 335 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 0 H180 L140 44 H0 Z" fill="#0369a1"/>
-                        <path d="M188 0 L152 44 H162 L198 0 Z" fill="#047857"/>
-                        <path d="M206 0 L170 44 H180 L216 0 Z" fill="#047857"/>
-                        <path d="M224 0 L188 44 H335 V0 Z" fill="#059669"/>
-                        <line x1="0" y1="46" x2="335" y2="46" stroke="#0284c7" stroke-width="2"/>
-                    </svg>
-
-                    <div>
-                        <div class="text-center pt-12 pb-1 px-3">
-                            <h2 class="text-[#0369a1] font-black text-[15.5px] tracking-tight font-serif uppercase leading-tight">An-Nur International Cadet Madrasah</h2>
-                            <p class="text-[11px] font-bold text-gray-800 mt-0.5">Mohara, Chandgaon, Chattogram,</p>
-                        </div>
-
-                        <div class="text-center mt-1">
-                            <span class="id-card-badge-box font-montserrat">ID CARD</span>
-                        </div>
-
-                        <img src="${s.photo}" class="id-cadet-photo-frame shadow-sm" alt="Cadet Photo">
-
-                        <h3 class="text-center font-black text-[15.5px] text-[#0369a1] uppercase mt-1 tracking-wide px-2">${s.name}</h3>
-
-                        <div class="relative px-7 py-2.5 mt-1 border-y border-gray-100 bg-slate-50/40">
-                            <img src="${universalLogo}" class="id-info-watermark-bg" alt="Watermark">
-
-                            <div class="space-y-2 text-[14px] text-[#0369a1] font-black relative z-10 leading-snug">
-                                <div class="flex"><span class="w-24 text-[#0369a1]">FATHER</span><span class="mr-2">:</span><span class="uppercase">${s.father || 'N/A'}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">LEVEL</span><span class="mr-2">:</span><span class="uppercase">${levelWord}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">ID NO</span><span class="mr-2">:</span><span>${s.id}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">MOBILE</span><span class="mr-2">:</span><span>${s.phone || 'N/A'}</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="w-full relative">
-                        <div class="flex justify-end pr-7 pb-2">
-                            <div class="text-center">
-                                <span class="font-serif italic text-xs text-black block font-bold">A.Majed</span>
-                                <div class="w-16 border-t border-dashed border-black"></div>
-                                <span class="text-[10.5px] text-black font-black block tracking-wider">Director</span>
-                            </div>
-                        </div>
-
-                        <svg class="id-bottom-decor" viewBox="0 0 335 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <line x1="0" y1="2" x2="335" y2="2" stroke="#047857" stroke-width="2"/>
-                            <path d="M0 4 H145 L175 42 H0 Z" fill="#047857"/>
-                            <path d="M153 4 L183 42 H193 L163 4 Z" fill="#0369a1"/>
-                            <path d="M171 4 L201 42 H211 L181 4 Z" fill="#0369a1"/>
-                            <path d="M189 4 L219 42 H335 V4 Z" fill="#0369a1"/>
-                        </svg>
-                        <div class="h-10"></div>
-                    </div>
-                </div>
-            `;
-
-            liveBox.classList.remove('hidden');
-            liveBox.innerHTML = idCardHTML + `
-                <div class="mt-4 no-print flex flex-wrap gap-3 justify-center">
-                    <button onclick="executeIsolatedIDCardPrint()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> সরাসরি প্রিন্ট (Print Card)</button>
-                    <button onclick="executeDirectIDCardPDFDownload('${s.id}', '${s.name}')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> ডাউনলোড PDF (Download PDF)</button>
-                    <button onclick="document.getElementById('admin-idcard-live-box').classList.add('hidden')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow transition">বন্ধ করুন (Close)</button>
-                </div>
-            `;
-
-            liveBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function executeIsolatedIDCardPrint() {
-            const cardElement = document.getElementById('target-id-card-node');
-            if(!cardElement) return;
-
-            const printFrame = document.getElementById('isolated-print-frame');
-            const frameDoc = printFrame.contentWindow.document;
-
-            frameDoc.open();
-            frameDoc.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Print ID Card</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@600;800;900&display=swap" rel="stylesheet">
-                    <script src="https://cdn.tailwindcss.com"><\/script>
-                    <style>
-                        @page { size: auto; margin: 8mm; }
-                        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
-                        .id-card-exact-replica {
-                            width: 335px !important;
-                            height: 550px !important;
-                            border: 1.5px solid #cbd5e1 !important;
-                            border-radius: 8px !important;
-                            background-color: #ffffff !important;
-                            position: relative !important;
-                            overflow: hidden !important;
-                            display: flex !important;
-                            flex-direction: column !important;
-                            justify-content: space-between !important;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                        .id-top-decor { position: absolute; top: 0; left: 0; width: 100%; height: 48px; }
-                        .id-bottom-decor { position: absolute; bottom: 0; right: 0; width: 100%; height: 42px; }
-                        .id-info-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 155px; height: 155px; opacity: 0.08; }
-                        .id-card-badge-box { border: 2px solid #005a8c; background: #e2e8f0; color: #003865; font-weight: 900; font-size: 15px; letter-spacing: 2px; padding: 3px 22px; display: inline-block; }
-                        .id-cadet-photo-frame { width: 140px; height: 140px; border: 4px solid #047857; border-radius: 50%; object-fit: cover; margin: 6px auto; display: block; }
-                    </style>
-                </head>
-                <body>
-                    ${cardElement.outerHTML}
-                </body>
-                </html>
-            `);
-            frameDoc.close();
-
-            setTimeout(() => {
-                printFrame.contentWindow.focus();
-                printFrame.contentWindow.print();
-            }, 600);
-        }
-
-        function executeDirectIDCardPDFDownload(cadetId, cadetName) {
-            const element = document.getElementById('target-id-card-node');
-            if(!element) return;
-
-            const opt = {
-                margin:       [5, 5, 5, 5],
-                filename:     `ID_Card_${cadetId}_${cadetName.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
-                jsPDF:        { unit: 'mm', format: [95, 155], orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save();
-        }
-
-        function openStudentEditModal(realIdx) {
-            const s = registeredStudents[realIdx];
-            if(!s) return;
-
-            document.getElementById('edit-std-realindex').value = realIdx;
-            document.getElementById('edit-std-id').value = s.id;
-            document.getElementById('edit-std-name').value = s.name;
-            document.getElementById('edit-std-father').value = s.father || '';
-            document.getElementById('edit-std-class').value = s.class;
-            document.getElementById('edit-std-phone').value = s.phone;
-            document.getElementById('edit-std-status').value = s.status || 'Active';
-
-            document.getElementById('student-edit-modal').classList.remove('hidden');
-        }
-
-        function closeStudentEditModal() {
-            document.getElementById('student-edit-modal').classList.add('hidden');
-        }
-
-        function saveEditedStudentData(e) {
-            e.preventDefault();
-            const realIdx = document.getElementById('edit-std-realindex').value;
-            const s = registeredStudents[realIdx];
-            if(!s) return;
-
-            const updatedData = {
-                id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
-                name: document.getElementById('edit-std-name').value.trim().toUpperCase(),
-                father: document.getElementById('edit-std-father').value.trim().toUpperCase(),
-                class: document.getElementById('edit-std-class').value,
-                phone: document.getElementById('edit-std-phone').value.trim(),
-                status: document.getElementById('edit-std-status').value,
-                photo: s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
-            };
-
-            registeredStudents[realIdx] = updatedData;
-            localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-            renderStudentDBTable();
-
-            db.ref('students/' + updatedData.id).set(updatedData);
-            closeStudentEditModal();
-            alert('ক্যাডেট তথ্য সফলভাবে সংশোধন করা হয়েছে!');
-        }
-
-        function deleteRegisteredStudent(studentId) {
-            if(confirm('আপনি কি এই ক্যাডেটের তথ্য সম্পূর্ণ ডাটাবেজ থেকে মুছে ফেলতে চান?')) {
-                registeredStudents = registeredStudents.filter(s => s.id !== studentId);
-                localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-                renderStudentDBTable();
-                db.ref('students/' + studentId).remove();
-                document.getElementById('admin-idcard-live-box').classList.add('hidden');
-            }
-        }
-
         function renderPublicStudentSearch() {
-            const q = document.getElementById('public-search-input').value.toUpperCase().trim();
+            const q = document.getElementById('public-search-input') ? document.getElementById('public-search-input').value.toUpperCase().trim() : '';
             const container = document.getElementById('public-student-results');
+            if(!container) return;
             container.innerHTML = '';
-
             if(!q) return;
 
             const matches = registeredStudents.filter(s => s.id.includes(q) || s.name.includes(q));
-
             if(matches.length === 0) {
                 container.innerHTML = `<p class="col-span-2 text-center text-gray-500 font-bold text-xs py-4">কোনো শিক্ষার্থী ডাটা পাওয়া যায়নি।</p>`;
                 return;
@@ -1669,8 +690,8 @@
 
             matches.forEach(s => {
                 const statusBadge = s.status === 'Deactivated' ? 
-                    '<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold text-xs"><i class="fa-solid fa-circle-xmark mr-1"></i>Deactivated (ছাড়প্রাপ্ত)</span>' : 
-                    '<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold text-xs"><i class="fa-solid fa-circle-check mr-1"></i>Active (অধ্যয়নরত)</span>';
+                    '<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold text-xs"><i class="fa-solid fa-circle-xmark mr-1"></i>Deactivated</span>' : 
+                    '<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold text-xs"><i class="fa-solid fa-circle-check mr-1"></i>Active</span>';
 
                 container.innerHTML += `
                     <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-200 flex items-center gap-4 shadow-sm">
@@ -1685,500 +706,6 @@
                     </div>
                 `;
             });
-        }
-
-        function syncRegisteredStudentsToResults(showAlert = true) {
-            registeredStudents.forEach(reg => {
-                const existing = excelStudents.find(s => s.id === reg.id);
-                if (!existing) {
-                    const emptyMarks = new Array(subjectConfig.length).fill('');
-                    excelStudents.push({
-                        id: reg.id,
-                        name: reg.name,
-                        class: reg.class,
-                        session: '2026',
-                        exam: 'Annual Examination',
-                        marks: emptyMarks
-                    });
-                } else {
-                    existing.name = reg.name;
-                    existing.class = reg.class;
-                }
-            });
-            renderExcelTable();
-            if(showAlert) alert('সেন্ট্রাল ক্যাডেট তালিকা রেজাল্ট বোর্ডে সিঙ্ক হয়েছে!');
-        }
-
-        function renderExcelTable() {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
-            const headerRow = document.getElementById('excel-header-row');
-            const tbody = document.getElementById('excel-table-body');
-            
-            if(!headerRow || !tbody) return;
-
-            const currentClassStudents = excelStudents.filter(s => s.class === currentSelectedClass);
-
-            let headerHTML = `
-                <th class="p-2 border w-24">Student ID</th>
-                <th class="p-2 border">Full Name</th>
-                <th class="p-2 border w-24">Session</th>
-            `;
-
-            subjectConfig.forEach((subObj, sIdx) => {
-                headerHTML += `
-                    <th class="p-2 border bg-emerald-800 min-w-[140px] text-center">
-                        <div class="space-y-1">
-                            <div class="flex items-center justify-between gap-1">
-                                <input type="text" value="${subObj.name}" class="sub-header-input bg-emerald-950 text-amber-300 font-bold p-1 rounded w-full border border-amber-400/50 text-center text-xs" data-idx="${sIdx}">
-                                <button onclick="removeSubjectColumn(${sIdx})" class="text-red-400 hover:text-red-200 font-bold px-1 text-xs" title="Delete Column">×</button>
-                            </div>
-                            <div class="flex gap-1">
-                                <select onchange="updateSubjectFullMark(${sIdx}, this.value)" class="bg-emerald-950 text-amber-200 font-bold p-0.5 rounded text-[10px] w-1/2 border border-emerald-700 cursor-pointer">
-                                    <option value="100" ${subObj.full == 100 ? 'selected' : ''}>100 Marks</option>
-                                    <option value="50" ${subObj.full == 50 ? 'selected' : ''}>50 Marks</option>
-                                </select>
-                                <select onchange="updateSubjectType(${sIdx}, this.value)" class="bg-emerald-950 text-emerald-200 font-bold p-0.5 rounded text-[10px] w-1/2 border border-emerald-700 cursor-pointer">
-                                    <option value="Main" ${subObj.type === 'Main' ? 'selected' : ''}>Main</option>
-                                    <option value="Optional" ${subObj.type === 'Optional' ? 'selected' : ''}>Optional</option>
-                                </select>
-                            </div>
-                        </div>
-                    </th>
-                `;
-            });
-
-            headerHTML += `
-                <th class="p-2 border bg-amber-600 text-emerald-950 font-extrabold w-20 text-center">Total</th>
-                <th class="p-2 border bg-amber-600 text-emerald-950 font-extrabold w-16 text-center">GPA</th>
-                <th class="p-2 border text-center w-12 bg-red-800">Del</th>
-            `;
-            headerRow.innerHTML = headerHTML;
-            tbody.innerHTML = '';
-
-            if (currentClassStudents.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${3 + subjectConfig.length + 3}" class="p-4 text-center text-gray-500 font-bold">${currentSelectedClass}-এ কোনো শিক্ষার্থী নেই। উপরে "স্টুডেন্ট লিস্ট সিঙ্ক করুন" চাপুন।</td></tr>`;
-                renderSavedResultsViewTable();
-                return;
-            }
-
-            currentClassStudents.forEach((s) => {
-                const realIndex = excelStudents.indexOf(s);
-                const stats = calculateStudentResultStats(s.marks || []);
-
-                let rowHTML = `
-                    <tr class="border-b spreadsheet-row">
-                        <td class="p-1 border"><input type="text" value="${s.id}" readonly class="ex-id w-24 p-1 border rounded font-bold text-center bg-gray-100 uppercase"></td>
-                        <td class="p-1 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1 border rounded font-semibold bg-gray-100 uppercase"></td>
-                        <td class="p-1 border"><input type="text" value="${s.session || '2026'}" class="ex-session w-20 p-1 border rounded text-center"></td>
-                `;
-
-                subjectConfig.forEach((subObj, sIdx) => {
-                    const markVal = (s.marks && s.marks[sIdx] !== undefined) ? s.marks[sIdx] : '';
-                    rowHTML += `
-                        <td class="p-1 border"><input type="text" value="${markVal}" class="ex-mark sub-mark-${sIdx} w-full p-1 border rounded text-center font-bold text-emerald-900" placeholder="Max ${subObj.full}"></td>
-                    `;
-                });
-
-                rowHTML += `
-                        <td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50">${stats.total}</td>
-                        <td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td>
-                        <td class="p-1 border text-center">
-                            <button onclick="deleteExcelRow(${realIndex})" class="bg-red-600 hover:bg-red-700 text-white font-bold p-1.5 rounded-lg shadow transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += rowHTML;
-            });
-
-            renderSavedResultsViewTable();
-        }
-
-        function renderSavedResultsViewTable() {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
-            const container = document.getElementById('admin-saved-results-view');
-            if(!container) return;
-
-            const filtered = excelStudents.filter(s => s.class === currentSelectedClass);
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-xs text-center text-gray-500 py-3 font-semibold">${currentSelectedClass}-এ কোনো সেভকৃত রেজাল্ট নেই।</p>`;
-                return;
-            }
-
-            let viewHTML = `
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-emerald-950 text-amber-300">
-                            <th class="p-2 border">ID</th>
-                            <th class="p-2 border">Cadet Name</th>
-                            <th class="p-2 border">Session</th>
-                            <th class="p-2 border">Exam Term</th>
-            `;
-            subjectConfig.forEach(sub => {
-                viewHTML += `<th class="p-2 border text-center">${sub.name} (${sub.full})</th>`;
-            });
-            viewHTML += `
-                            <th class="p-2 border text-center bg-amber-600 text-emerald-950 font-bold">Total</th>
-                            <th class="p-2 border text-center bg-amber-600 text-emerald-950 font-bold">GPA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            filtered.forEach(s => {
-                const stats = calculateStudentResultStats(s.marks || []);
-                viewHTML += `
-                    <tr class="border-b bg-white hover:bg-emerald-50">
-                        <td class="p-2 border font-bold">${s.id}</td>
-                        <td class="p-2 border font-semibold">${s.name}</td>
-                        <td class="p-2 border">${s.session || '2026'}</td>
-                        <td class="p-2 border font-medium text-amber-800">${s.exam || 'Annual Examination'}</td>
-                `;
-                subjectConfig.forEach((_, sIdx) => {
-                    const mVal = (s.marks && s.marks[sIdx] !== undefined && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-';
-                    viewHTML += `<td class="p-2 border text-center font-bold text-emerald-900">${mVal}</td>`;
-                });
-                viewHTML += `
-                        <td class="p-2 border text-center font-black text-amber-700 bg-amber-50">${stats.total}</td>
-                        <td class="p-2 border text-center font-black text-emerald-900 bg-emerald-50">${stats.gpa} (${stats.grade})</td>
-                    </tr>
-                `;
-            });
-
-            viewHTML += `</tbody></table>`;
-            container.innerHTML = viewHTML;
-        }
-
-        function updateSubjectFullMark(sIdx, newFull) {
-            subjectConfig[sIdx].full = parseInt(newFull);
-            db.ref('settings/subjects').set(subjectConfig);
-            renderExcelTable();
-        }
-
-        function updateSubjectType(sIdx, newType) {
-            subjectConfig[sIdx].type = newType;
-            db.ref('settings/subjects').set(subjectConfig);
-            renderExcelTable();
-        }
-
-        function addSubjectColumn() {
-            saveExcelData(false);
-            subjectConfig.push({ name: `Subject ${subjectConfig.length + 1}`, full: 100, type: 'Main' });
-            excelStudents.forEach(s => {
-                if(!s.marks) s.marks = [];
-                s.marks.push('');
-            });
-            db.ref('settings/subjects').set(subjectConfig);
-            db.ref('results').set(excelStudents);
-            renderExcelTable();
-        }
-
-        function removeSubjectColumn(subIdx) {
-            if(subjectConfig.length <= 1) {
-                alert('কমপক্ষে একটি বিষয় থাকতে হবে!');
-                return;
-            }
-            if(confirm(`"${subjectConfig[subIdx].name}" কলামটি মুছে ফেলতে চান?`)) {
-                saveExcelData(false);
-                subjectConfig.splice(subIdx, 1);
-                excelStudents.forEach(s => {
-                    if(s.marks) s.marks.splice(subIdx, 1);
-                });
-                db.ref('settings/subjects').set(subjectConfig);
-                db.ref('results').set(excelStudents);
-                renderExcelTable();
-            }
-        }
-
-        function deleteExcelRow(realIdx) {
-            if (confirm('এই ক্যাডেটের রেজাল্ট মুছে ফেলবেন?')) {
-                const removedStudent = excelStudents.splice(realIdx, 1)[0];
-                localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
-                renderExcelTable();
-                if (removedStudent && removedStudent.id) {
-                    db.ref('results/' + removedStudent.id).remove();
-                }
-            }
-        }
-
-        function saveExcelData(showAlert = true) {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
-            const selectedExam = document.getElementById('admin-global-exam').value;
-
-            const headerInputs = document.querySelectorAll('.sub-header-input');
-            headerInputs.forEach((input, i) => {
-                if(subjectConfig[i]) subjectConfig[i].name = input.value.trim() || 'Subject';
-            });
-            db.ref('settings/subjects').set(subjectConfig);
-
-            const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
-            const rows = document.querySelectorAll('#excel-table-body tr');
-            const updatedCurrentClassStudents = [];
-
-            rows.forEach(row => {
-                const idInput = row.querySelector('.ex-id');
-                if(!idInput) return;
-
-                const id = idInput.value.trim().toUpperCase();
-                const name = row.querySelector('.ex-name').value.trim().toUpperCase();
-                const session = row.querySelector('.ex-session').value.trim();
-                
-                if(id !== '') {
-                    const marks = [];
-                    subjectConfig.forEach((_, sIdx) => {
-                        const markInput = row.querySelector(`.sub-mark-${sIdx}`);
-                        const markVal = markInput ? markInput.value.trim() : '';
-                        marks.push(markVal);
-                    });
-                    updatedCurrentClassStudents.push({ 
-                        id, name, class: currentSelectedClass, session, exam: selectedExam, marks 
-                    });
-                }
-            });
-
-            excelStudents = [...otherClassStudents, ...updatedCurrentClassStudents];
-            localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
-            
-            updatedCurrentClassStudents.forEach(item => {
-                db.ref('results/' + item.id).set(item);
-            });
-
-            renderExcelTable();
-            if(showAlert) alert(`${currentSelectedClass} এর রেজাল্ট ক্লাউডে সফলভাবে সেভ হয়েছে!`);
-        }
-
-        // 3. FEATURES
-        function renderFeatures() {
-            const container = document.getElementById('dynamic-features-container');
-            if(!container) return;
-            container.innerHTML = '';
-            featuresList.forEach((f) => {
-                container.innerHTML += `
-                    <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-emerald-700 text-center hover:shadow-xl transition transform hover:-translate-y-1">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-800 rounded-full flex items-center justify-center text-xl mx-auto mb-3 shadow-inner"><i class="fa-solid fa-star text-amber-500"></i></div>
-                        <h4 class="text-base font-bold mb-1 text-emerald-950">${f.title}</h4>
-                        <p class="text-gray-600 text-xs leading-relaxed">${f.desc}</p>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAdminFeatures() {
-            const adminList = document.getElementById('admin-features-list');
-            if(!adminList) return;
-            adminList.innerHTML = '';
-            featuresList.forEach((f, idx) => {
-                adminList.innerHTML += `
-                    <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 flex justify-between items-center text-xs">
-                        <div class="pr-2"><p class="font-bold text-emerald-950">${f.title}</p><p class="text-gray-500 text-[10px] truncate">${f.desc}</p></div>
-                        <button onclick="deleteFeature(${idx})" class="bg-red-600 hover:bg-red-700 text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs shadow">&times;</button>
-                    </div>
-                `;
-            });
-        }
-
-        function handleAddFeature(e) {
-            e.preventDefault();
-            const title = document.getElementById('feat-title').value.trim();
-            const desc = document.getElementById('feat-desc').value.trim();
-            if(title && desc) {
-                featuresList.push({ title, desc });
-                renderFeatures(); renderAdminFeatures();
-                e.target.reset();
-            }
-        }
-
-        function deleteFeature(idx) {
-            if(confirm('মুছে ফেলতে চান?')) {
-                featuresList.splice(idx, 1);
-                renderFeatures(); renderAdminFeatures();
-            }
-        }
-
-        // 4. SLIDER
-        function renderSlider() {
-            const wrapper = document.getElementById('slider-wrapper');
-            if(!wrapper) return;
-            wrapper.innerHTML = '';
-            sliderImages.forEach((img, idx) => {
-                wrapper.innerHTML += `<img src="${img}" class="slide-item absolute inset-0 w-full h-full object-cover slide-fade ${idx === currentSlideIdx ? 'opacity-100 z-10' : 'opacity-0 z-0'}">`;
-            });
-        }
-
-        function renderAdminSlides() {
-            const list = document.getElementById('admin-slides-list');
-            if(!list) return;
-            list.innerHTML = '';
-            sliderImages.forEach((img, idx) => {
-                list.innerHTML += `
-                    <div class="relative border rounded-xl p-1 bg-white shadow-sm">
-                        <img src="${img}" class="h-16 w-full object-cover rounded-lg">
-                        <button onclick="deleteSlide(${idx})" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
-                    </div>
-                `;
-            });
-        }
-
-        function nextSlide() {
-            if(sliderImages.length === 0) return;
-            currentSlideIdx = (currentSlideIdx + 1) % sliderImages.length;
-            renderSlider();
-        }
-
-        function prevSlide() {
-            if(sliderImages.length === 0) return;
-            currentSlideIdx = (currentSlideIdx - 1 + sliderImages.length) % sliderImages.length;
-            renderSlider();
-        }
-
-        setInterval(nextSlide, 4000);
-
-        function handleAddSlide(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('slide-file-input');
-            if (fileInput.files && fileInput.files[0]) {
-                compressImage(fileInput.files[0], 1200, 600, 0.75).then(compressed => {
-                    sliderImages.push(compressed);
-                    renderSlider(); renderAdminSlides();
-                    fileInput.value = '';
-                });
-            }
-        }
-
-        function deleteSlide(idx) {
-            if(confirm('স্লাইডার ছবি ডিলিট করবেন?')) {
-                sliderImages.splice(idx, 1);
-                renderSlider(); renderAdminSlides();
-            }
-        }
-
-        // GALLERY
-        function renderGallery() {
-            const container = document.getElementById('gallery-cards-container');
-            if(!container) return;
-            container.innerHTML = '';
-            galleryPhotos.forEach((item) => {
-                container.innerHTML += `
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1">
-                        <img src="${item.url}" alt="${item.title}" class="w-full h-48 object-cover">
-                        <div class="p-3 text-center font-bold text-xs text-emerald-950">${item.title}</div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAdminGallery() {
-            const adminList = document.getElementById('admin-gallery-list');
-            if(!adminList) return;
-            adminList.innerHTML = '';
-            galleryPhotos.forEach((item, idx) => {
-                adminList.innerHTML += `
-                    <div class="relative border rounded-xl p-1 bg-white shadow-sm">
-                        <img src="${item.url}" class="h-16 w-full object-cover rounded-lg">
-                        <p class="text-[10px] font-semibold truncate mt-1 text-center">${item.title}</p>
-                        <button onclick="deleteGalleryPhoto(${idx})" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
-                    </div>
-                `;
-            });
-        }
-
-        function handleAddGalleryPhoto(e) {
-            e.preventDefault();
-            const title = document.getElementById('gallery-title-input').value.trim();
-            const fileInput = document.getElementById('gallery-file-input');
-            if(title && fileInput.files && fileInput.files[0]) {
-                compressImage(fileInput.files[0], 600, 400, 0.75).then(compressed => {
-                    galleryPhotos.unshift({ title, url: compressed });
-                    renderGallery(); renderAdminGallery();
-                    e.target.reset();
-                });
-            }
-        }
-
-        function deleteGalleryPhoto(idx) {
-            if(confirm('গ্যালারির ছবি ডিলিট করবেন?')) {
-                galleryPhotos.splice(idx, 1);
-                renderGallery(); renderAdminGallery();
-            }
-        }
-
-        function changeAdminPassword() {
-            const newPass = document.getElementById('new-admin-pass').value.trim();
-            if(newPass) {
-                adminPassword = newPass;
-                localStorage.setItem('annur_admin_pass', newPass);
-                alert('এডমিন পাসওয়ার্ড আপডেট হয়েছে!');
-            }
-        }
-
-        // NOTICES & FOOTER
-        function handleAddNotice(e) {
-            e.preventDefault();
-            const title = document.getElementById('notice-title').value.trim();
-            const details = document.getElementById('notice-details').value.trim() || title;
-            const date = document.getElementById('notice-date').value;
-            const id = Date.now().toString();
-            
-            db.ref('notices/' + id).set({ id, title, date, details }).then(() => {
-                e.target.reset();
-                alert('Notice published globally!');
-            });
-        }
-
-        function renderNotices() {
-            const marquee = document.getElementById('marquee-notice');
-            const container = document.getElementById('notice-list-container');
-            if(marquee) marquee.innerText = notices.map(n => `📌 ${n.title} (${n.date})`).join(' --- ');
-            if(!container) return;
-            container.innerHTML = '';
-            notices.forEach((n, idx) => {
-                container.innerHTML += `
-                    <div onclick="openNoticeDetailsModal(${idx})" class="bg-white p-5 rounded-2xl shadow-md border-l-4 border-emerald-700 hover:shadow-xl transition cursor-pointer flex flex-col md:flex-row justify-between items-start md:items-center gap-3 group">
-                        <div class="space-y-1">
-                            <span class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-calendar-day mr-1"></i>${n.date}</span>
-                            <h4 class="font-bold text-emerald-950 text-base group-hover:text-emerald-700 transition">${n.title}</h4>
-                            <p class="text-xs text-gray-500 line-clamp-1">${n.details || n.title}</p>
-                        </div>
-                        <button class="bg-emerald-50 text-emerald-900 group-hover:bg-emerald-800 group-hover:text-white px-4 py-1.5 rounded-xl font-bold text-xs transition whitespace-nowrap"><i class="fa-solid fa-eye mr-1"></i>Read Full</button>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAdminNotices() {
-            const adminList = document.getElementById('admin-notice-list');
-            if(!adminList) return;
-            adminList.innerHTML = '';
-            notices.forEach((n, idx) => {
-                adminList.innerHTML += `
-                    <li class="py-2 flex justify-between items-center text-xs">
-                        <span class="font-bold truncate pr-2">${n.title}</span>
-                        <button onclick="deleteNotice('${n.id}')" class="text-red-600 font-bold hover:text-red-800 px-2 py-0.5" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                    </li>
-                `;
-            });
-        }
-
-        function openNoticeDetailsModal(idx) {
-            const n = notices[idx];
-            if(!n) return;
-            document.getElementById('modal-notice-title').innerText = n.title;
-            document.getElementById('modal-notice-date').innerText = `Date: ${n.date}`;
-            document.getElementById('modal-notice-body').innerText = n.details || n.title;
-            document.getElementById('notice-details-modal').classList.remove('hidden');
-        }
-
-        function closeNoticeDetailsModal() { document.getElementById('notice-details-modal').classList.add('hidden'); }
-
-        function deleteNotice(noticeId) {
-            if(confirm('Delete notice?')) {
-                db.ref('notices/' + noticeId).remove();
-            }
-        }
-
-        function saveFooterText() {
-            footerText = document.getElementById('footer-text-input').value;
-            localStorage.setItem('annur_footer_v12', footerText);
-            alert('Footer updated!');
         }
 
         function toggleResultTab(tab) {
@@ -2200,23 +727,17 @@
             const selectedClass = document.getElementById('class-result-dropdown').value;
             const selectedSession = document.getElementById('class-session-dropdown').value;
             const selectedExam = document.getElementById('class-exam-dropdown').value;
-            
             const output = document.getElementById('class-sheet-output');
             const printArea = document.getElementById('printable-area');
 
             if(!selectedClass) { alert('Please select a level!'); return; }
-
             if(!isResultAccessible()) {
                 const timeText = resultPublishDatetime ? `<br><span class="text-xs font-normal">Official Release Schedule: ${new Date(resultPublishDatetime).toLocaleString('en-US')}</span>` : '';
                 output.innerHTML = `<div class="bg-amber-100 p-5 rounded-2xl border-2 border-amber-300 text-amber-950 text-center font-bold text-xs shadow-md"><i class="fa-solid fa-lock text-amber-600 text-2xl mb-1 block"></i>Official Results for this examination have not been published yet.${timeText}</div>`;
                 return;
             }
 
-            const filtered = excelStudents.filter(s => 
-                s.class === selectedClass && 
-                (s.session === selectedSession || !s.session) && 
-                (s.exam === selectedExam || !s.exam)
-            );
+            const filtered = excelStudents.filter(s => s.class === selectedClass && (s.session === selectedSession || !s.session) && (s.exam === selectedExam || !s.exam));
 
             if(filtered.length === 0) {
                 output.innerHTML = `<p class="text-red-600 text-center font-bold text-xs py-4 bg-red-50 rounded-xl border border-red-200">No results recorded for ${selectedClass} (${selectedSession}).</p>`;
@@ -2229,35 +750,15 @@
                     <th class="p-2 border text-center">Student ID</th>
                     <th class="p-2 border text-left">Cadet Name</th>
             `;
-            subjectConfig.forEach(subObj => {
-                tableHeaderHTML += `<th class="p-2 border text-center">${subObj.name} (${subObj.full}) ${subObj.type === 'Optional' ? '<span class="text-[9px] block text-amber-300">Opt.</span>' : ''}</th>`;
-            });
-            tableHeaderHTML += `
-                <th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">Total</th>
-                <th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">GPA</th>
-                <th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">Grade</th>
-                </tr>
-            `;
+            subjectConfig.forEach(subObj => { tableHeaderHTML += `<th class="p-2 border text-center">${subObj.name} (${subObj.full})</th>`; });
+            tableHeaderHTML += `<th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">Total</th><th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">GPA</th><th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">Grade</th></tr>`;
 
             let rowsHTML = '';
             filtered.forEach((s, idx) => {
                 const stats = calculateStudentResultStats(s.marks || []);
-                rowsHTML += `
-                    <tr class="text-center border-b text-xs">
-                        <td class="p-2 border font-bold">${idx + 1}</td>
-                        <td class="p-2 border font-bold text-emerald-950">${s.id}</td>
-                        <td class="p-2 border text-left font-bold uppercase">${s.name}</td>
-                `;
-                subjectConfig.forEach((_, sIdx) => {
-                    const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-';
-                    rowsHTML += `<td class="p-2 border font-medium text-emerald-900">${mVal}</td>`;
-                });
-                rowsHTML += `
-                    <td class="p-2 border font-extrabold text-amber-700 bg-amber-50">${stats.total}</td>
-                    <td class="p-2 border font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td>
-                    <td class="p-2 border font-extrabold text-emerald-900 bg-emerald-50">${stats.grade}</td>
-                    </tr>
-                `;
+                rowsHTML += `<tr class="text-center border-b text-xs"><td class="p-2 border font-bold">${idx + 1}</td><td class="p-2 border font-bold text-emerald-950">${s.id}</td><td class="p-2 border text-left font-bold uppercase">${s.name}</td>`;
+                subjectConfig.forEach((_, sIdx) => { const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-'; rowsHTML += `<td class="p-2 border font-medium text-emerald-900">${mVal}</td>`; });
+                rowsHTML += `<td class="p-2 border font-extrabold text-amber-700 bg-amber-50">${stats.total}</td><td class="p-2 border font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td><td class="p-2 border font-extrabold text-emerald-900 bg-emerald-50">${stats.grade}</td></tr>`;
             });
 
             const sheetHTML = `
@@ -2268,18 +769,10 @@
                         <h3 class="text-sm font-bold text-amber-600 mt-0.5 uppercase tracking-wide">${selectedExam} - TABULATION SHEET</h3>
                         <p class="text-xs text-gray-600 font-bold">Level: <span class="text-emerald-900">${selectedClass}</span> | Session: <span class="text-emerald-900">${selectedSession}</span></p>
                     </div>
-                    <table class="w-full border-collapse border border-gray-300 text-xs md:text-sm">
-                        <thead>${tableHeaderHTML}</thead>
-                        <tbody>${rowsHTML}</tbody>
-                    </table>
+                    <table class="w-full border-collapse border border-gray-300 text-xs md:text-sm"><thead>${tableHeaderHTML}</thead><tbody>${rowsHTML}</tbody></table>
                 </div>
             `;
-
-            output.innerHTML = sheetHTML + `
-                <div class="mt-3 no-print">
-                    <button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md w-full"><i class="fa-solid fa-file-pdf mr-1"></i> Print / Download Tabulation Sheet</button>
-                </div>
-            `;
+            output.innerHTML = sheetHTML + `<div class="mt-3 no-print"><button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md w-full"><i class="fa-solid fa-file-pdf mr-1"></i> Print Tabulation Sheet</button></div>`;
             printArea.innerHTML = sheetHTML;
         }
 
@@ -2300,26 +793,10 @@
                 return;
             }
 
-            let student = excelStudents.find(s => 
-                s.id.toUpperCase() === inputId && 
-                s.class === inputClass && 
-                (s.session === inputSession || !s.session) && 
-                (s.exam === inputExam || !s.exam)
-            );
-
+            let student = excelStudents.find(s => s.id.toUpperCase() === inputId && s.class === inputClass && (s.session === inputSession || !s.session) && (s.exam === inputExam || !s.exam));
             const regS = registeredStudents.find(r => r.id === inputId);
 
-            if (!student && regS) {
-                student = {
-                    id: regS.id,
-                    name: regS.name,
-                    class: regS.class,
-                    session: inputSession,
-                    exam: inputExam,
-                    marks: []
-                };
-            }
-
+            if (!student && regS) student = { id: regS.id, name: regS.name, class: regS.class, session: inputSession, exam: inputExam, marks: [] };
             if (!student) {
                 printArea.classList.remove('hidden');
                 printArea.innerHTML = `<div class="bg-white p-6 rounded-2xl text-red-600 text-center font-bold text-sm shadow-xl border border-red-200 max-w-xl mx-auto my-4"><i class="fa-solid fa-circle-exclamation text-2xl text-red-500 mb-2 block"></i>Transcript Not Found! Please verify Student ID, Level, and Session.</div>`;
@@ -2328,9 +805,8 @@
 
             const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             const studentFather = (regS && regS.father) ? regS.father : 'N/A';
-
             const subjectCount = subjectConfig.length;
-            const rowPadClass = subjectCount <= 6 ? 'py-3.5 px-4 text-base md:text-lg font-bold' : (subjectCount <= 10 ? 'py-2 px-3 text-sm md:text-base font-bold' : 'py-1 px-2 text-xs font-bold');
+            const rowPadClass = subjectCount <= 6 ? 'py-3.5 px-4 text-sm md:text-base font-bold' : (subjectCount <= 10 ? 'py-2 px-3 text-xs md:text-sm font-bold' : 'py-1 px-2 text-[11px] font-bold');
 
             let subjectRowsHTML = '';
             subjectConfig.forEach((subObj, sIdx) => {
@@ -2429,7 +905,7 @@
                                     </div>
                                 </div>
 
-                                <div class="pt-6 pb-1 flex justify-between text-xs text-gray-800 font-bold relative z-10">
+                                <div class="pt-6 flex justify-between text-xs text-gray-800 font-bold relative z-10">
                                     <div class="text-center">
                                         <div class="w-28 border-t-2 border-gray-600 mb-1"></div>
                                         <span class="font-montserrat text-[11px]">Guardian Signature</span>
@@ -2465,14 +941,11 @@
             const sheet = document.getElementById(elementId);
             if (!sheet) return 1;
 
-            // Reset transform for accurate calculation
             sheet.style.transform = 'none';
             sheet.style.height = 'auto'; 
             
-            // Wait for Fonts
             await document.fonts.ready;
 
-            // Wait for Images
             const images = sheet.querySelectorAll('img');
             await Promise.all(Array.from(images).map(img => {
                 if (img.complete) return Promise.resolve();
@@ -2486,7 +959,7 @@
 
             if (actualHeight > targetHeight) {
                 scale = targetHeight / actualHeight;
-                scale = scale * 0.985; // 1.5% buffer for rendering safety
+                scale = scale * 0.985; 
             }
 
             sheet.style.height = (actualHeight > targetHeight ? actualHeight : targetHeight) + 'px';
@@ -2507,7 +980,6 @@
             window.scrollTo(0, 0);
 
             try {
-                // Pre-measure and safely scale exactly to 1 A4 page
                 await autoFitA4Marksheet('target-transcript-a4-node');
 
                 const opt = {
@@ -2539,7 +1011,6 @@
             const container = document.getElementById('pdf-export-container');
             if(!container) return;
 
-            // Apply dynamic auto-fit scale
             await autoFitA4Marksheet('target-transcript-a4-node');
 
             const printFrame = document.getElementById('isolated-print-frame');
@@ -2588,25 +1059,13 @@
             }, 1000);
         }
 
-        function handleOnlineAdmission(e) {
-            e.preventDefault();
-            alert('Application submitted successfully!');
-            e.target.reset();
-        }
-
         window.onload = function() {
-            const lastClass = localStorage.getItem('annur_sticky_class');
-            if (lastClass && document.getElementById('reg-class')) {
-                document.getElementById('reg-class').value = lastClass;
-            }
-
             initFirebaseSync();
             applyUniversalLogo();
             renderFeatures();
             renderSlider();
             renderGallery();
             renderNotices();
-            checkAdminHash();
         };
     </script>
 </body>
