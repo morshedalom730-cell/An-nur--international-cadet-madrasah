@@ -11,6 +11,12 @@
     <meta name="keywords" content="AN-NUR INTERNATIONAL CADET MADRASAH, Cadet Madrasah, English Medium Madrasah Chattogram">
     <meta name="author" content="Hafez Maulana Mufti Abdul Majed">
 
+    <!-- Open Graph Tags for Social Media Preview -->
+    <meta property="og:title" content="AN-NUR INTERNATIONAL CADET MADRASAH">
+    <meta property="og:description" content="AN-NUR INTERNATIONAL CADET MADRASAH - An integrated institution of religious and modern English-medium education. Mohara, Chandgaon, Chattogram.">
+    <meta property="og:image" content="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
+    <meta property="og:type" content="website">
+
     <!-- Dynamic Favicon -->
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
 
@@ -19,7 +25,9 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- html2pdf.js CDN for Direct PDF Downloading -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Updated from 0.10.1: that release has publicly documented, maintainer-acknowledged
+         bugs (blank/half/distorted PDF pages) - https://github.com/eKoopmans/html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -486,7 +494,6 @@
                     <h5 class="text-sm font-bold text-amber-300 mb-2">Campus Information</h5>
                     <p class="text-gray-300 leading-relaxed"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> Kaptai Rastar Matha, Mohara, Chandgaon</p>
                     <p class="text-gray-300"><i class="fa-solid fa-phone text-amber-400 mr-1"></i> +8801820270788</p>
-                    <a href="admin.html" class="inline-block mt-3 text-emerald-950 bg-amber-400 hover:bg-amber-300 px-3 py-1 rounded font-bold transition"><i class="fa-solid fa-user-shield"></i> Admin Panel Login</a>
                 </div>
             </div>
             <div class="pt-6 text-center text-xs text-gray-400">
@@ -806,7 +813,18 @@
             const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             const studentFather = (regS && regS.father) ? regS.father : 'N/A';
             const subjectCount = subjectConfig.length;
-            const rowPadClass = subjectCount <= 6 ? 'py-3.5 px-4 text-sm md:text-base font-bold' : (subjectCount <= 10 ? 'py-2 px-3 text-xs md:text-sm font-bold' : 'py-1 px-2 text-[11px] font-bold');
+            // Graduated sizing so up to 12-13 subjects still print elegantly
+            // on a single A4 page instead of jumping straight to the
+            // smallest font once the count passes 10.
+            const rowPadClass =
+                subjectCount <= 6  ? 'py-3.5 px-4 text-sm md:text-base font-bold' :
+                subjectCount <= 8  ? 'py-2.5 px-3 text-xs md:text-sm font-bold' :
+                subjectCount <= 10 ? 'py-1.5 px-2.5 text-[11px] md:text-xs font-bold' :
+                subjectCount <= 13 ? 'py-1 px-2 text-[10px] md:text-[11px] font-bold' :
+                                     'py-0.5 px-1.5 text-[9px] font-bold';
+            // A denser header/spacing layout kicks in once there are enough
+            // subjects that the table needs the extra vertical room.
+            const isDenseSheet = subjectCount >= 11;
 
             let subjectRowsHTML = '';
             subjectConfig.forEach((subObj, sIdx) => {
@@ -844,8 +862,8 @@
                                         <h2 class="arabic-calligraphy text-2xl md:text-3xl text-emerald-900 leading-tight">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</h2>
                                     </div>
 
-                                    <div class="my-1 text-center">
-                                        <img src="${universalLogo}" alt="Logo" class="w-14 h-14 md:w-16 md:h-16 object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
+                                    <div class="${isDenseSheet ? 'my-0.5' : 'my-1'} text-center">
+                                        <img src="${universalLogo}" alt="Logo" class="${isDenseSheet ? 'w-11 h-11' : 'w-14 h-14 md:w-16 md:h-16'} object-contain mx-auto bg-white p-1 rounded-full border-2 border-amber-500 shadow-md">
                                     </div>
 
                                     <div class="text-center space-y-0.5">
@@ -856,8 +874,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="marksheet-info-card p-3 rounded-xl border-2 border-emerald-300 mt-2.5 font-bold flex items-center justify-between gap-3">
-                                        <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs md:text-sm flex-grow">
+                                    <div class="marksheet-info-card ${isDenseSheet ? 'p-2 mt-1.5' : 'p-3 mt-2.5'} rounded-xl border-2 border-emerald-300 font-bold flex items-center justify-between gap-3">
+                                        <div class="grid grid-cols-2 gap-x-3 ${isDenseSheet ? 'gap-y-1' : 'gap-y-1.5'} text-xs md:text-sm flex-grow">
                                             <p><span class="text-gray-600 font-medium">Student Name:</span> <span class="text-emerald-950 font-black uppercase">${student.name}</span></p>
                                             <p><span class="text-gray-600 font-medium">Student ID:</span> <span class="text-emerald-950 font-black uppercase">${student.id}</span></p>
                                             <p><span class="text-gray-600 font-medium">Father's Name:</span> <span class="text-emerald-950 font-black uppercase">${studentFather}</span></p>
@@ -870,22 +888,22 @@
                                         </div>
                                     </div>
 
-                                    <div class="mt-3">
+                                    <div class="${isDenseSheet ? 'mt-1.5' : 'mt-3'}">
                                         <table class="w-full border-collapse border-2 border-emerald-950 rounded-lg overflow-hidden">
                                             <thead>
                                                 <tr class="bg-emerald-950 text-white uppercase text-[11px] md:text-xs font-montserrat">
-                                                    <th class="py-2 px-3 text-left border-r border-emerald-800">Course / Subject Title</th>
-                                                    <th class="py-2 px-2 text-center w-24 border-r border-emerald-800">Full Marks</th>
-                                                    <th class="py-2 px-2 text-center w-28 border-r border-emerald-800">Marks Obtained</th>
-                                                    <th class="py-2 px-2 text-center w-20 border-r border-emerald-800">Grade</th>
-                                                    <th class="py-2 px-2 text-center w-20">GP</th>
+                                                    <th class="${isDenseSheet ? 'py-1' : 'py-2'} px-3 text-left border-r border-emerald-800">Course / Subject Title</th>
+                                                    <th class="${isDenseSheet ? 'py-1' : 'py-2'} px-2 text-center w-24 border-r border-emerald-800">Full Marks</th>
+                                                    <th class="${isDenseSheet ? 'py-1' : 'py-2'} px-2 text-center w-28 border-r border-emerald-800">Marks Obtained</th>
+                                                    <th class="${isDenseSheet ? 'py-1' : 'py-2'} px-2 text-center w-20 border-r border-emerald-800">Grade</th>
+                                                    <th class="${isDenseSheet ? 'py-1' : 'py-2'} px-2 text-center w-20">GP</th>
                                                 </tr>
                                             </thead>
                                             <tbody>${subjectRowsHTML}</tbody>
                                         </table>
                                     </div>
 
-                                    <div class="marksheet-summary-box border-2 border-amber-500 p-3 rounded-xl shadow-sm flex justify-between items-center text-xs md:text-sm font-bold text-emerald-950 mt-3">
+                                    <div class="marksheet-summary-box border-2 border-amber-500 ${isDenseSheet ? 'p-2 mt-1.5' : 'p-3 mt-3'} rounded-xl shadow-sm flex justify-between items-center text-xs md:text-sm font-bold text-emerald-950">
                                         <div class="text-center px-1">
                                             <span class="text-gray-700 block text-[10px] uppercase font-montserrat">Total Marks</span>
                                             <span class="text-xl md:text-2xl text-amber-700 font-black">${stats.total}</span>
@@ -905,7 +923,7 @@
                                     </div>
                                 </div>
 
-                                <div class="pt-6 flex justify-between text-xs text-gray-800 font-bold relative z-10">
+                                <div class="${isDenseSheet ? 'pt-3' : 'pt-6'} flex justify-between text-xs text-gray-800 font-bold relative z-10">
                                     <div class="text-center">
                                         <div class="w-28 border-t-2 border-gray-600 mb-1"></div>
                                         <span class="font-montserrat text-[11px]">Guardian Signature</span>
@@ -981,6 +999,9 @@
 
             try {
                 await autoFitA4Marksheet('target-transcript-a4-node');
+                // One extra rendered frame so the browser finishes painting
+                // the auto-fit scale/height before the canvas capture starts.
+                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
                 const opt = {
                     margin:       0,
@@ -991,6 +1012,7 @@
                         useCORS: true, 
                         backgroundColor: '#ffffff',
                         windowWidth: 794,
+                        windowHeight: 1123,
                         scrollY: 0,
                         scrollX: 0
                     },
@@ -1028,20 +1050,27 @@
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     ${styles}
                     <style>
-                        @page { size: A4 portrait; margin: 0; }
+                        /* Real 10mm page margin so borders, side margins, and
+                           signatures are never clipped by the printer's
+                           physical unprintable edge (the previous 0mm margin
+                           left content flush against the paper edge). */
+                        @page { size: A4 portrait; margin: 10mm; }
                         html, body {
-                            width: 210mm; height: 297mm;
+                            width: 190mm; height: 277mm;
                             margin: 0 !important; padding: 0 !important;
                             background: #fff; overflow: hidden;
-                            display: flex; justify-content: center; align-items: flex-start;
+                            display: flex; justify-content: center; align-items: center;
                         }
                         .print-safe-wrap {
                             width: 794px; height: 1123px;
-                            transform: scale(0.96); /* Extra hardware margin protection */
-                            transform-origin: top center;
-                            margin-top: 5mm; 
+                            transform: scale(0.9); /* fits fully inside the 190mm x 277mm printable area */
+                            transform-origin: center center;
                         }
                         .a4-print-wrapper { box-shadow: none !important; margin: 0 auto !important; }
+                        /* Safety net: guarantee the transcript is visible even
+                           though the copied stylesheet above hides #printable-area
+                           (an id that doesn't exist inside this isolated frame). */
+                        html, body, .print-safe-wrap, .print-safe-wrap * { visibility: visible !important; }
                     </style>
                 </head>
                 <body>
