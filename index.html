@@ -137,6 +137,12 @@
                 top: 0 !important; 
                 width: 100% !important; 
             }
+            /* window.print() on the main document is used ONLY by the Class
+               Tabulation Sheet (the individual transcript prints through its
+               own isolated iframe with its own @page rule, so this is safe).
+               Landscape fits the SL + ID + Name + up to ~14 subjects + Total/
+               GPA/Grade columns much better than portrait. */
+            @page { size: A4 landscape; margin: 10mm; }
             .no-print { display: none !important; }
         }
     </style>
@@ -388,18 +394,40 @@
                         <select id="class-result-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
                             <option value="">-- Select Level --</option>
                             <option value="LEVEL-1">LEVEL-1</option>
+                            <option value="LEVEL-2">LEVEL-2</option>
+                            <option value="LEVEL-3">LEVEL-3</option>
+                            <option value="LEVEL-4">LEVEL-4</option>
+                            <option value="LEVEL-5">LEVEL-5</option>
+                            <option value="LEVEL-6">LEVEL-6</option>
+                            <option value="LEVEL-7">LEVEL-7</option>
+                            <option value="LEVEL-8">LEVEL-8</option>
+                            <option value="LEVEL-9">LEVEL-9</option>
                             <option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Academic Session *</label>
                         <select id="class-session-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
+                            <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                            <option value="2031">2031</option>
+                            <option value="2032">2032</option>
+                            <option value="2033">2033</option>
+                            <option value="2034">2034</option>
+                            <option value="2035">2035</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Examination Term *</label>
                         <select id="class-exam-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
+                            <option value="Monthly Examination">Monthly Examination</option>
+                            <option value="1st Term Examination">1st Term Examination</option>
+                            <option value="Mid Term Examination">Mid Term Examination</option>
+                            <option value="2nd Term Examination">2nd Term Examination</option>
                             <option value="Annual Examination" selected>Annual Examination</option>
                         </select>
                     </div>
@@ -755,31 +783,41 @@
             }
 
             let tableHeaderHTML = `
-                <tr class="bg-emerald-900 text-white uppercase text-[11px]">
-                    <th class="p-2 border text-center">SL</th>
-                    <th class="p-2 border text-center">Student ID</th>
-                    <th class="p-2 border text-left">Cadet Name</th>
+                <tr class="bg-emerald-900 text-white uppercase">
+                    <th style="width:3.5%" class="p-1.5 border border-emerald-700 text-center">SL</th>
+                    <th style="width:8%" class="p-1.5 border border-emerald-700 text-center">Student ID</th>
+                    <th style="width:14%" class="p-1.5 border border-emerald-700 text-left">Student Name</th>
             `;
-            subjectConfig.forEach(subObj => { tableHeaderHTML += `<th class="p-2 border text-center">${subObj.name} (${subObj.full})</th>`; });
-            tableHeaderHTML += `<th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">Total</th><th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">GPA</th><th class="p-2 border bg-amber-600 text-emerald-950 font-black text-center">Grade</th></tr>`;
+            subjectConfig.forEach(subObj => { tableHeaderHTML += `<th class="p-1.5 border border-emerald-700 text-center leading-tight">${subObj.name}<br><span class="font-normal normal-case text-[9px] text-amber-300">(${subObj.full})</span></th>`; });
+            tableHeaderHTML += `<th style="width:6%" class="p-1.5 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Total</th><th style="width:6%" class="p-1.5 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">GPA</th><th style="width:6%" class="p-1.5 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Grade</th></tr>`;
 
             let rowsHTML = '';
             filtered.forEach((s, idx) => {
                 const stats = calculateStudentResultStats(s.marks || []);
-                rowsHTML += `<tr class="text-center border-b text-xs"><td class="p-2 border font-bold">${idx + 1}</td><td class="p-2 border font-bold text-emerald-950">${s.id}</td><td class="p-2 border text-left font-bold uppercase">${s.name}</td>`;
-                subjectConfig.forEach((_, sIdx) => { const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-'; rowsHTML += `<td class="p-2 border font-medium text-emerald-900">${mVal}</td>`; });
-                rowsHTML += `<td class="p-2 border font-extrabold text-amber-700 bg-amber-50">${stats.total}</td><td class="p-2 border font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td><td class="p-2 border font-extrabold text-emerald-900 bg-emerald-50">${stats.grade}</td></tr>`;
+                rowsHTML += `<tr class="text-center border-b border-emerald-200 even:bg-emerald-50/40"><td class="p-1 border font-bold">${idx + 1}</td><td class="p-1 border font-bold text-emerald-950">${s.id}</td><td class="p-1 border text-left font-bold uppercase">${s.name}</td>`;
+                subjectConfig.forEach((_, sIdx) => { const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-'; rowsHTML += `<td class="p-1 border font-medium text-emerald-900">${mVal}</td>`; });
+                rowsHTML += `<td class="p-1 border font-extrabold text-amber-700 bg-amber-50">${stats.total}</td><td class="p-1 border font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td><td class="p-1 border font-extrabold text-emerald-900 bg-emerald-50">${stats.grade}</td></tr>`;
             });
 
             const sheetHTML = `
-                <div class="space-y-4 bg-white p-6 rounded-2xl border-2 border-emerald-600 shadow-md font-serif-roman">
-                    <div class="text-center border-b pb-3">
-                        <img src="${universalLogo}" class="w-14 h-14 object-contain mx-auto mb-1 bg-white p-1 rounded-full border border-amber-500 shadow-sm">
-                        <h2 class="font-brand text-xl font-black text-emerald-950">AN-NUR INTERNATIONAL CADET MADRASAH</h2>
-                        <h3 class="text-sm font-bold text-amber-600 mt-0.5 uppercase tracking-wide">${selectedExam} - TABULATION SHEET</h3>
-                        <p class="text-xs text-gray-600 font-bold">Level: <span class="text-emerald-900">${selectedClass}</span> | Session: <span class="text-emerald-900">${selectedSession}</span></p>
+                <div class="bg-white rounded-2xl border-[3px] border-emerald-800 shadow-lg overflow-hidden font-serif-roman">
+                    <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-white px-6 py-4 flex items-center justify-between gap-4 border-b-4 border-amber-500">
+                        <img src="${universalLogo}" class="w-16 h-16 object-contain bg-white p-1 rounded-full border-2 border-amber-400 shadow-md shrink-0">
+                        <div class="text-center flex-grow">
+                            <h2 class="font-brand text-xl md:text-2xl font-black tracking-wide">AN-NUR INTERNATIONAL CADET MADRASAH</h2>
+                            <p class="text-[11px] text-emerald-200 font-semibold">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram, Bangladesh</p>
+                        </div>
+                        <span class="inline-block bg-amber-500 text-emerald-950 px-3 py-1 rounded-full font-black text-[11px] uppercase tracking-wide shrink-0 whitespace-nowrap">Tabulation Sheet</span>
                     </div>
-                    <table class="w-full border-collapse border border-gray-300 text-xs md:text-sm"><thead>${tableHeaderHTML}</thead><tbody>${rowsHTML}</tbody></table>
+                    <div class="flex flex-wrap justify-between items-center gap-2 px-6 py-2.5 bg-amber-50 border-b-2 border-amber-200 text-xs md:text-sm font-bold text-emerald-950">
+                        <span>${selectedExam}</span>
+                        <span>Level: <span class="text-amber-800">${selectedClass}</span></span>
+                        <span>Academic Session: <span class="text-amber-800">${selectedSession}</span></span>
+                        <span>Total Students: <span class="text-amber-800">${filtered.length}</span></span>
+                    </div>
+                    <div class="p-3">
+                        <table class="w-full table-fixed border-collapse border border-emerald-900 text-[10px] md:text-[11px]"><thead>${tableHeaderHTML}</thead><tbody>${rowsHTML}</tbody></table>
+                    </div>
                 </div>
             `;
             output.innerHTML = sheetHTML + `<div class="mt-3 no-print"><button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md w-full"><i class="fa-solid fa-file-pdf mr-1"></i> Print Tabulation Sheet</button></div>`;
