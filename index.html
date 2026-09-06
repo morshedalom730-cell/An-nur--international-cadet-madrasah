@@ -25,8 +25,6 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- html2pdf.js CDN for Direct PDF Downloading -->
-    <!-- Updated from 0.10.1: that release has publicly documented, maintainer-acknowledged
-         bugs (blank/half/distorted PDF pages) - https://github.com/eKoopmans/html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
 
     <!-- Firebase SDKs -->
@@ -41,9 +39,6 @@
         .font-brand { font-family: 'Cinzel', serif; }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
         .font-serif-roman { font-family: "Times New Roman", Times, serif; }
-        /* Aref Ruqaa: an elegant, flowing decorative Arabic calligraphy style
-           with standard/predictable line metrics (unlike Nastaliq, whose
-           diagonal stacking made the Bismillah bleed down onto the logo). */
         .arabic-calligraphy { font-family: 'Aref Ruqaa', 'Amiri', 'Traditional Arabic', serif; letter-spacing: 0px; line-height: 1.5; }
         
         .bg-hero-gradient {
@@ -132,16 +127,12 @@
             body * { visibility: hidden !important; }
             #printable-area, #printable-area * { visibility: visible !important; }
             #printable-area { 
+                display: block !important; /* Critical Fix for Blank Print Page */
                 position: absolute !important; 
                 left: 0 !important; 
                 top: 0 !important; 
                 width: 100% !important; 
             }
-            /* window.print() on the main document is used ONLY by the Class
-               Tabulation Sheet (the individual transcript prints through its
-               own isolated iframe with its own @page rule, so this is safe).
-               Landscape fits the SL + ID + Name + up to ~14 subjects + Total/
-               GPA/Grade columns much better than portrait. */
             @page { size: A4 landscape; margin: 10mm; }
             .no-print { display: none !important; }
         }
@@ -273,7 +264,7 @@
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="bg-amber-500 text-emerald-950 text-xs px-3 py-0.5 rounded-full font-bold">Founder Principal</span>
-                        <h3 class="text-xl font-bold text-emerald-950">Hafez Maulana Mufti Abdul Majed</h3>
+                        <h3 class="text-xl font-bold text-emerald-950">Hafez Maulana Mufti আব্দুল মাজেদ</h3>
                         <p class="text-xs md:text-sm text-gray-600 leading-relaxed">"We are committed to nurturing each student with profound Islamic values, exemplary moral discipline, and high competence in English & modern sciences."</p>
                         <p class="text-xs font-bold text-emerald-900"><i class="fa-solid fa-phone text-amber-600 mr-1"></i> Contact: +8801820270788</p>
                     </div>
@@ -394,40 +385,18 @@
                         <select id="class-result-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
                             <option value="">-- Select Level --</option>
                             <option value="LEVEL-1">LEVEL-1</option>
-                            <option value="LEVEL-2">LEVEL-2</option>
-                            <option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option>
-                            <option value="LEVEL-5">LEVEL-5</option>
-                            <option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option>
-                            <option value="LEVEL-8">LEVEL-8</option>
-                            <option value="LEVEL-9">LEVEL-9</option>
                             <option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Academic Session *</label>
                         <select id="class-session-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
-                            <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-                            <option value="2031">2031</option>
-                            <option value="2032">2032</option>
-                            <option value="2033">2033</option>
-                            <option value="2034">2034</option>
-                            <option value="2035">2035</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Examination Term *</label>
                         <select id="class-exam-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
-                            <option value="Monthly Examination">Monthly Examination</option>
-                            <option value="1st Term Examination">1st Term Examination</option>
-                            <option value="Mid Term Examination">Mid Term Examination</option>
-                            <option value="2nd Term Examination">2nd Term Examination</option>
                             <option value="Annual Examination" selected>Annual Examination</option>
                         </select>
                     </div>
@@ -525,6 +494,7 @@
                     <h5 class="text-sm font-bold text-amber-300 mb-2">Campus Information</h5>
                     <p class="text-gray-300 leading-relaxed"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> Kaptai Rastar Matha, Mohara, Chandgaon</p>
                     <p class="text-gray-300"><i class="fa-solid fa-phone text-amber-400 mr-1"></i> +8801820270788</p>
+                    <a href="admin.html" class="inline-block mt-3 text-emerald-950 bg-amber-400 hover:bg-amber-300 px-3 py-1 rounded font-bold transition"><i class="fa-solid fa-user-shield"></i> Admin Panel Login</a>
                 </div>
             </div>
             <div class="pt-6 text-center text-xs text-gray-400">
@@ -722,7 +692,7 @@
 
             const matches = registeredStudents.filter(s => s.id.includes(q) || s.name.includes(q));
             if(matches.length === 0) {
-                container.innerHTML = `<p class="col-span-2 text-center text-gray-500 font-bold text-xs py-4">কোনো শিক্ষার্থী ডাটা পাওয়া যায়নি।</p>`;
+                container.innerHTML = `<p class="col-span-2 text-center text-gray-500 font-bold text-xs py-4">কোনো শিক্ষার্থী ডাটা পাওয়া যায়নি।</p>`;
                 return;
             }
 
@@ -783,18 +753,20 @@
             }
 
             let tableHeaderHTML = `
-                <tr class="bg-emerald-900 text-white uppercase">
-                    <th style="width:3.5%" class="p-1.5 border border-emerald-700 text-center">SL</th>
-                    <th style="width:8%" class="p-1.5 border border-emerald-700 text-center">Student ID</th>
-                    <th style="width:14%" class="p-1.5 border border-emerald-700 text-left">Student Name</th>
+                <tr class="bg-emerald-900 text-white uppercase text-[9px] md:text-[10px]">
+                    <th class="p-1 border border-emerald-700 text-center w-8">SL</th>
+                    <th class="p-1 border border-emerald-700 text-center w-16">ID</th>
+                    <th class="p-1 border border-emerald-700 text-left min-w-[80px]">Student Name</th>
             `;
-            subjectConfig.forEach(subObj => { tableHeaderHTML += `<th class="p-1.5 border border-emerald-700 text-center leading-tight">${subObj.name}<br><span class="font-normal normal-case text-[9px] text-amber-300">(${subObj.full})</span></th>`; });
-            tableHeaderHTML += `<th style="width:6%" class="p-1.5 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Total</th><th style="width:6%" class="p-1.5 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">GPA</th><th style="width:6%" class="p-1.5 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Grade</th></tr>`;
+            subjectConfig.forEach(subObj => { 
+                tableHeaderHTML += `<th class="p-1 border border-emerald-700 text-center align-middle leading-tight break-words max-w-[70px]">${subObj.name}<br><span class="font-normal normal-case text-[8px] text-amber-300">(${subObj.full})</span></th>`; 
+            });
+            tableHeaderHTML += `<th class="p-1 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Total</th><th class="p-1 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">GPA</th><th class="p-1 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Grade</th></tr>`;
 
             let rowsHTML = '';
             filtered.forEach((s, idx) => {
                 const stats = calculateStudentResultStats(s.marks || []);
-                rowsHTML += `<tr class="text-center border-b border-emerald-200 even:bg-emerald-50/40"><td class="p-1 border font-bold">${idx + 1}</td><td class="p-1 border font-bold text-emerald-950">${s.id}</td><td class="p-1 border text-left font-bold uppercase">${s.name}</td>`;
+                rowsHTML += `<tr class="text-center border-b border-emerald-200 even:bg-emerald-50/40 text-[9px] md:text-[10px]"><td class="p-1 border font-bold">${idx + 1}</td><td class="p-1 border font-bold text-emerald-950">${s.id}</td><td class="p-1 border text-left font-bold uppercase">${s.name}</td>`;
                 subjectConfig.forEach((_, sIdx) => { const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-'; rowsHTML += `<td class="p-1 border font-medium text-emerald-900">${mVal}</td>`; });
                 rowsHTML += `<td class="p-1 border font-extrabold text-amber-700 bg-amber-50">${stats.total}</td><td class="p-1 border font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td><td class="p-1 border font-extrabold text-emerald-900 bg-emerald-50">${stats.grade}</td></tr>`;
             });
@@ -815,8 +787,8 @@
                         <span>Academic Session: <span class="text-amber-800">${selectedSession}</span></span>
                         <span>Total Students: <span class="text-amber-800">${filtered.length}</span></span>
                     </div>
-                    <div class="p-3">
-                        <table class="w-full table-fixed border-collapse border border-emerald-900 text-[10px] md:text-[11px]"><thead>${tableHeaderHTML}</thead><tbody>${rowsHTML}</tbody></table>
+                    <div class="p-2">
+                        <table class="w-full table-auto border-collapse border border-emerald-900 text-[9px] md:text-[10px]"><thead>${tableHeaderHTML}</thead><tbody>${rowsHTML}</tbody></table>
                     </div>
                 </div>
             `;
@@ -854,18 +826,14 @@
             const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             const studentFather = (regS && regS.father) ? regS.father : 'N/A';
             const subjectCount = subjectConfig.length;
-            // Graduated sizing so up to 12-13 subjects still print elegantly
-            // on a single A4 page. Bumped up two Tailwind size-steps per the
-            // authority's feedback that the previous sizing read too small,
-            // using the vertical room freed up by removing the flex gap below.
+            
             const rowPadClass =
                 subjectCount <= 6  ? 'py-4 px-4 text-lg md:text-xl font-bold' :
                 subjectCount <= 8  ? 'py-3 px-3 text-base md:text-lg font-bold' :
                 subjectCount <= 10 ? 'py-2 px-3 text-sm md:text-base font-bold' :
                 subjectCount <= 13 ? 'py-1.5 px-2 text-xs md:text-sm font-bold' :
                                      'py-1 px-1.5 text-[11px] md:text-xs font-bold';
-            // A denser header/spacing layout kicks in once there are enough
-            // subjects that the table needs the extra vertical room.
+            
             const isDenseSheet = subjectCount >= 11;
 
             let subjectRowsHTML = '';
@@ -980,7 +948,7 @@
                                     </div>
                                 </div>
 
-                                <div class="${isDenseSheet ? 'pt-5' : 'pt-8'} flex justify-between text-xs text-gray-800 font-bold relative z-10">
+                                <div class="${isDenseSheet ? 'pt-3' : 'pt-6'} flex justify-between text-xs text-gray-800 font-bold relative z-10">
                                     <div class="text-center">
                                         <div class="w-28 border-t-2 border-gray-600 mb-1"></div>
                                         <span class="font-montserrat text-[11px]">Guardian Signature</span>
