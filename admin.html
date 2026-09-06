@@ -8,7 +8,9 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Updated from 0.10.1: that release has publicly documented, maintainer-acknowledged
+         bugs (blank/half/distorted PDF pages) - https://github.com/eKoopmans/html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
@@ -36,7 +38,7 @@
     <!-- SECURE LOGIN SCREEN -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center bg-emerald-950 px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full border-t-4 border-amber-500 text-center">
-            <img id="login-logo-preview" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="w-20 h-20 mx-auto mb-4 object-contain rounded-full border shadow">
+            <img id="login-logo-preview" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="universal-logo-target w-20 h-20 mx-auto mb-4 object-contain rounded-full border shadow">
             <h2 class="text-xl font-bold text-emerald-950 mb-6">Admin Login</h2>
             <input type="password" id="login-password" class="w-full p-3 border-2 border-emerald-100 rounded-xl mb-4 font-bold text-center outline-none focus:border-emerald-600" placeholder="Enter Password">
             <button onclick="checkAdminLogin()" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 rounded-xl transition shadow-lg">Access Panel</button>
@@ -124,7 +126,14 @@
                         </select>
                     </div>
                     <div><label class="block font-bold mb-1">Mobile</label><input type="tel" id="reg-phone" class="w-full p-2.5 border rounded-xl"></div>
-                    <div><label class="block font-bold mb-1">Photo</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white"></div>
+                    <div>
+                        <label class="block font-bold mb-1">Gender *</label>
+                        <select id="reg-gender" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div><label class="block font-bold mb-1">Photo (optional)</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white"></div>
                     <div>
                         <label class="block font-bold mb-1">Status</label>
                         <select id="reg-status" class="w-full p-2.5 border rounded-xl bg-white font-semibold">
@@ -292,13 +301,10 @@
                     <div><label class="block font-bold mb-1">Father's Name</label><input type="text" id="edit-std-father" required class="w-full p-2.5 border rounded-xl font-semibold uppercase"></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block font-bold mb-1">Level / Class</label>
-                            <select id="edit-std-class" required class="w-full p-2.5 border rounded-xl bg-white font-bold">
-                                <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option>
-                                <option value="LEVEL-3">LEVEL-3</option><option value="LEVEL-4">LEVEL-4</option>
-                                <option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
-                                <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option>
-                                <option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
+                            <label class="block font-bold mb-1">Gender</label>
+                            <select id="edit-std-gender" class="w-full p-2.5 border rounded-xl bg-white font-bold">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
                             </select>
                         </div>
                         <div>
@@ -306,6 +312,18 @@
                             <select id="edit-std-status" class="w-full p-2.5 border rounded-xl bg-white font-bold">
                                 <option value="Active">Active</option>
                                 <option value="Deactivated">Deactivated</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold mb-1">Level / Class</label>
+                            <select id="edit-std-class" required class="w-full p-2.5 border rounded-xl bg-white font-bold">
+                                <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option>
+                                <option value="LEVEL-3">LEVEL-3</option><option value="LEVEL-4">LEVEL-4</option>
+                                <option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
+                                <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option>
+                                <option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
                             </select>
                         </div>
                     </div>
@@ -336,6 +354,16 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Simple original SVG illustrations (Islamic attire: cap + panjabi for
+        // boys, hijab for girls) used as the default cadet photo whenever no
+        // photo is uploaded during registration - matches the madrasah context
+        // instead of a generic silhouette icon. Inline data-URIs so there is
+        // no dependency on any external image host (nothing to ever break).
+        const BOY_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M40%20200%20Q100%20142%20160%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cpath%20d%3D%22M72%20200%20L100%20168%20L128%20200%20Z%22%20fill%3D%22%23fdfdfd%22/%3E%3Crect%20x%3D%2288%22%20y%3D%22122%22%20width%3D%2224%22%20height%3D%2226%22%20rx%3D%227%22%20fill%3D%22%23d9a066%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%2298%22%20rx%3D%2238%22%20ry%3D%2244%22%20fill%3D%22%23e2b183%22/%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%22102%22%20r%3D%227%22%20fill%3D%22%23e2b183%22/%3E%3Ccircle%20cx%3D%22138%22%20cy%3D%22102%22%20r%3D%227%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M61%2070%20A39%2034%200%200%201%20139%2070%20Z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%2270%22%20rx%3D%2239%22%20ry%3D%229%22%20fill%3D%22%23f8fafc%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22/%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2297%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22116%22%20cy%3D%2297%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20113%20Q100%20121%20113%20113%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
+        const GIRL_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M30%20200%20Q42%20132%20100%20130%20Q158%20132%20170%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22104%22%20rx%3D%2236%22%20ry%3D%2242%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M100%2046%20C58%2046%2044%2084%2044%20120%20C44%20141%2054%20153%2062%20161%20L62%20132%20C62%2092%2078%2064%20100%2064%20C122%2064%20138%2092%20138%20132%20L138%20161%20C146%20153%20156%20141%20156%20120%20C156%2084%20142%2046%20100%2046%20Z%22%20fill%3D%22%237c2d12%22/%3E%3Ccircle%20cx%3D%2286%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22114%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20118%20Q100%20126%20113%20118%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
+        function getDefaultAvatarByGender(gender) { return gender === 'Female' ? GIRL_DEFAULT_AVATAR : BOY_DEFAULT_AVATAR; }
+        function isDefaultAvatarPhoto(photo) { return photo === BOY_DEFAULT_AVATAR || photo === GIRL_DEFAULT_AVATAR || photo === 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' || !photo; }
+
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
         let resultPublishStatus = 'PUBLISHED';
         let resultPublishDatetime = '';
@@ -347,14 +375,30 @@
         let sliderImages = [];
         let galleryPhotos = [];
 
+        // Applies the current universal logo to every place it appears in
+        // the admin panel (settings preview, login screen, ID card watermark
+        // targets, and the browser tab favicon) - fixes the favicon and
+        // login-screen logo never updating previously.
+        function applyAdminUniversalLogo() {
+            document.querySelectorAll('.universal-logo-target').forEach(img => img.src = universalLogo);
+            const favicon = document.getElementById('dynamic-favicon');
+            if (favicon) favicon.href = universalLogo;
+        }
+
+        // Fetch the current universal logo once immediately on page load, so
+        // the login screen (before any password is entered) already shows
+        // the correct logo instead of the hardcoded default.
+        db.ref('settings/universalLogo').once('value').then(snap => {
+            if (snap.exists()) { universalLogo = snap.val(); applyAdminUniversalLogo(); }
+        }).catch(() => {});
+
         function checkAdminLogin() {
             const pass = document.getElementById('login-password').value;
             const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
             if (pass === adminPass) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
-                document.getElementById('admin-logo-preview').src = universalLogo;
-                document.getElementById('login-logo-preview').src = universalLogo;
+                applyAdminUniversalLogo();
                 initAdminFirebaseSync();
             } else {
                 alert('Incorrect Admin Password!');
@@ -365,9 +409,7 @@
             db.ref('settings/universalLogo').on('value', snap => {
                 if (snap.exists()) {
                     universalLogo = snap.val();
-                    document.querySelectorAll('.universal-logo-target').forEach(img => img.src = universalLogo);
-                    const adPreview = document.getElementById('admin-logo-preview');
-                    if(adPreview) adPreview.src = universalLogo;
+                    applyAdminUniversalLogo();
                 }
             });
             db.ref('settings/publishStatus').on('value', snap => {
@@ -455,9 +497,7 @@
                     universalLogo = compressedBase64;
                     db.ref('settings/universalLogo').set(universalLogo);
                     localStorage.setItem('annur_universal_logo', universalLogo);
-                    document.querySelectorAll('.universal-logo-target').forEach(img => img.src = universalLogo);
-                    const adPreview = document.getElementById('admin-logo-preview');
-                    if(adPreview) adPreview.src = universalLogo;
+                    applyAdminUniversalLogo();
                     alert('Logo updated globally!');
                     fileInput.value = '';
                 });
@@ -496,6 +536,7 @@
             const father = document.getElementById('reg-father').value.trim().toUpperCase();
             const stdClass = document.getElementById('reg-class').value;
             const phone = document.getElementById('reg-phone').value.trim() || 'N/A';
+            const gender = document.getElementById('reg-gender').value;
             const status = document.getElementById('reg-status').value;
             const photoInput = document.getElementById('reg-photo-file');
 
@@ -504,10 +545,10 @@
                 btn.innerHTML = 'Register Cadet'; btn.disabled = false; return;
             }
 
-            let photoBase64 = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            let photoBase64 = getDefaultAvatarByGender(gender);
             if (photoInput.files && photoInput.files[0]) photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
 
-            const newStudent = { id, name, father, class: stdClass, phone, status, photo: photoBase64 };
+            const newStudent = { id, name, father, class: stdClass, phone, gender, status, photo: photoBase64 };
             registeredStudents.unshift(newStudent);
             localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
             renderStudentDBTable(); syncRegisteredStudentsToResults(false);
@@ -563,6 +604,7 @@
             document.getElementById('edit-std-father').value = s.father || '';
             document.getElementById('edit-std-class').value = s.class;
             document.getElementById('edit-std-phone').value = s.phone;
+            document.getElementById('edit-std-gender').value = s.gender || 'Male';
             document.getElementById('edit-std-status').value = s.status || 'Active';
             document.getElementById('student-edit-modal').classList.remove('hidden');
         }
@@ -571,14 +613,19 @@
             e.preventDefault();
             const realIdx = document.getElementById('edit-std-realindex').value;
             const s = registeredStudents[realIdx]; if(!s) return;
+            const newGender = document.getElementById('edit-std-gender').value;
+            // If no real photo was ever uploaded (still on a default avatar),
+            // regenerate it to match a corrected gender selection.
+            const newPhoto = isDefaultAvatarPhoto(s.photo) ? getDefaultAvatarByGender(newGender) : s.photo;
             const updatedData = {
                 id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
                 name: document.getElementById('edit-std-name').value.trim().toUpperCase(),
                 father: document.getElementById('edit-std-father').value.trim().toUpperCase(),
                 class: document.getElementById('edit-std-class').value,
                 phone: document.getElementById('edit-std-phone').value.trim(),
+                gender: newGender,
                 status: document.getElementById('edit-std-status').value,
-                photo: s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+                photo: newPhoto
             };
             registeredStudents[realIdx] = updatedData;
             localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
