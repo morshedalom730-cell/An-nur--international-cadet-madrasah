@@ -123,11 +123,15 @@
         }
 
         @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
             body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; }
             body * { visibility: hidden !important; }
             #printable-area, #printable-area * { visibility: visible !important; }
             #printable-area { 
-                display: block !important; /* Critical Fix for Blank Print Page */
                 position: absolute !important; 
                 left: 0 !important; 
                 top: 0 !important; 
@@ -264,7 +268,7 @@
                     </div>
                     <div class="space-y-2 text-center md:text-left">
                         <span class="bg-amber-500 text-emerald-950 text-xs px-3 py-0.5 rounded-full font-bold">Founder Principal</span>
-                        <h3 class="text-xl font-bold text-emerald-950">Hafez Maulana Mufti আব্দুল মাজেদ</h3>
+                        <h3 class="text-xl font-bold text-emerald-950">Hafez Maulana Mufti Abdul Majed</h3>
                         <p class="text-xs md:text-sm text-gray-600 leading-relaxed">"We are committed to nurturing each student with profound Islamic values, exemplary moral discipline, and high competence in English & modern sciences."</p>
                         <p class="text-xs font-bold text-emerald-900"><i class="fa-solid fa-phone text-amber-600 mr-1"></i> Contact: +8801820270788</p>
                     </div>
@@ -311,6 +315,14 @@
                         <input type="tel" required placeholder="Guardian Contact Number" class="w-full p-2.5 border rounded-xl">
                         <select required class="w-full p-2.5 border rounded-xl bg-emerald-50 font-bold">
                             <option value="LEVEL-1">LEVEL-1</option>
+                            <option value="LEVEL-2">LEVEL-2</option>
+                            <option value="LEVEL-3">LEVEL-3</option>
+                            <option value="LEVEL-4">LEVEL-4</option>
+                            <option value="LEVEL-5">LEVEL-5</option>
+                            <option value="LEVEL-6">LEVEL-6</option>
+                            <option value="LEVEL-7">LEVEL-7</option>
+                            <option value="LEVEL-8">LEVEL-8</option>
+                            <option value="LEVEL-9">LEVEL-9</option>
                             <option value="LEVEL-10">LEVEL-10</option>
                         </select>
                         <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-xl shadow-lg">Submit Application</button>
@@ -357,6 +369,14 @@
                                     <option value="2025">2025</option>
                                     <option value="2026" selected>2026</option>
                                     <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                    <option value="2031">2031</option>
+                                    <option value="2032">2032</option>
+                                    <option value="2033">2033</option>
+                                    <option value="2034">2034</option>
+                                    <option value="2035">2035</option>
                                 </select>
                             </div>
                         </div>
@@ -365,7 +385,7 @@
                             <select id="search-student-exam" class="w-full p-2.5 border rounded-xl bg-emerald-50 font-semibold cursor-pointer">
                                 <option value="Monthly Examination">Monthly Examination</option>
                                 <option value="1st Term Examination">1st Term Examination</option>
-                                <option value="Mid Term Examination">Mid Term Examination</option>
+                                <option value="Half Yearly Examination">Half Yearly Examination</option>
                                 <option value="2nd Term Examination">2nd Term Examination</option>
                                 <option value="Annual Examination" selected>Annual Examination</option>
                             </select>
@@ -385,18 +405,40 @@
                         <select id="class-result-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
                             <option value="">-- Select Level --</option>
                             <option value="LEVEL-1">LEVEL-1</option>
+                            <option value="LEVEL-2">LEVEL-2</option>
+                            <option value="LEVEL-3">LEVEL-3</option>
+                            <option value="LEVEL-4">LEVEL-4</option>
+                            <option value="LEVEL-5">LEVEL-5</option>
+                            <option value="LEVEL-6">LEVEL-6</option>
+                            <option value="LEVEL-7">LEVEL-7</option>
+                            <option value="LEVEL-8">LEVEL-8</option>
+                            <option value="LEVEL-9">LEVEL-9</option>
                             <option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Academic Session *</label>
                         <select id="class-session-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
+                            <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                            <option value="2031">2031</option>
+                            <option value="2032">2032</option>
+                            <option value="2033">2033</option>
+                            <option value="2034">2034</option>
+                            <option value="2035">2035</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-gray-600 mb-1">Examination Term *</label>
                         <select id="class-exam-dropdown" class="p-2.5 border rounded-xl w-full bg-emerald-50 font-bold text-emerald-950 cursor-pointer">
+                            <option value="Monthly Examination">Monthly Examination</option>
+                            <option value="1st Term Examination">1st Term Examination</option>
+                            <option value="Half Yearly Examination">Half Yearly Examination</option>
+                            <option value="2nd Term Examination">2nd Term Examination</option>
                             <option value="Annual Examination" selected>Annual Examination</option>
                         </select>
                     </div>
@@ -443,7 +485,7 @@
                         <div class="w-10 h-10 bg-emerald-100 text-emerald-900 rounded-xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-location-dot"></i></div>
                         <div>
                             <h4 class="font-bold text-emerald-950">Campus Address:</h4>
-                            <p class="text-gray-600 mt-0.5">Kaptai Rastar Matha, Mohara, Chandgaon, Chattogram</p>
+                            <p class="text-gray-600 mt-0.5">Kaptai Rastar Matha, Mohara, Chandgaon</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -1096,6 +1138,11 @@
                            though the copied stylesheet above hides #printable-area
                            (an id that doesn't exist inside this isolated frame). */
                         html, body, .print-safe-wrap, .print-safe-wrap * { visibility: visible !important; }
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                        }
                     </style>
                 </head>
                 <body>
