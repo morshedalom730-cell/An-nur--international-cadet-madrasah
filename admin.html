@@ -296,6 +296,13 @@
                 </div>
                 <form onsubmit="saveEditedStudentData(event)" class="space-y-3 text-xs">
                     <input type="hidden" id="edit-std-realindex">
+                    <div class="flex items-center gap-3">
+                        <img id="edit-std-photo-preview" src="" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-700 shrink-0" alt="Current Photo">
+                        <div class="flex-grow">
+                            <label class="block font-bold mb-1">Change Photo (optional)</label>
+                            <input type="file" id="edit-std-photo-file" accept="image/*" onchange="previewEditStudentPhoto(event)" class="w-full p-1.5 border rounded-xl bg-white text-[11px]">
+                        </div>
+                    </div>
                     <div><label class="block font-bold mb-1">Student ID</label><input type="text" id="edit-std-id" required class="w-full p-2.5 border rounded-xl font-bold uppercase"></div>
                     <div><label class="block font-bold mb-1">Cadet Full Name</label><input type="text" id="edit-std-name" required class="w-full p-2.5 border rounded-xl font-semibold uppercase"></div>
                     <div><label class="block font-bold mb-1">Father's Name</label><input type="text" id="edit-std-father" required class="w-full p-2.5 border rounded-xl font-semibold uppercase"></div>
@@ -363,6 +370,15 @@
         const GIRL_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M30%20200%20Q42%20132%20100%20130%20Q158%20132%20170%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22104%22%20rx%3D%2236%22%20ry%3D%2242%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M100%2046%20C58%2046%2044%2084%2044%20120%20C44%20141%2054%20153%2062%20161%20L62%20132%20C62%2092%2078%2064%20100%2064%20C122%2064%20138%2092%20138%20132%20L138%20161%20C146%20153%20156%20141%20156%20120%20C156%2084%20142%2046%20100%2046%20Z%22%20fill%3D%22%237c2d12%22/%3E%3Ccircle%20cx%3D%2286%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22114%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20118%20Q100%20126%20113%20118%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
         function getDefaultAvatarByGender(gender) { return gender === 'Female' ? GIRL_DEFAULT_AVATAR : BOY_DEFAULT_AVATAR; }
         function isDefaultAvatarPhoto(photo) { return photo === BOY_DEFAULT_AVATAR || photo === GIRL_DEFAULT_AVATAR || photo === 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' || !photo; }
+        let pendingEditPhotoBase64 = null;
+        function previewEditStudentPhoto(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            compressImage(file, 250, 250, 0.7).then(base64 => {
+                pendingEditPhotoBase64 = base64;
+                document.getElementById('edit-std-photo-preview').src = base64;
+            });
+        }
 
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
         let resultPublishStatus = 'PUBLISHED';
@@ -606,17 +622,20 @@
             document.getElementById('edit-std-phone').value = s.phone;
             document.getElementById('edit-std-gender').value = s.gender || 'Male';
             document.getElementById('edit-std-status').value = s.status || 'Active';
+            document.getElementById('edit-std-photo-preview').src = s.photo || BOY_DEFAULT_AVATAR;
+            document.getElementById('edit-std-photo-file').value = '';
+            pendingEditPhotoBase64 = null;
             document.getElementById('student-edit-modal').classList.remove('hidden');
         }
-        function closeStudentEditModal() { document.getElementById('student-edit-modal').classList.add('hidden'); }
+        function closeStudentEditModal() { document.getElementById('student-edit-modal').classList.add('hidden'); pendingEditPhotoBase64 = null; }
         function saveEditedStudentData(e) {
             e.preventDefault();
             const realIdx = document.getElementById('edit-std-realindex').value;
             const s = registeredStudents[realIdx]; if(!s) return;
             const newGender = document.getElementById('edit-std-gender').value;
-            // If no real photo was ever uploaded (still on a default avatar),
-            // regenerate it to match a corrected gender selection.
-            const newPhoto = isDefaultAvatarPhoto(s.photo) ? getDefaultAvatarByGender(newGender) : s.photo;
+            // Priority: a newly-uploaded photo this session > keep the existing
+            // real photo > regenerate the gender avatar if it was still a default.
+            const newPhoto = pendingEditPhotoBase64 || (isDefaultAvatarPhoto(s.photo) ? getDefaultAvatarByGender(newGender) : s.photo);
             const updatedData = {
                 id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
                 name: document.getElementById('edit-std-name').value.trim().toUpperCase(),
