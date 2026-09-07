@@ -8,8 +8,6 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Updated from 0.10.1: that release has publicly documented, maintainer-acknowledged
-         bugs (blank/half/distorted PDF pages) - https://github.com/eKoopmans/html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -570,7 +568,7 @@
             btn.disabled = true;
 
             try {
-                // HTML ইনপুট থেকে ডাটা নেওয়া
+                // HTML ইনপুট থেকে ডাটা নেওয়া
                 const idInput = document.getElementById('reg-id');
                 const nameInput = document.getElementById('reg-name');
                 const fatherInput = document.getElementById('reg-father');
@@ -595,7 +593,7 @@
                 // ডুপ্লিকেট এন্ট্রি চেক
                 const isDuplicate = registeredStudents.some(s => s.id === id);
                 if (isDuplicate) {
-                    alert(`সতর্কতা: '${id}' আইডি দিয়ে ইতোমধ্যে একজন শিক্ষার্থী নিবন্ধিত আছে!`);
+                    alert(`সতর্কতা: '${id}' আইডি দিয়ে ইতোমধ্যে একজন শিক্ষার্থী নিবন্ধিত আছে!`);
                     btn.innerHTML = originalBtnText;
                     btn.disabled = false;
                     return;
@@ -632,7 +630,7 @@
                 .then(() => console.log('Saved to cloud successfully'))
                 .catch(err => console.error('Cloud save failed:', err));
 
-                // ৫. ফর্ম ক্লিয়ার করা ও বাটন রিসেট
+                // ৫. ফর্ম ক্লিয়ার করা ও বাটন রিসেট
                 if(nameInput) nameInput.value = '';
                 if(fatherInput) fatherInput.value = '';
                 if(idInput) idInput.value = '';
@@ -641,7 +639,7 @@
 
                 btn.innerHTML = originalBtnText;
                 btn.disabled = false;
-                alert(`ক্যাডেট ${name} (ID: ${id}) সফলভাবে নিবন্ধিত হয়েছে!`);
+                alert(`ক্যাডেট ${name} (ID: ${id}) সফলভাবে নিবন্ধিত হয়েছে!`);
 
             } catch (error) {
                 // কোনো হিডেন এরর থাকলে স্ক্রিনে দেখাবে
@@ -650,6 +648,60 @@
                 btn.innerHTML = originalBtnText;
                 btn.disabled = false;
             }
+        }
+
+        // THE MISSING RENDER FUNCTION ADDED BACK
+        function renderStudentDBTable() {
+            const tbody = document.getElementById('student-db-table-body');
+            const badge = document.getElementById('total-registered-badge');
+            const personalSearch = document.getElementById('student-db-search-personal') ? document.getElementById('student-db-search-personal').value.toUpperCase().trim() : '';
+            const classSearch = document.getElementById('student-db-search-class') ? document.getElementById('student-db-search-class').value : 'ALL';
+            
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            if(badge) badge.innerText = `Total Registered: ${registeredStudents.length}`;
+
+            let filtered = registeredStudents;
+            if (classSearch !== 'ALL') filtered = filtered.filter(s => s.class === classSearch);
+            if (personalSearch !== '') {
+                filtered = filtered.filter(s => 
+                    s.id.includes(personalSearch) || 
+                    s.name.includes(personalSearch) || 
+                    s.phone.includes(personalSearch)
+                );
+            }
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500 font-bold">No data found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((s) => {
+                const realIdx = registeredStudents.indexOf(s);
+                const statusBadge = s.status === 'Deactivated' ? 
+                    '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Discharged</span>' : 
+                    '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Active</span>';
+                
+                const photoSrc = s.photo ? s.photo : (s.gender === 'Female' ? GIRL_DEFAULT_AVATAR : BOY_DEFAULT_AVATAR);
+
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-emerald-50 text-xs">
+                        <td class="p-2 border"><img src="${photoSrc}" class="w-8 h-8 rounded-full object-cover border"></td>
+                        <td class="p-2 border font-bold text-emerald-950">${s.id}</td>
+                        <td class="p-2 border font-bold">${s.name}</td>
+                        <td class="p-2 border">${s.father}</td>
+                        <td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
+                        <td class="p-2 border font-semibold">${s.phone}</td>
+                        <td class="p-2 border">${statusBadge}</td>
+                        <td class="p-2 border text-center whitespace-nowrap space-x-1">
+                            <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i> Print</button>
+                            <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
         }
 
         // EDIT STUDENT
