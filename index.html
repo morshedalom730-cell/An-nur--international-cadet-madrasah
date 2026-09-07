@@ -130,13 +130,19 @@
             }
             body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; }
             body * { visibility: hidden !important; }
+            
             #printable-area, #printable-area * { visibility: visible !important; }
+            
+            /* CRITICAL FIX FOR BLANK PAGE & ALIGNMENT */
             #printable-area { 
+                display: block !important; 
                 position: absolute !important; 
                 left: 0 !important; 
                 top: 0 !important; 
                 width: 100% !important; 
             }
+            
+            /* Tabulation Sheet Print Settings */
             @page { size: A4 landscape; margin: 10mm; }
             .no-print { display: none !important; }
         }
@@ -149,7 +155,7 @@
         <div class="container mx-auto px-4 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-4">
                 <span><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> কাপ্তাই রাস্তার মাথা, মোহরা, চান্দগাঁও, চট্টগ্রাম</span>
-                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1"></i> সকাল ৮:০০ - বিকাল ৫:০০</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1"></i> সকাল ۸:০০ - বিকাল ৫:০০</span>
             </div>
             <div class="flex items-center gap-3">
                 <a href="tel:+8801820270788" class="hover:text-amber-300 font-bold"><i class="fa-solid fa-phone text-amber-400 mr-1"></i> +8801820270788</a>
@@ -448,7 +454,7 @@
                 <div id="class-sheet-output" class="overflow-x-auto mt-6"></div>
             </div>
 
-            <div id="printable-area" class="mt-4 hidden"></div>
+            <div id="printable-area" class="mt-4 hidden no-print"></div>
         </div>
 
         <!-- 6. PUBLIC CADET VERIFICATION -->
@@ -835,7 +841,10 @@
                 </div>
             `;
             output.innerHTML = sheetHTML + `<div class="mt-3 no-print"><button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md w-full"><i class="fa-solid fa-file-pdf mr-1"></i> Print Tabulation Sheet</button></div>`;
+            
+            // Render to printable area AND REMOVE THE HIDDEN CLASS so it shows up on print!
             printArea.innerHTML = sheetHTML;
+            printArea.classList.remove('hidden'); 
         }
 
         // 100% RELIABLE SINGLE-PAGE TRANSCRIPT SEARCH & PDF EXPORT
