@@ -383,10 +383,33 @@
         // real data from saving.
         function safeCacheStudentsLocally() {
             try {
-                localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
+                // Photos are base64 (tens of KB each) and are what actually
+                // fills up the ~5-10MB browser localStorage quota - not the
+                // student count itself. Once the quota is hit, writes for
+                // ALL students (not just new ones) start failing, which is
+                // why registration used to appear to "stop working" after
+                // only a dozen or so cadets even though Firebase itself had
+                // no such limit. Firebase already stores the full record
+                // with photo, so the local cache (only a fast-load-on-next-
+                // visit convenience copy) doesn't need the photo at all -
+                // stripping it here lets far more students fit locally.
+                const cacheSafeStudents = registeredStudents.map(({ photo, ...rest }) => rest);
+                localStorage.setItem('annur_final_db_2026', JSON.stringify(cacheSafeStudents));
             } catch (err) {
                 console.warn('Local cache skipped (browser storage full) - Firebase save is unaffected:', err);
                 try { localStorage.removeItem('annur_final_db_2026'); } catch (e2) {}
+            }
+        }
+        // Same crash-safe pattern as safeCacheStudentsLocally, applied to the
+        // results/marks cache: this write was previously unprotected, so once
+        // localStorage filled up (see above) it could throw an uncaught error
+        // and interrupt whatever was running at the time.
+        function safeCacheResultsLocally() {
+            try {
+                localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
+            } catch (err) {
+                console.warn('Local results cache skipped (browser storage full) - Firebase save is unaffected:', err);
+                try { localStorage.removeItem('annur_final_results_2026'); } catch (e2) {}
             }
         }
         let pendingEditPhotoBase64 = null;
@@ -473,7 +496,7 @@
                         Object.values(rawData).forEach(item => { if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item); });
                     }
                     excelStudents = Array.from(uniqueMap.values());
-                    localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
+                    safeCacheResultsLocally();
                 }
                 renderExcelTable();
             });
@@ -821,7 +844,7 @@
         function deleteExcelRow(realIdx) {
             if (confirm('Delete this result row?')) {
                 const removedStudent = excelStudents.splice(realIdx, 1)[0];
-                localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents)); renderExcelTable();
+                safeCacheResultsLocally(); renderExcelTable();
                 if (removedStudent && removedStudent.id) db.ref('results/' + removedStudent.id).remove();
             }
         }
@@ -852,7 +875,7 @@
             });
 
             excelStudents = [...otherClassStudents, ...updatedCurrentClassStudents];
-            localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
+            safeCacheResultsLocally();
             updatedCurrentClassStudents.forEach(item => { db.ref('results/' + item.id).set(item); });
             renderExcelTable();
             if(showAlert) alert(`${currentSelectedClass} Results saved to Cloud!`);
