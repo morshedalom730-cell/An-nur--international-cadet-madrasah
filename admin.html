@@ -8,6 +8,8 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Updated from 0.10.1: that release has publicly documented, maintainer-acknowledged
+         bugs (blank/half/distorted PDF pages) - https://github.com/eKoopmans/html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -559,145 +561,69 @@
         }
 
         // REGISTRATION
-        // 100% RELIABLE & CRASH-PROOF CADET REGISTRATION
         async function handleRegisterStudent(e) {
             e.preventDefault();
             const btn = document.getElementById('reg-submit-btn');
-            const originalBtnText = btn.innerHTML; // বাটন টেক্সট সেভ রাখা
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...';
-            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...'; btn.disabled = true;
 
-            try {
-                // HTML ইনপুট থেকে ডাটা নেওয়া
-                const idInput = document.getElementById('reg-id');
-                const nameInput = document.getElementById('reg-name');
-                const fatherInput = document.getElementById('reg-father');
-                const classInput = document.getElementById('reg-class');
-                const phoneInput = document.getElementById('reg-phone');
-                const statusInput = document.getElementById('reg-status');
-                const photoInput = document.getElementById('reg-photo-file');
-                
-                // আপনার যুক্ত করা Gender ফিল্ড চেক করা (না থাকলে N/A বসবে)
-                const genderInput = document.getElementById('reg-gender'); 
-                const genderVal = genderInput ? genderInput.value : 'N/A';
+            const id = document.getElementById('reg-id').value.trim().toUpperCase();
+            const name = document.getElementById('reg-name').value.trim().toUpperCase();
+            const father = document.getElementById('reg-father').value.trim().toUpperCase();
+            const stdClass = document.getElementById('reg-class').value;
+            const phone = document.getElementById('reg-phone').value.trim() || 'N/A';
+            const gender = document.getElementById('reg-gender').value;
+            const status = document.getElementById('reg-status').value;
+            const photoInput = document.getElementById('reg-photo-file');
 
-                const id = idInput ? idInput.value.trim().toUpperCase() : '';
-                const name = nameInput ? nameInput.value.trim().toUpperCase() : '';
-                const father = fatherInput ? fatherInput.value.trim().toUpperCase() : '';
-                const stdClass = classInput ? classInput.value : 'LEVEL-1';
-                const phone = phoneInput ? phoneInput.value.trim() || 'N/A' : 'N/A';
-                const status = statusInput ? statusInput.value : 'Active';
-
-                if (!id || !name) throw new Error("ID and Name are missing!");
-
-                // ডুপ্লিকেট এন্ট্রি চেক
-                const isDuplicate = registeredStudents.some(s => s.id === id);
-                if (isDuplicate) {
-                    alert(`সতর্কতা: '${id}' আইডি দিয়ে ইতোমধ্যে একজন শিক্ষার্থী নিবন্ধিত আছে!`);
-                    btn.innerHTML = originalBtnText;
-                    btn.disabled = false;
-                    return;
-                }
-
-                // ছবি কমপ্রেস করা
-                let photoBase64 = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-                if (photoInput && photoInput.files && photoInput.files[0]) {
-                    photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
-                }
-
-                // নতুন ডাটা অবজেক্ট তৈরি
-                const newStudent = { 
-                    id, name, father, class: stdClass, phone, status, gender: genderVal, photo: photoBase64 
-                };
-
-                // ১. ডাটাবেজ অ্যারেতে পুশ করা
-                registeredStudents.unshift(newStudent);
-                
-                // ২. লোকাল স্টোরেজ সেভ (মেমোরি ফুল হলে যেন ক্র্যাশ না করে তাই Try-Catch)
-                try {
-                    localStorage.setItem('annur_final_db_2026', JSON.stringify(registeredStudents));
-                    localStorage.setItem('annur_sticky_class', stdClass);
-                } catch (storageErr) {
-                    console.warn("Local storage is full. Student saved to Cloud only.");
-                }
-
-                // ৩. টেবিল ও রেজাল্ট সিঙ্ক আপডেট
-                renderStudentDBTable();
-                syncRegisteredStudentsToResults(false);
-
-                // ৪. ক্লাউডে সেভ করা (Background Process - ইন্টারনেটের জন্য বাটন আটকে থাকবে না)
-                db.ref('students/' + id).set(newStudent)
-                .then(() => console.log('Saved to cloud successfully'))
-                .catch(err => console.error('Cloud save failed:', err));
-
-                // ৫. ফর্ম ক্লিয়ার করা ও বাটন রিসেট
-                if(nameInput) nameInput.value = '';
-                if(fatherInput) fatherInput.value = '';
-                if(idInput) idInput.value = '';
-                if(phoneInput) phoneInput.value = '';
-                if(photoInput) photoInput.value = '';
-
-                btn.innerHTML = originalBtnText;
-                btn.disabled = false;
-                alert(`ক্যাডেট ${name} (ID: ${id}) সফলভাবে নিবন্ধিত হয়েছে!`);
-
-            } catch (error) {
-                // কোনো হিডেন এরর থাকলে স্ক্রিনে দেখাবে
-                console.error("Registration Error:", error);
-                alert("Technical Error: " + error.message);
-                btn.innerHTML = originalBtnText;
-                btn.disabled = false;
+            if (registeredStudents.some(s => s.id === id)) {
+                alert(`ID '${id}' is already registered!`);
+                btn.innerHTML = 'Register Cadet'; btn.disabled = false; return;
             }
+
+            let photoBase64 = getDefaultAvatarByGender(gender);
+            if (photoInput.files && photoInput.files[0]) photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
+
+            const newStudent = { id, name, father, class: stdClass, phone, gender, status, photo: photoBase64 };
+            registeredStudents.unshift(newStudent);
+            safeCacheStudentsLocally();
+            renderStudentDBTable(); syncRegisteredStudentsToResults(false);
+
+            db.ref('students/' + id).set(newStudent).then(() => {
+                document.getElementById('reg-name').value = ''; document.getElementById('reg-father').value = '';
+                document.getElementById('reg-id').value = ''; document.getElementById('reg-phone').value = '';
+                photoInput.value = ''; btn.innerHTML = 'Register Cadet'; btn.disabled = false;
+                alert('Registered Successfully!');
+            }).catch(err => { btn.innerHTML = 'Register Cadet'; btn.disabled = false; alert('Saved locally.'); });
         }
 
-        // THE MISSING RENDER FUNCTION ADDED BACK
         function renderStudentDBTable() {
             const tbody = document.getElementById('student-db-table-body');
             const badge = document.getElementById('total-registered-badge');
             const personalSearch = document.getElementById('student-db-search-personal') ? document.getElementById('student-db-search-personal').value.toUpperCase().trim() : '';
             const classSearch = document.getElementById('student-db-search-class') ? document.getElementById('student-db-search-class').value : 'ALL';
             
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
+            if(!tbody) return; tbody.innerHTML = '';
             if(badge) badge.innerText = `Total Registered: ${registeredStudents.length}`;
 
             let filtered = registeredStudents;
             if (classSearch !== 'ALL') filtered = filtered.filter(s => s.class === classSearch);
-            if (personalSearch !== '') {
-                filtered = filtered.filter(s => 
-                    s.id.includes(personalSearch) || 
-                    s.name.includes(personalSearch) || 
-                    s.phone.includes(personalSearch)
-                );
-            }
+            if (personalSearch !== '') filtered = filtered.filter(s => s.id.includes(personalSearch) || s.name.includes(personalSearch) || s.phone.includes(personalSearch));
 
-            if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500 font-bold">No data found.</td></tr>`;
-                return;
-            }
+            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500 font-bold">No data found.</td></tr>`; return; }
 
             filtered.forEach((s) => {
                 const realIdx = registeredStudents.indexOf(s);
-                const statusBadge = s.status === 'Deactivated' ? 
-                    '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Discharged</span>' : 
-                    '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Active</span>';
-                
-                const photoSrc = s.photo ? s.photo : (s.gender === 'Female' ? GIRL_DEFAULT_AVATAR : BOY_DEFAULT_AVATAR);
-
+                const statusBadge = s.status === 'Deactivated' ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Discharged</span>' : '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Active</span>';
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-emerald-50 text-xs">
-                        <td class="p-2 border"><img src="${photoSrc}" class="w-8 h-8 rounded-full object-cover border"></td>
-                        <td class="p-2 border font-bold text-emerald-950">${s.id}</td>
-                        <td class="p-2 border font-bold">${s.name}</td>
-                        <td class="p-2 border">${s.father}</td>
-                        <td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
-                        <td class="p-2 border font-semibold">${s.phone}</td>
-                        <td class="p-2 border">${statusBadge}</td>
+                        <td class="p-2 border"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border"></td>
+                        <td class="p-2 border font-bold text-emerald-950">${s.id}</td><td class="p-2 border font-bold">${s.name}</td>
+                        <td class="p-2 border">${s.father}</td><td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
+                        <td class="p-2 border font-semibold">${s.phone}</td><td class="p-2 border">${statusBadge}</td>
                         <td class="p-2 border text-center whitespace-nowrap space-x-1">
                             <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i> Print</button>
-                            <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
