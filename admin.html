@@ -611,12 +611,31 @@
             safeCacheStudentsLocally();
             renderStudentDBTable(); syncRegisteredStudentsToResults(false);
 
-            db.ref('students/' + id).set(newStudent).then(() => {
+            const resetRegisterButton = () => {
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-father').value = '';
                 document.getElementById('reg-id').value = ''; document.getElementById('reg-phone').value = '';
                 photoInput.value = ''; btn.innerHTML = 'Register Cadet'; btn.disabled = false;
+            };
+            // db.ref().set() only resolves once Firebase's server acknowledges
+            // the write. If the connection to Firebase is slow, blocked, or
+            // offline, that ack never arrives and the promise never settles -
+            // which used to leave the button stuck on "Saving..." forever even
+            // though the record was already saved locally above. Racing the
+            // write against a timeout guarantees the button always recovers,
+            // and the record still syncs to Firebase automatically in the
+            // background as soon as a connection becomes available.
+            const cloudSaveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000));
+            Promise.race([db.ref('students/' + id).set(newStudent), cloudSaveTimeout]).then(() => {
+                resetRegisterButton();
                 alert('Registered Successfully!');
-            }).catch(err => { btn.innerHTML = 'Register Cadet'; btn.disabled = false; alert('Saved locally.'); });
+            }).catch(err => {
+                resetRegisterButton();
+                if (err && err.message === 'timeout') {
+                    alert('Saved locally. Cloud sync is taking longer than usual - check your internet connection; it will sync automatically once connected.');
+                } else {
+                    alert('Saved locally.');
+                }
+            });
         }
 
         function renderStudentDBTable() {
@@ -776,6 +795,62 @@
         }
 
         // RESULTS
+        // NCTB-style grading scale (used across Bangladeshi madrasah/school
+        // results): converts a subject's percentage into a grade point (GP)
+        // and whether it counts as a fail.
+        function getGradePoint(percentage) {
+            if (percentage >= 80) return { point: 5.00, isFail: false };
+            if (percentage >= 70) return { point: 4.00, isFail: false };
+            if (percentage >= 60) return { point: 3.50, isFail: false };
+            if (percentage >= 50) return { point: 3.00, isFail: false };
+            if (percentage >= 40) return { point: 2.00, isFail: false };
+            if (percentage >= 33) return { point: 1.00, isFail: false };
+            return { point: 0.00, isFail: true };
+        }
+        function getLetterGrade(gpa) {
+            if (gpa >= 5.00) return 'A+';
+            if (gpa >= 4.00) return 'A';
+            if (gpa >= 3.50) return 'A-';
+            if (gpa >= 3.00) return 'B';
+            if (gpa >= 2.00) return 'C';
+            if (gpa >= 1.00) return 'D';
+            return 'F';
+        }
+        // This function was being called from renderExcelTable /
+        // renderSavedResultsViewTable but was missing from the file entirely,
+        // which threw "calculateStudentResultStats is not defined" the moment
+        // any of those renders ran. Since syncRegisteredStudentsToResults ->
+        // renderExcelTable is called during student registration (before the
+        // Firebase save step), that crash stopped Register Cadet partway
+        // through - the record never reached Firebase and the button never
+        // got reset, so it stayed on "Saving..." forever.
+        function calculateStudentResultStats(marks) {
+            let total = 0, mainSum = 0, mainCount = 0, bonus = 0, hasFail = false, anyMarkEntered = false;
+            (marks || []).forEach((mark, idx) => {
+                const subject = subjectConfig[idx];
+                if (!subject) return;
+                const raw = String(mark).trim();
+                if (raw === '') return;
+                const markNum = parseFloat(raw);
+                if (isNaN(markNum)) return;
+                anyMarkEntered = true;
+                total += markNum;
+                const fullMark = subject.full || 100;
+                const percentage = (markNum / fullMark) * 100;
+                const { point, isFail } = getGradePoint(percentage);
+                if (subject.type === 'Optional') {
+                    bonus += Math.max(0, point - 2);
+                } else {
+                    mainSum += point; mainCount++;
+                    if (isFail) hasFail = true;
+                }
+            });
+            if (!anyMarkEntered) return { total: 0, gpa: '0.00', grade: 'N/A' };
+            if (hasFail || mainCount === 0) return { total, gpa: '0.00', grade: 'F' };
+            let gpa = (mainSum / mainCount) + bonus;
+            if (gpa > 5) gpa = 5;
+            return { total, gpa: gpa.toFixed(2), grade: getLetterGrade(gpa) };
+        }
         function syncRegisteredStudentsToResults(showAlert = true) {
             registeredStudents.forEach(reg => {
                 const existing = excelStudents.find(s => s.id === reg.id);
