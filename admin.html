@@ -8,8 +8,6 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Updated from 0.10.1: that release has publicly documented, maintainer-acknowledged
-         bugs (blank/half/distorted PDF pages) - https://github.com/eKoopmans/html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -18,7 +16,6 @@
     <style>
         body { font-family: 'Inter', 'Anek Bangla', sans-serif; background-color: #f8faf9; }
         
-        /* Exact ID Card styling */
         .id-card-exact-replica {
             width: 335px; height: 550px; background: #ffffff; position: relative; overflow: hidden;
             border: 1.5px solid #cbd5e1; box-shadow: 0 16px 35px rgba(0,0,0,0.18);
@@ -59,7 +56,7 @@
             </div>
         </nav>
 
-        <div class="container mx-auto px-4 pt-6 max-w-6xl space-y-8">
+        <div class="container mx-auto px-4 pt-6 max-w-7xl space-y-8">
             <div class="bg-red-950 text-white p-4 rounded-2xl flex justify-between items-center shadow-xl">
                 <div class="flex items-center gap-2">
                     <h2 class="text-sm md:text-base font-bold">Cloud Synced & Protected</h2>
@@ -161,9 +158,9 @@
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-emerald-900 text-white">
-                                <th class="p-2.5 border">Photo</th><th class="p-2.5 border">ID</th><th class="p-2.5 border">Name</th>
-                                <th class="p-2.5 border">Father</th><th class="p-2.5 border">Level</th><th class="p-2.5 border">Mobile</th>
-                                <th class="p-2.5 border">Status</th><th class="p-2.5 border text-center">Action</th>
+                                <th class="p-2 border">Photo</th><th class="p-2 border">ID</th><th class="p-2 border">Name</th>
+                                <th class="p-2 border">Father</th><th class="p-2 border">Level</th><th class="p-2 border">Mobile</th>
+                                <th class="p-2 border">Status</th><th class="p-2 border text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="student-db-table-body" class="bg-white"></tbody>
@@ -184,7 +181,7 @@
                 <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
                     <div>
                         <label class="block font-bold text-amber-900 mb-1">Select Level:</label>
-                        <select id="admin-global-class" onchange="renderExcelTable()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900">
+                        <select id="admin-global-class" onchange="loadClassSubjectsAndRender()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900">
                             <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
                             <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
                             <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
@@ -209,7 +206,7 @@
                 </div>
 
                 <div class="overflow-x-auto border rounded-xl">
-                    <table class="w-full text-left border-collapse text-xs">
+                    <table class="w-full text-left border-collapse text-[11px]">
                         <thead><tr id="excel-header-row" class="bg-emerald-900 text-white"></tr></thead>
                         <tbody id="excel-table-body" class="bg-emerald-50/20"></tbody>
                     </table>
@@ -251,38 +248,6 @@
                         <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl w-full font-bold text-xs">Publish Notice</button>
                     </form>
                     <ul id="admin-notice-list" class="divide-y border-t mt-3"></ul>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
-                        <h3 class="text-base font-bold border-b pb-2 text-emerald-950">Features Management</h3>
-                        <form onsubmit="handleAddFeature(event)" class="space-y-3">
-                            <input type="text" id="feat-title" placeholder="Title" required class="w-full p-2.5 border rounded-xl text-xs">
-                            <input type="text" id="feat-desc" placeholder="Description" required class="w-full p-2.5 border rounded-xl text-xs">
-                            <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl w-full font-bold text-xs">Add Feature</button>
-                        </form>
-                        <div id="admin-features-list" class="grid grid-cols-1 gap-2 pt-2"></div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
-                        <h3 class="text-base font-bold border-b pb-2 text-emerald-950">Slider & Gallery Photos</h3>
-                        <div class="space-y-4">
-                            <form onsubmit="handleAddSlide(event)" class="flex gap-2">
-                                <input type="file" id="slide-file-input" accept="image/*" required class="p-2 border rounded-xl text-xs w-full">
-                                <button type="submit" class="bg-emerald-800 text-white px-4 rounded-xl text-xs font-bold">Slide</button>
-                            </form>
-                            <div id="admin-slides-list" class="grid grid-cols-3 gap-2"></div>
-                            <hr>
-                            <form onsubmit="handleAddGalleryPhoto(event)" class="space-y-2">
-                                <input type="text" id="gallery-title-input" placeholder="Caption" required class="w-full p-2 border rounded-xl text-xs">
-                                <div class="flex gap-2">
-                                    <input type="file" id="gallery-file-input" accept="image/*" required class="w-full p-2 border rounded-xl text-xs">
-                                    <button type="submit" class="bg-emerald-800 text-white px-4 rounded-xl text-xs font-bold">Gallery</button>
-                                </div>
-                            </form>
-                            <div id="admin-gallery-list" class="grid grid-cols-3 gap-2"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -361,38 +326,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Simple original SVG illustrations (Islamic attire: cap + panjabi for
-        // boys, hijab for girls) used as the default cadet photo whenever no
-        // photo is uploaded during registration - matches the madrasah context
-        // instead of a generic silhouette icon. Inline data-URIs so there is
-        // no dependency on any external image host (nothing to ever break).
         const BOY_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M40%20200%20Q100%20142%20160%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cpath%20d%3D%22M72%20200%20L100%20168%20L128%20200%20Z%22%20fill%3D%22%23fdfdfd%22/%3E%3Crect%20x%3D%2288%22%20y%3D%22122%22%20width%3D%2224%22%20height%3D%2226%22%20rx%3D%227%22%20fill%3D%22%23d9a066%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%2298%22%20rx%3D%2238%22%20ry%3D%2244%22%20fill%3D%22%23e2b183%22/%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%22102%22%20r%3D%227%22%20fill%3D%22%23e2b183%22/%3E%3Ccircle%20cx%3D%22138%22%20cy%3D%22102%22%20r%3D%227%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M61%2070%20A39%2034%200%200%201%20139%2070%20Z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%2270%22%20rx%3D%2239%22%20ry%3D%229%22%20fill%3D%22%23f8fafc%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22/%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2297%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22116%22%20cy%3D%2297%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20113%20Q100%20121%20113%20113%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
         const GIRL_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M30%20200%20Q42%20132%20100%20130%20Q158%20132%20170%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22104%22%20rx%3D%2236%22%20ry%3D%2242%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M100%2046%20C58%2046%2044%2084%2044%20120%20C44%20141%2054%20153%2062%20161%20L62%20132%20C62%2092%2078%2064%20100%2064%20C122%2064%20138%2092%20138%20132%20L138%20161%20C146%20153%20156%20141%20156%20120%20C156%2084%20142%2046%20100%2046%20Z%22%20fill%3D%22%237c2d12%22/%3E%3Ccircle%20cx%3D%2286%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22114%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20118%20Q100%20126%20113%20118%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
         function getDefaultAvatarByGender(gender) { return gender === 'Female' ? GIRL_DEFAULT_AVATAR : BOY_DEFAULT_AVATAR; }
         function isDefaultAvatarPhoto(photo) { return photo === BOY_DEFAULT_AVATAR || photo === GIRL_DEFAULT_AVATAR || photo === 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' || !photo; }
 
-        // Writing the whole registeredStudents array (with every student's
-        // base64 photo embedded) to localStorage is only a "load instantly
-        // on next visit" cache - Firebase remains the real database. Once
-        // enough photos accumulate, browsers throw a QuotaExceededError on
-        // this write (typically a ~5-10MB per-site limit); left uncaught,
-        // that error used to silently kill whichever function called it
-        // (Register/Edit/Delete), leaving the button stuck on its loading
-        // state forever and skipping the actual Firebase save. This wrapper
-        // makes the local cache best-effort so a full cache never blocks
-        // real data from saving.
         function safeCacheStudentsLocally() {
             try {
-                // Photos are base64 (tens of KB each) and are what actually
-                // fills up the ~5-10MB browser localStorage quota - not the
-                // student count itself. Once the quota is hit, writes for
-                // ALL students (not just new ones) start failing, which is
-                // why registration used to appear to "stop working" after
-                // only a dozen or so cadets even though Firebase itself had
-                // no such limit. Firebase already stores the full record
-                // with photo, so the local cache (only a fast-load-on-next-
-                // visit convenience copy) doesn't need the photo at all -
-                // stripping it here lets far more students fit locally.
                 const cacheSafeStudents = registeredStudents.map(({ photo, ...rest }) => rest);
                 localStorage.setItem('annur_final_db_2026', JSON.stringify(cacheSafeStudents));
             } catch (err) {
@@ -400,10 +340,6 @@
                 try { localStorage.removeItem('annur_final_db_2026'); } catch (e2) {}
             }
         }
-        // Same crash-safe pattern as safeCacheStudentsLocally, applied to the
-        // results/marks cache: this write was previously unprotected, so once
-        // localStorage filled up (see above) it could throw an uncaught error
-        // and interrupt whatever was running at the time.
         function safeCacheResultsLocally() {
             try {
                 localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
@@ -412,6 +348,7 @@
                 try { localStorage.removeItem('annur_final_results_2026'); } catch (e2) {}
             }
         }
+        
         let pendingEditPhotoBase64 = null;
         function previewEditStudentPhoto(event) {
             const file = event.target.files && event.target.files[0];
@@ -425,27 +362,18 @@
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
         let resultPublishStatus = 'PUBLISHED';
         let resultPublishDatetime = '';
-        let subjectConfig = [];
+        let classSubjectConfig = {}; // Changed to an object for class-wise subjects
+        let currentClassSubjects = [];
         let registeredStudents = JSON.parse(localStorage.getItem('annur_final_db_2026')) || [];
         let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
         let notices = [];
-        let featuresList = [];
-        let sliderImages = [];
-        let galleryPhotos = [];
 
-        // Applies the current universal logo to every place it appears in
-        // the admin panel (settings preview, login screen, ID card watermark
-        // targets, and the browser tab favicon) - fixes the favicon and
-        // login-screen logo never updating previously.
         function applyAdminUniversalLogo() {
             document.querySelectorAll('.universal-logo-target').forEach(img => img.src = universalLogo);
             const favicon = document.getElementById('dynamic-favicon');
             if (favicon) favicon.href = universalLogo;
         }
 
-        // Fetch the current universal logo once immediately on page load, so
-        // the login screen (before any password is entered) already shows
-        // the correct logo instead of the hardcoded default.
         db.ref('settings/universalLogo').once('value').then(snap => {
             if (snap.exists()) { universalLogo = snap.val(); applyAdminUniversalLogo(); }
         }).catch(() => {});
@@ -476,9 +404,15 @@
             db.ref('settings/publishDatetime').on('value', snap => {
                 if (snap.exists()) { resultPublishDatetime = snap.val(); loadPublishSettings(); }
             });
-            db.ref('settings/subjects').on('value', snap => {
-                if (snap.exists()) { subjectConfig = snap.val(); renderExcelTable(); }
+            
+            // New structure: settings/classSubjects -> { "LEVEL-1": [...], "LEVEL-2": [...] }
+            db.ref('settings/classSubjects').on('value', snap => {
+                if (snap.exists()) { 
+                    classSubjectConfig = snap.val(); 
+                }
+                loadClassSubjectsAndRender();
             });
+            
             db.ref('students').on('value', snap => {
                 if (snap.exists()) {
                     registeredStudents = Object.values(snap.val());
@@ -530,7 +464,6 @@
             });
         }
 
-        // DB RESET
         function clearAllSystemStorageWithPassword() {
             const pass = prompt('Warning: Enter Admin Password to WIPE ALL CLOUD DATA:');
             const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
@@ -547,7 +480,6 @@
             } else { alert('Incorrect password! Aborted.'); }
         }
 
-        // LOGO
         function saveUniversalLogo() {
             const fileInput = document.getElementById('universal-logo-file');
             if (fileInput.files && fileInput.files[0]) {
@@ -562,7 +494,6 @@
             } else { alert('Please select a file!'); }
         }
 
-        // SETTINGS
         function loadPublishSettings() {
             if(document.getElementById('admin-publish-status')) document.getElementById('admin-publish-status').value = resultPublishStatus;
             if(document.getElementById('admin-publish-datetime')) document.getElementById('admin-publish-datetime').value = resultPublishDatetime;
@@ -583,7 +514,6 @@
             }
         }
 
-        // REGISTRATION
         async function handleRegisterStudent(e) {
             e.preventDefault();
             const btn = document.getElementById('reg-submit-btn');
@@ -616,14 +546,7 @@
                 document.getElementById('reg-id').value = ''; document.getElementById('reg-phone').value = '';
                 photoInput.value = ''; btn.innerHTML = 'Register Cadet'; btn.disabled = false;
             };
-            // db.ref().set() only resolves once Firebase's server acknowledges
-            // the write. If the connection to Firebase is slow, blocked, or
-            // offline, that ack never arrives and the promise never settles -
-            // which used to leave the button stuck on "Saving..." forever even
-            // though the record was already saved locally above. Racing the
-            // write against a timeout guarantees the button always recovers,
-            // and the record still syncs to Firebase automatically in the
-            // background as soon as a connection becomes available.
+            
             const cloudSaveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000));
             Promise.race([db.ref('students/' + id).set(newStudent), cloudSaveTimeout]).then(() => {
                 resetRegisterButton();
@@ -638,6 +561,7 @@
             });
         }
 
+        // Feature 1: ID Sorting logically (smaller ID on top, larger below)
         function renderStudentDBTable() {
             const tbody = document.getElementById('student-db-table-body');
             const badge = document.getElementById('total-registered-badge');
@@ -647,7 +571,15 @@
             if(!tbody) return; tbody.innerHTML = '';
             if(badge) badge.innerText = `Total Registered: ${registeredStudents.length}`;
 
-            let filtered = registeredStudents;
+            let filtered = [...registeredStudents];
+            
+            // Numeric Sort Logic for IDs like H101, H102 or 2021, 2022
+            filtered.sort((a, b) => {
+                const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
+                const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
+                return numA - numB;
+            });
+
             if (classSearch !== 'ALL') filtered = filtered.filter(s => s.class === classSearch);
             if (personalSearch !== '') filtered = filtered.filter(s => s.id.includes(personalSearch) || s.name.includes(personalSearch) || s.phone.includes(personalSearch));
 
@@ -672,7 +604,6 @@
             });
         }
 
-        // EDIT STUDENT
         function openStudentEditModal(realIdx) {
             const s = registeredStudents[realIdx]; if(!s) return;
             document.getElementById('edit-std-realindex').value = realIdx;
@@ -694,8 +625,6 @@
             const realIdx = document.getElementById('edit-std-realindex').value;
             const s = registeredStudents[realIdx]; if(!s) return;
             const newGender = document.getElementById('edit-std-gender').value;
-            // Priority: a newly-uploaded photo this session > keep the existing
-            // real photo > regenerate the gender avatar if it was still a default.
             const newPhoto = pendingEditPhotoBase64 || (isDefaultAvatarPhoto(s.photo) ? getDefaultAvatarByGender(newGender) : s.photo);
             const updatedData = {
                 id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
@@ -720,7 +649,6 @@
             }
         }
 
-        // ID CARDS
         function renderDirectIDCardFromInput() {
             const inputVal = document.getElementById('direct-idcard-input').value.trim().toUpperCase();
             if (!inputVal) { alert('Enter Cadet ID!'); return; }
@@ -794,10 +722,6 @@
             html2pdf().set(opt).from(element).save();
         }
 
-        // RESULTS
-        // NCTB-style grading scale (used across Bangladeshi madrasah/school
-        // results): converts a subject's percentage into a grade point (GP)
-        // and whether it counts as a fail.
         function getGradePoint(percentage) {
             if (percentage >= 80) return { point: 5.00, isFail: false };
             if (percentage >= 70) return { point: 4.00, isFail: false };
@@ -816,18 +740,11 @@
             if (gpa >= 1.00) return 'D';
             return 'F';
         }
-        // This function was being called from renderExcelTable /
-        // renderSavedResultsViewTable but was missing from the file entirely,
-        // which threw "calculateStudentResultStats is not defined" the moment
-        // any of those renders ran. Since syncRegisteredStudentsToResults ->
-        // renderExcelTable is called during student registration (before the
-        // Firebase save step), that crash stopped Register Cadet partway
-        // through - the record never reached Firebase and the button never
-        // got reset, so it stayed on "Saving..." forever.
+
         function calculateStudentResultStats(marks) {
             let total = 0, mainSum = 0, mainCount = 0, bonus = 0, hasFail = false, anyMarkEntered = false;
             (marks || []).forEach((mark, idx) => {
-                const subject = subjectConfig[idx];
+                const subject = currentClassSubjects[idx];
                 if (!subject) return;
                 const raw = String(mark).trim();
                 if (raw === '') return;
@@ -851,18 +768,33 @@
             if (gpa > 5) gpa = 5;
             return { total, gpa: gpa.toFixed(2), grade: getLetterGrade(gpa) };
         }
+
+        // Feature 4: Class-wise subject loading
+        function loadClassSubjectsAndRender() {
+            const currentSelectedClass = document.getElementById('admin-global-class').value;
+            if (classSubjectConfig[currentSelectedClass]) {
+                currentClassSubjects = classSubjectConfig[currentSelectedClass];
+            } else {
+                currentClassSubjects = []; // Empty if not set
+            }
+            renderExcelTable();
+        }
+
         function syncRegisteredStudentsToResults(showAlert = true) {
             registeredStudents.forEach(reg => {
                 const existing = excelStudents.find(s => s.id === reg.id);
                 if (!existing) {
-                    const emptyMarks = new Array(subjectConfig.length).fill('');
+                    const emptyMarks = new Array(currentClassSubjects.length).fill('');
                     excelStudents.push({ id: reg.id, name: reg.name, class: reg.class, session: '2026', exam: 'Annual Examination', marks: emptyMarks });
-                } else { existing.name = reg.name; existing.class = reg.class; }
+                } else { 
+                    existing.name = reg.name; existing.class = reg.class; 
+                }
             });
             renderExcelTable();
             if(showAlert) alert('Synced Cadets to Results Board!');
         }
 
+        // Feature 2: Adjust column width and Feature 3: Arrow Down / Enter to move to next row
         function renderExcelTable() {
             const currentSelectedClass = document.getElementById('admin-global-class').value;
             const headerRow = document.getElementById('excel-header-row');
@@ -871,51 +803,119 @@
             if(!headerRow || !tbody) return;
             const currentClassStudents = excelStudents.filter(s => s.class === currentSelectedClass);
 
-            let headerHTML = `<th class="p-2 border w-24">ID</th><th class="p-2 border">Name</th><th class="p-2 border w-24">Session</th>`;
-            subjectConfig.forEach((subObj, sIdx) => {
-                headerHTML += `<th class="p-2 border bg-emerald-800 min-w-[140px] text-center">
+            // Sorting results table logically as well
+            currentClassStudents.sort((a, b) => {
+                const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
+                const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
+                return numA - numB;
+            });
+
+            // Reduced padding and min-width to accommodate 8-10 subjects easily
+            let headerHTML = `<th class="p-1 border w-16">ID</th><th class="p-1 border w-32">Name</th>`;
+            currentClassSubjects.forEach((subObj, sIdx) => {
+                headerHTML += `<th class="p-1 border bg-emerald-800 min-w-[80px] max-w-[100px] text-center">
                     <div class="space-y-1">
-                        <div class="flex justify-between gap-1"><input type="text" value="${subObj.name}" class="sub-header-input bg-emerald-950 text-amber-300 font-bold p-1 rounded w-full border border-amber-400/50 text-center text-xs" data-idx="${sIdx}"><button onclick="removeSubjectColumn(${sIdx})" class="text-red-400 hover:text-red-200 font-bold px-1 text-xs">×</button></div>
+                        <div class="flex justify-between gap-1"><input type="text" value="${subObj.name}" class="sub-header-input bg-emerald-950 text-amber-300 font-bold p-0.5 rounded w-full border border-amber-400/50 text-center text-[10px]" data-idx="${sIdx}"><button onclick="removeSubjectColumn(${sIdx})" class="text-red-400 hover:text-red-200 font-bold px-0.5 text-xs">×</button></div>
                         <div class="flex gap-1">
-                            <select onchange="updateSubjectFullMark(${sIdx}, this.value)" class="bg-emerald-950 text-amber-200 font-bold p-0.5 rounded text-[10px] w-1/2 cursor-pointer"><option value="100" ${subObj.full == 100 ? 'selected' : ''}>100 M</option><option value="50" ${subObj.full == 50 ? 'selected' : ''}>50 M</option></select>
-                            <select onchange="updateSubjectType(${sIdx}, this.value)" class="bg-emerald-950 text-emerald-200 font-bold p-0.5 rounded text-[10px] w-1/2 cursor-pointer"><option value="Main" ${subObj.type === 'Main' ? 'selected' : ''}>Main</option><option value="Optional" ${subObj.type === 'Optional' ? 'selected' : ''}>Opt.</option></select>
+                            <select onchange="updateSubjectFullMark(${sIdx}, this.value)" class="bg-emerald-950 text-amber-200 font-bold p-0.5 rounded text-[9px] w-1/2 cursor-pointer"><option value="100" ${subObj.full == 100 ? 'selected' : ''}>100 M</option><option value="50" ${subObj.full == 50 ? 'selected' : ''}>50 M</option></select>
+                            <select onchange="updateSubjectType(${sIdx}, this.value)" class="bg-emerald-950 text-emerald-200 font-bold p-0.5 rounded text-[9px] w-1/2 cursor-pointer"><option value="Main" ${subObj.type === 'Main' ? 'selected' : ''}>Main</option><option value="Optional" ${subObj.type === 'Optional' ? 'selected' : ''}>Opt.</option></select>
                         </div>
                     </div></th>`;
             });
-            headerHTML += `<th class="p-2 border bg-amber-600 text-emerald-950 font-extrabold w-20 text-center">Total</th><th class="p-2 border bg-amber-600 text-emerald-950 font-extrabold w-16 text-center">GPA</th><th class="p-2 border text-center w-12 bg-red-800">Del</th>`;
+            headerHTML += `<th class="p-1 border bg-amber-600 text-emerald-950 font-extrabold w-12 text-center">Total</th><th class="p-1 border bg-amber-600 text-emerald-950 font-extrabold w-12 text-center">GPA</th><th class="p-1 border text-center w-8 bg-red-800">Del</th>`;
             headerRow.innerHTML = headerHTML; tbody.innerHTML = '';
 
-            if (currentClassStudents.length === 0) { tbody.innerHTML = `<tr><td colspan="${3 + subjectConfig.length + 3}" class="p-4 text-center font-bold text-gray-500">No students. Sync first.</td></tr>`; renderSavedResultsViewTable(); return; }
+            if (currentClassStudents.length === 0) { tbody.innerHTML = `<tr><td colspan="${2 + currentClassSubjects.length + 3}" class="p-4 text-center font-bold text-gray-500">No students. Sync first.</td></tr>`; return; }
 
-            currentClassStudents.forEach((s) => {
+            currentClassStudents.forEach((s, rowIdx) => {
                 const realIndex = excelStudents.indexOf(s);
                 const stats = calculateStudentResultStats(s.marks || []);
-                let rowHTML = `<tr class="border-b spreadsheet-row"><td class="p-1 border"><input type="text" value="${s.id}" readonly class="ex-id w-24 p-1 border rounded font-bold text-center bg-gray-100 uppercase"></td><td class="p-1 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1 border rounded font-semibold bg-gray-100 uppercase"></td><td class="p-1 border"><input type="text" value="${s.session || '2026'}" class="ex-session w-20 p-1 border rounded text-center"></td>`;
-                subjectConfig.forEach((subObj, sIdx) => {
+                // Reduced padding on inputs for compact view
+                let rowHTML = `<tr class="border-b spreadsheet-row"><td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1 font-bold text-center bg-gray-100 uppercase text-[10px]"></td><td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1 font-semibold bg-gray-100 uppercase text-[10px]"></td><input type="hidden" value="${s.session || '2026'}" class="ex-session">`;
+                
+                currentClassSubjects.forEach((subObj, sIdx) => {
                     const markVal = (s.marks && s.marks[sIdx] !== undefined) ? s.marks[sIdx] : '';
-                    rowHTML += `<td class="p-1 border"><input type="text" value="${markVal}" class="ex-mark sub-mark-${sIdx} w-full p-1 border rounded text-center font-bold text-emerald-900"></td>`;
+                    // Added onkeydown to trigger moveDown focus
+                    rowHTML += `<td class="p-0 border"><input type="text" value="${markVal}" onkeydown="handleEnterNavigation(event, ${sIdx}, ${rowIdx})" class="ex-mark sub-mark-${sIdx} row-idx-${rowIdx} w-full p-1 border-0 text-center font-bold text-emerald-900 bg-transparent text-[11px] focus:bg-amber-100 focus:outline-none" tabindex="${sIdx + 1}"></td>`;
                 });
-                rowHTML += `<td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50">${stats.total}</td><td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td><td class="p-1 border text-center"><button onclick="deleteExcelRow(${realIndex})" class="bg-red-600 hover:bg-red-700 text-white font-bold p-1.5 rounded-lg shadow"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                
+                rowHTML += `<td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50 text-[10px]">${stats.total}</td><td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50 text-[10px]">${stats.gpa}</td><td class="p-0 border text-center"><button onclick="deleteExcelRow(${realIndex})" class="text-red-600 hover:text-red-800 font-bold p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
                 tbody.innerHTML += rowHTML;
             });
-            renderSavedResultsViewTable();
         }
 
-        function updateSubjectFullMark(sIdx, newFull) { subjectConfig[sIdx].full = parseInt(newFull); db.ref('settings/subjects').set(subjectConfig); renderExcelTable(); }
-        function updateSubjectType(sIdx, newType) { subjectConfig[sIdx].type = newType; db.ref('settings/subjects').set(subjectConfig); renderExcelTable(); }
-        function addSubjectColumn() {
-            saveExcelData(false); subjectConfig.push({ name: `Subject ${subjectConfig.length + 1}`, full: 100, type: 'Main' });
-            excelStudents.forEach(s => { if(!s.marks) s.marks = []; s.marks.push(''); });
-            db.ref('settings/subjects').set(subjectConfig); db.ref('results').set(excelStudents); renderExcelTable();
-        }
-        function removeSubjectColumn(subIdx) {
-            if(subjectConfig.length <= 1) { alert('Minimum 1 subject required!'); return; }
-            if(confirm(`Delete "${subjectConfig[subIdx].name}"?`)) {
-                saveExcelData(false); subjectConfig.splice(subIdx, 1);
-                excelStudents.forEach(s => { if(s.marks) s.marks.splice(subIdx, 1); });
-                db.ref('settings/subjects').set(subjectConfig); db.ref('results').set(excelStudents); renderExcelTable();
+        // Feature 3: Navigation Logic
+        function handleEnterNavigation(e, colIdx, rowIdx) {
+            if (e.key === 'Enter' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx + 1}`);
+                if (nextRowInput) {
+                    nextRowInput.focus();
+                    nextRowInput.select();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx - 1}`);
+                if (prevRowInput) {
+                    prevRowInput.focus();
+                    prevRowInput.select();
+                }
             }
         }
+
+        function updateSubjectFullMark(sIdx, newFull) { 
+            const currentClass = document.getElementById('admin-global-class').value;
+            currentClassSubjects[sIdx].full = parseInt(newFull); 
+            classSubjectConfig[currentClass] = currentClassSubjects;
+            db.ref('settings/classSubjects').set(classSubjectConfig); 
+            renderExcelTable(); 
+        }
+        function updateSubjectType(sIdx, newType) { 
+            const currentClass = document.getElementById('admin-global-class').value;
+            currentClassSubjects[sIdx].type = newType; 
+            classSubjectConfig[currentClass] = currentClassSubjects;
+            db.ref('settings/classSubjects').set(classSubjectConfig); 
+            renderExcelTable(); 
+        }
+        
+        function addSubjectColumn() {
+            const currentClass = document.getElementById('admin-global-class').value;
+            saveExcelData(false); 
+            currentClassSubjects.push({ name: `Subject ${currentClassSubjects.length + 1}`, full: 100, type: 'Main' });
+            
+            // Apply new empty mark to students in this class only
+            excelStudents.forEach(s => { 
+                if(s.class === currentClass) {
+                    if(!s.marks) s.marks = []; 
+                    s.marks.push(''); 
+                }
+            });
+            
+            classSubjectConfig[currentClass] = currentClassSubjects;
+            db.ref('settings/classSubjects').set(classSubjectConfig); 
+            db.ref('results').set(excelStudents); 
+            renderExcelTable();
+        }
+
+        function removeSubjectColumn(subIdx) {
+            const currentClass = document.getElementById('admin-global-class').value;
+            if(currentClassSubjects.length <= 1) { alert('Minimum 1 subject required!'); return; }
+            if(confirm(`Delete "${currentClassSubjects[subIdx].name}" from ${currentClass}?`)) {
+                saveExcelData(false); 
+                currentClassSubjects.splice(subIdx, 1);
+                
+                // Remove mark from students in this class only
+                excelStudents.forEach(s => { 
+                    if(s.class === currentClass && s.marks) s.marks.splice(subIdx, 1); 
+                });
+                
+                classSubjectConfig[currentClass] = currentClassSubjects;
+                db.ref('settings/classSubjects').set(classSubjectConfig); 
+                db.ref('results').set(excelStudents); 
+                renderExcelTable();
+            }
+        }
+
         function deleteExcelRow(realIdx) {
             if (confirm('Delete this result row?')) {
                 const removedStudent = excelStudents.splice(realIdx, 1)[0];
@@ -923,25 +923,31 @@
                 if (removedStudent && removedStudent.id) db.ref('results/' + removedStudent.id).remove();
             }
         }
+
         function saveExcelData(showAlert = true) {
             const currentSelectedClass = document.getElementById('admin-global-class').value;
             const selectedExam = document.getElementById('admin-global-exam').value;
             const headerInputs = document.querySelectorAll('.sub-header-input');
-            headerInputs.forEach((input, i) => { if(subjectConfig[i]) subjectConfig[i].name = input.value.trim() || 'Subject'; });
-            db.ref('settings/subjects').set(subjectConfig);
+            
+            headerInputs.forEach((input, i) => { 
+                if(currentClassSubjects[i]) currentClassSubjects[i].name = input.value.trim() || 'Subject'; 
+            });
+            classSubjectConfig[currentSelectedClass] = currentClassSubjects;
+            db.ref('settings/classSubjects').set(classSubjectConfig);
 
             const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
-            const rows = document.querySelectorAll('#excel-table-body tr');
+            const rows = document.querySelectorAll('#excel-table-body tr.spreadsheet-row');
             const updatedCurrentClassStudents = [];
 
             rows.forEach(row => {
                 const idInput = row.querySelector('.ex-id'); if(!idInput) return;
                 const id = idInput.value.trim().toUpperCase();
                 const name = row.querySelector('.ex-name').value.trim().toUpperCase();
-                const session = row.querySelector('.ex-session').value.trim();
+                const sessionInput = row.querySelector('.ex-session');
+                const session = sessionInput ? sessionInput.value.trim() : '2026';
                 if(id !== '') {
                     const marks = [];
-                    subjectConfig.forEach((_, sIdx) => {
+                    currentClassSubjects.forEach((_, sIdx) => {
                         const markInput = row.querySelector(`.sub-mark-${sIdx}`);
                         marks.push(markInput ? markInput.value.trim() : '');
                     });
@@ -955,30 +961,7 @@
             renderExcelTable();
             if(showAlert) alert(`${currentSelectedClass} Results saved to Cloud!`);
         }
-        function renderSavedResultsViewTable() {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
-            const container = document.getElementById('admin-saved-results-view');
-            if(!container) return;
-            const filtered = excelStudents.filter(s => s.class === currentSelectedClass);
-            if(filtered.length === 0) { container.innerHTML = `<p class="text-xs text-center text-gray-500 py-3 font-semibold">No saved results for ${currentSelectedClass}.</p>`; return; }
 
-            let viewHTML = `<table class="w-full text-left border-collapse text-xs"><thead><tr class="bg-emerald-950 text-amber-300"><th class="p-2 border">ID</th><th class="p-2 border">Name</th>`;
-            subjectConfig.forEach(sub => { viewHTML += `<th class="p-2 border text-center">${sub.name}</th>`; });
-            viewHTML += `<th class="p-2 border text-center bg-amber-600 text-emerald-950 font-bold">Total</th><th class="p-2 border text-center bg-amber-600 text-emerald-950 font-bold">GPA</th></tr></thead><tbody>`;
-
-            filtered.forEach(s => {
-                const stats = calculateStudentResultStats(s.marks || []);
-                viewHTML += `<tr class="border-b bg-white"><td class="p-2 border font-bold">${s.id}</td><td class="p-2 border font-semibold">${s.name}</td>`;
-                subjectConfig.forEach((_, sIdx) => {
-                    const mVal = (s.marks && s.marks[sIdx] !== undefined && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-';
-                    viewHTML += `<td class="p-2 border text-center font-bold text-emerald-900">${mVal}</td>`;
-                });
-                viewHTML += `<td class="p-2 border text-center font-black text-amber-700 bg-amber-50">${stats.total}</td><td class="p-2 border text-center font-black text-emerald-900 bg-emerald-50">${stats.gpa} (${stats.grade})</td></tr>`;
-            });
-            viewHTML += `</tbody></table>`; container.innerHTML = viewHTML;
-        }
-
-        // WEBSITE SETTINGS
         function handleAddNotice(e) {
             e.preventDefault();
             const id = Date.now().toString();
@@ -996,16 +979,6 @@
             });
         }
         function deleteNotice(id) { if(confirm('Delete notice?')) db.ref('notices/' + id).remove(); }
-        function handleAddFeature(e) {
-            e.preventDefault();
-            alert('Feature management logic connected. Modify array and save to Firebase in production.');
-        }
-        function handleAddSlide(e) { e.preventDefault(); alert('Slider upload connected.'); }
-        function handleAddGalleryPhoto(e) { e.preventDefault(); alert('Gallery upload connected.'); }
-
-        window.onload = function() {
-            // Keep on login screen initially
-        };
     </script>
 </body>
 </html>
