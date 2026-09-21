@@ -336,17 +336,13 @@
                 const cacheSafeStudents = registeredStudents.map(({ photo, ...rest }) => rest);
                 localStorage.setItem('annur_final_db_2026', JSON.stringify(cacheSafeStudents));
             } catch (err) {
-                console.warn('Local cache skipped (browser storage full) - Firebase save is unaffected:', err);
+                console.warn('Local cache skipped:', err);
                 try { localStorage.removeItem('annur_final_db_2026'); } catch (e2) {}
             }
         }
         function safeCacheResultsLocally() {
-            try {
-                localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents));
-            } catch (err) {
-                console.warn('Local results cache skipped (browser storage full) - Firebase save is unaffected:', err);
-                try { localStorage.removeItem('annur_final_results_2026'); } catch (e2) {}
-            }
+            try { localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents)); } 
+            catch (err) { try { localStorage.removeItem('annur_final_results_2026'); } catch (e2) {} }
         }
         
         let pendingEditPhotoBase64 = null;
@@ -393,10 +389,7 @@
 
         function initAdminFirebaseSync() {
             db.ref('settings/universalLogo').on('value', snap => {
-                if (snap.exists()) {
-                    universalLogo = snap.val();
-                    applyAdminUniversalLogo();
-                }
+                if (snap.exists()) { universalLogo = snap.val(); applyAdminUniversalLogo(); }
             });
             db.ref('settings/publishStatus').on('value', snap => {
                 if (snap.exists()) { resultPublishStatus = snap.val(); loadPublishSettings(); }
@@ -406,9 +399,7 @@
             });
             
             db.ref('settings/classSubjects').on('value', snap => {
-                if (snap.exists()) { 
-                    classSubjectConfig = snap.val(); 
-                }
+                if (snap.exists()) { classSubjectConfig = snap.val(); }
                 loadClassSubjectsAndRender();
             });
             
@@ -553,10 +544,8 @@
             }).catch(err => {
                 resetRegisterButton();
                 if (err && err.message === 'timeout') {
-                    alert('Saved locally. Cloud sync is taking longer than usual - check your internet connection; it will sync automatically once connected.');
-                } else {
-                    alert('Saved locally.');
-                }
+                    alert('Saved locally. Cloud sync is taking longer than usual.');
+                } else { alert('Saved locally.'); }
             });
         }
 
@@ -592,9 +581,9 @@
                         <td class="p-2 border">${s.father}</td><td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
                         <td class="p-2 border font-semibold">${s.phone}</td><td class="p-2 border">${statusBadge}</td>
                         <td class="p-2 border text-center whitespace-nowrap space-x-1">
-                            <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i> Print</button>
-                            <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i></button>
+                            <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete Student"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -641,7 +630,7 @@
         }
         
         function deleteRegisteredStudent(studentId) {
-            if(confirm('Delete cadet completely?')) {
+            if(confirm('Delete cadet completely from Database? (This will also remove them from Results sync)')) {
                 registeredStudents = registeredStudents.filter(s => s.id !== studentId);
                 safeCacheStudentsLocally();
                 renderStudentDBTable(); db.ref('students/' + studentId).remove();
@@ -855,26 +844,25 @@
             }
         }
 
+        // ==========================================
+        // 100% GHOST-ENTRY AUTO-CLEAN DATABASE FIX
+        // ==========================================
+        
         function updateSubjectFullMark(sIdx, newFull) { 
             const currentClass = document.getElementById('admin-global-class').value;
             currentClassSubjects[sIdx].full = parseInt(newFull); 
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
-            
-            // MAGIC FIX: Also backup globally to ensure index.html sees it instantly
             db.ref('settings/subjects').set(currentClassSubjects);
-            
             renderExcelTable(); 
         }
+        
         function updateSubjectType(sIdx, newType) { 
             const currentClass = document.getElementById('admin-global-class').value;
             currentClassSubjects[sIdx].type = newType; 
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
-            
-            // MAGIC FIX: Also backup globally
             db.ref('settings/subjects').set(currentClassSubjects);
-            
             renderExcelTable(); 
         }
         
@@ -892,11 +880,13 @@
             
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
-            
-            // MAGIC FIX: Also backup globally
             db.ref('settings/subjects').set(currentClassSubjects);
             
-            db.ref('results').set(excelStudents); 
+            // Auto-Clean Write
+            const updates = {};
+            excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+            db.ref('results').set(updates);
+            
             renderExcelTable();
         }
 
@@ -913,20 +903,28 @@
                 
                 classSubjectConfig[currentClass] = currentClassSubjects;
                 db.ref('settings/classSubjects').set(classSubjectConfig); 
-                
-                // MAGIC FIX: Also backup globally
                 db.ref('settings/subjects').set(currentClassSubjects);
                 
-                db.ref('results').set(excelStudents); 
+                // Auto-Clean Write
+                const updates = {};
+                excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+                db.ref('results').set(updates);
+                
                 renderExcelTable();
             }
         }
 
         function deleteExcelRow(realIdx) {
-            if (confirm('Delete this result row?')) {
+            if (confirm('Delete this result row? (Remember to delete from "Students" tab too, or they will sync back!)')) {
                 const removedStudent = excelStudents.splice(realIdx, 1)[0];
-                safeCacheResultsLocally(); renderExcelTable();
-                if (removedStudent && removedStudent.id) db.ref('results/' + removedStudent.id).remove();
+                safeCacheResultsLocally(); 
+                
+                // FULL DATABASE AUTO-CLEAN: Overwrites all valid IDs and removes ghost/array index data
+                const updates = {};
+                excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+                db.ref('results').set(updates).then(() => {
+                    renderExcelTable();
+                });
             }
         }
 
@@ -941,8 +939,6 @@
             
             classSubjectConfig[currentSelectedClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig);
-            
-            // MAGIC FIX: CRITICAL ADDITION! Save the names globally so public index.html reads them perfectly
             db.ref('settings/subjects').set(currentClassSubjects);
 
             const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
@@ -967,10 +963,17 @@
 
             excelStudents = [...otherClassStudents, ...updatedCurrentClassStudents];
             safeCacheResultsLocally();
-            updatedCurrentClassStudents.forEach(item => { db.ref('results/' + item.id).set(item); });
-            renderExcelTable();
-            if(showAlert) alert(`${currentSelectedClass} Results saved to Cloud!`);
+            
+            // FULL DATABASE AUTO-CLEAN
+            const updates = {};
+            excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+            db.ref('results').set(updates).then(() => {
+                renderExcelTable();
+                if(showAlert) alert(`${currentSelectedClass} Results saved successfully! Ghost data cleaned.`);
+            });
         }
+        
+        // ==========================================
 
         function handleAddNotice(e) {
             e.preventDefault();
