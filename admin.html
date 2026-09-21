@@ -362,7 +362,7 @@
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
         let resultPublishStatus = 'PUBLISHED';
         let resultPublishDatetime = '';
-        let classSubjectConfig = {}; // Changed to an object for class-wise subjects
+        let classSubjectConfig = {}; 
         let currentClassSubjects = [];
         let registeredStudents = JSON.parse(localStorage.getItem('annur_final_db_2026')) || [];
         let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
@@ -405,7 +405,6 @@
                 if (snap.exists()) { resultPublishDatetime = snap.val(); loadPublishSettings(); }
             });
             
-            // New structure: settings/classSubjects -> { "LEVEL-1": [...], "LEVEL-2": [...] }
             db.ref('settings/classSubjects').on('value', snap => {
                 if (snap.exists()) { 
                     classSubjectConfig = snap.val(); 
@@ -561,7 +560,6 @@
             });
         }
 
-        // Feature 1: ID Sorting logically (smaller ID on top, larger below)
         function renderStudentDBTable() {
             const tbody = document.getElementById('student-db-table-body');
             const badge = document.getElementById('total-registered-badge');
@@ -573,7 +571,6 @@
 
             let filtered = [...registeredStudents];
             
-            // Numeric Sort Logic for IDs like H101, H102 or 2021, 2022
             filtered.sort((a, b) => {
                 const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
                 const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
@@ -620,6 +617,7 @@
             document.getElementById('student-edit-modal').classList.remove('hidden');
         }
         function closeStudentEditModal() { document.getElementById('student-edit-modal').classList.add('hidden'); pendingEditPhotoBase64 = null; }
+        
         function saveEditedStudentData(e) {
             e.preventDefault();
             const realIdx = document.getElementById('edit-std-realindex').value;
@@ -641,6 +639,7 @@
             renderStudentDBTable(); db.ref('students/' + updatedData.id).set(updatedData);
             closeStudentEditModal(); alert('Cadet updated!');
         }
+        
         function deleteRegisteredStudent(studentId) {
             if(confirm('Delete cadet completely?')) {
                 registeredStudents = registeredStudents.filter(s => s.id !== studentId);
@@ -769,13 +768,12 @@
             return { total, gpa: gpa.toFixed(2), grade: getLetterGrade(gpa) };
         }
 
-        // Feature 4: Class-wise subject loading
         function loadClassSubjectsAndRender() {
             const currentSelectedClass = document.getElementById('admin-global-class').value;
             if (classSubjectConfig[currentSelectedClass]) {
                 currentClassSubjects = classSubjectConfig[currentSelectedClass];
             } else {
-                currentClassSubjects = []; // Empty if not set
+                currentClassSubjects = []; 
             }
             renderExcelTable();
         }
@@ -794,7 +792,6 @@
             if(showAlert) alert('Synced Cadets to Results Board!');
         }
 
-        // Feature 2: Adjust column width and Feature 3: Arrow Down / Enter to move to next row
         function renderExcelTable() {
             const currentSelectedClass = document.getElementById('admin-global-class').value;
             const headerRow = document.getElementById('excel-header-row');
@@ -803,14 +800,12 @@
             if(!headerRow || !tbody) return;
             const currentClassStudents = excelStudents.filter(s => s.class === currentSelectedClass);
 
-            // Sorting results table logically as well
             currentClassStudents.sort((a, b) => {
                 const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
                 const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
                 return numA - numB;
             });
 
-            // Reduced padding and min-width to accommodate 8-10 subjects easily
             let headerHTML = `<th class="p-1 border w-16">ID</th><th class="p-1 border w-32">Name</th>`;
             currentClassSubjects.forEach((subObj, sIdx) => {
                 headerHTML += `<th class="p-1 border bg-emerald-800 min-w-[80px] max-w-[100px] text-center">
@@ -830,12 +825,10 @@
             currentClassStudents.forEach((s, rowIdx) => {
                 const realIndex = excelStudents.indexOf(s);
                 const stats = calculateStudentResultStats(s.marks || []);
-                // Reduced padding on inputs for compact view
                 let rowHTML = `<tr class="border-b spreadsheet-row"><td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1 font-bold text-center bg-gray-100 uppercase text-[10px]"></td><td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1 font-semibold bg-gray-100 uppercase text-[10px]"></td><input type="hidden" value="${s.session || '2026'}" class="ex-session">`;
                 
                 currentClassSubjects.forEach((subObj, sIdx) => {
                     const markVal = (s.marks && s.marks[sIdx] !== undefined) ? s.marks[sIdx] : '';
-                    // Added onkeydown to trigger moveDown focus
                     rowHTML += `<td class="p-0 border"><input type="text" value="${markVal}" onkeydown="handleEnterNavigation(event, ${sIdx}, ${rowIdx})" class="ex-mark sub-mark-${sIdx} row-idx-${rowIdx} w-full p-1 border-0 text-center font-bold text-emerald-900 bg-transparent text-[11px] focus:bg-amber-100 focus:outline-none" tabindex="${sIdx + 1}"></td>`;
                 });
                 
@@ -844,7 +837,6 @@
             });
         }
 
-        // Feature 3: Navigation Logic
         function handleEnterNavigation(e, colIdx, rowIdx) {
             if (e.key === 'Enter' || e.key === 'ArrowDown') {
                 e.preventDefault();
@@ -868,6 +860,10 @@
             currentClassSubjects[sIdx].full = parseInt(newFull); 
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
+            
+            // MAGIC FIX: Also backup globally to ensure index.html sees it instantly
+            db.ref('settings/subjects').set(currentClassSubjects);
+            
             renderExcelTable(); 
         }
         function updateSubjectType(sIdx, newType) { 
@@ -875,6 +871,10 @@
             currentClassSubjects[sIdx].type = newType; 
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
+            
+            // MAGIC FIX: Also backup globally
+            db.ref('settings/subjects').set(currentClassSubjects);
+            
             renderExcelTable(); 
         }
         
@@ -883,7 +883,6 @@
             saveExcelData(false); 
             currentClassSubjects.push({ name: `Subject ${currentClassSubjects.length + 1}`, full: 100, type: 'Main' });
             
-            // Apply new empty mark to students in this class only
             excelStudents.forEach(s => { 
                 if(s.class === currentClass) {
                     if(!s.marks) s.marks = []; 
@@ -893,6 +892,10 @@
             
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
+            
+            // MAGIC FIX: Also backup globally
+            db.ref('settings/subjects').set(currentClassSubjects);
+            
             db.ref('results').set(excelStudents); 
             renderExcelTable();
         }
@@ -904,13 +907,16 @@
                 saveExcelData(false); 
                 currentClassSubjects.splice(subIdx, 1);
                 
-                // Remove mark from students in this class only
                 excelStudents.forEach(s => { 
                     if(s.class === currentClass && s.marks) s.marks.splice(subIdx, 1); 
                 });
                 
                 classSubjectConfig[currentClass] = currentClassSubjects;
                 db.ref('settings/classSubjects').set(classSubjectConfig); 
+                
+                // MAGIC FIX: Also backup globally
+                db.ref('settings/subjects').set(currentClassSubjects);
+                
                 db.ref('results').set(excelStudents); 
                 renderExcelTable();
             }
@@ -932,8 +938,12 @@
             headerInputs.forEach((input, i) => { 
                 if(currentClassSubjects[i]) currentClassSubjects[i].name = input.value.trim() || 'Subject'; 
             });
+            
             classSubjectConfig[currentSelectedClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig);
+            
+            // MAGIC FIX: CRITICAL ADDITION! Save the names globally so public index.html reads them perfectly
+            db.ref('settings/subjects').set(currentClassSubjects);
 
             const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
             const rows = document.querySelectorAll('#excel-table-body tr.spreadsheet-row');
