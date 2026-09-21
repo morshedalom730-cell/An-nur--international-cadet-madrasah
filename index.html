@@ -82,7 +82,7 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* This allows mt-auto to push content to bottom */
+            justify-content: space-between;
             position: relative;
         }
 
@@ -142,7 +142,6 @@
                 padding-top: 5mm;
             }
             
-            /* REMOVE DATE, URL, AND PAGE NUMBERS */
             @page { size: A4 landscape; margin: 0mm; }
             .no-print { display: none !important; }
         }
@@ -800,6 +799,15 @@
                 return;
             }
 
+            // AUTO-PADDING MAGIC: If database missing subject names, create them instantly!
+            let maxMarks = subjectConfig.length;
+            filtered.forEach(s => {
+                if(s.marks && s.marks.length > maxMarks) maxMarks = s.marks.length;
+            });
+            while(subjectConfig.length < maxMarks) {
+                subjectConfig.push({ name: `Subject ${subjectConfig.length + 1}`, full: 100, type: 'Main' });
+            }
+
             let tableHeaderHTML = `
                 <tr class="bg-emerald-900 text-white uppercase text-[9px] md:text-[10px]">
                     <th class="p-1 border border-emerald-700 text-center w-8">SL</th>
@@ -842,12 +850,11 @@
             `;
             output.innerHTML = sheetHTML + `<div class="mt-3 no-print"><button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md w-full"><i class="fa-solid fa-file-pdf mr-1"></i> Print Tabulation Sheet</button></div>`;
             
-            // Render to printable area AND REMOVE THE HIDDEN CLASS so it shows up on print!
             printArea.innerHTML = sheetHTML;
             printArea.classList.remove('hidden'); 
         }
 
-        // 100% RELIABLE SINGLE-PAGE TRANSCRIPT SEARCH & PDF EXPORT
+        // 100% RELIABLE SINGLE-PAGE TRANSCRIPT SEARCH
         function searchResult() {
             const inputId = document.getElementById('search-student-id').value.trim().toUpperCase();
             const inputClass = document.getElementById('search-student-class').value;
@@ -872,6 +879,13 @@
                 printArea.classList.remove('hidden');
                 printArea.innerHTML = `<div class="bg-white p-6 rounded-2xl text-red-600 text-center font-bold text-sm shadow-xl border border-red-200 max-w-xl mx-auto my-4"><i class="fa-solid fa-circle-exclamation text-2xl text-red-500 mb-2 block"></i>Transcript Not Found! Please verify Student ID, Level, and Session.</div>`;
                 return;
+            }
+
+            // AUTO-PADDING MAGIC: If database missing subject names, create them instantly!
+            if (student.marks && student.marks.length > subjectConfig.length) {
+                while(subjectConfig.length < student.marks.length) {
+                    subjectConfig.push({ name: `Subject ${subjectConfig.length + 1}`, full: 100, type: 'Main' });
+                }
             }
 
             const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
@@ -1031,7 +1045,6 @@
             printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // HELPER: 100% RELIABLE DYNAMIC AUTO-FIT LOGIC FOR A4
         async function autoFitA4Marksheet(elementId) {
             const sheet = document.getElementById(elementId);
             if (!sheet) return 1;
@@ -1054,9 +1067,9 @@
 
             if (actualHeight > targetHeight) {
                 scale = targetHeight / actualHeight;
-                scale = scale * 0.98; // Extra safe margin to prevent 2nd page 
+                scale = scale * 0.98;
             } else {
-                scale = 0.98; // Default scale down slightly to prevent spillover in PDF
+                scale = 0.98;
             }
 
             sheet.style.height = (actualHeight > targetHeight ? actualHeight : targetHeight) + 'px';
@@ -1065,7 +1078,6 @@
             return scale;
         }
 
-        // 100% RELIABLE PDF DOWNLOAD (ZERO BLANK PAGES)
         async function executeTranscriptPDFDownload(studentId, studentName) {
             const container = document.getElementById('pdf-export-container');
             if(!container) return;
@@ -1106,7 +1118,6 @@
             }
         }
 
-        // ISOLATED DIRECT PRINT WITH SCALING PRESERVATION & NO HEADERS
         async function executeIsolatedTranscriptPrint() {
             const container = document.getElementById('pdf-export-container');
             if(!container) return;
@@ -1128,7 +1139,6 @@
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     ${styles}
                     <style>
-                        /* 0mm margin removes browser headers/footers (URL, Date, Page No) */
                         @page { size: A4 portrait; margin: 0mm; }
                         html, body {
                             width: 210mm; height: 297mm;
@@ -1138,9 +1148,9 @@
                         }
                         .print-safe-wrap {
                             width: 794px; height: 1123px;
-                            transform: scale(0.96); /* fits safely without creating 2nd page */
+                            transform: scale(0.96);
                             transform-origin: top center;
-                            margin-top: 10mm; /* Added safe visual margin inside */
+                            margin-top: 10mm;
                         }
                         .a4-print-wrapper { box-shadow: none !important; margin: 0 auto !important; }
                         html, body, .print-safe-wrap, .print-safe-wrap * { visibility: visible !important; }
@@ -1170,7 +1180,6 @@
             initFirebaseSync();
             applyUniversalLogo();
             
-            // Checking if features functions exist in your original logic
             if(typeof renderFeatures === 'function') renderFeatures();
             if(typeof renderSlider === 'function') renderSlider();
             if(typeof renderGallery === 'function') renderGallery();
