@@ -163,7 +163,7 @@
         </div>
     </div>
 
-    <!-- Header Section with Centralized Emblem Logo -->
+    <!-- Header Section -->
     <header class="bg-hero-gradient text-white border-b-4 border-amber-500 shadow-2xl no-print relative py-10 px-4">
         <div class="container mx-auto text-center space-y-4 max-w-6xl">
             <h2 class="arabic-calligraphy text-3xl md:text-4xl text-amber-400 w-full text-center drop-shadow-md">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</h2>
@@ -349,7 +349,7 @@
                     <h2 class="text-xl font-bold text-center text-emerald-950 mb-6 border-b pb-3"><i class="fa-solid fa-magnifying-glass text-amber-500 mr-2"></i>Search Academic Transcript</h2>
                     <div class="space-y-4 text-xs md:text-sm">
                         <div>
-                            <label class="block font-bold mb-1.5 text-gray-700">Student ID (e.g. H25000, A26181) *</label>
+                            <label class="block font-bold mb-1.5 text-gray-700">Student ID (e.g. H25000) *</label>
                             <input type="text" id="search-student-id" placeholder="Enter Student ID" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none font-semibold uppercase">
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -375,13 +375,6 @@
                                     <option value="2026" selected>2026</option>
                                     <option value="2027">2027</option>
                                     <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
-                                    <option value="2031">2031</option>
-                                    <option value="2032">2032</option>
-                                    <option value="2033">2033</option>
-                                    <option value="2034">2034</option>
-                                    <option value="2035">2035</option>
                                 </select>
                             </div>
                         </div>
@@ -427,14 +420,6 @@
                             <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
                             <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-                            <option value="2031">2031</option>
-                            <option value="2032">2032</option>
-                            <option value="2033">2033</option>
-                            <option value="2034">2034</option>
-                            <option value="2035">2035</option>
                         </select>
                     </div>
                     <div>
@@ -581,6 +566,8 @@
             { name: 'General Science & ICT', full: 50, type: 'Optional' }
         ];
 
+        let classSubjectConfig = {}; // Stores precise subject list per class
+
         let sliderImages = [];
         let currentSlideIdx = 0;
         let galleryPhotos = [];
@@ -607,6 +594,13 @@
                 if (snap.exists()) resultPublishDatetime = snap.val();
             });
 
+            // FIX 1: Fetch exact class-wise subjects from database
+            db.ref('settings/classSubjects').on('value', snap => {
+                if (snap.exists()) {
+                    classSubjectConfig = snap.val();
+                }
+            });
+            // Backup fetch for older structures
             db.ref('settings/subjects').on('value', snap => {
                 if (snap.exists()) subjectConfig = snap.val();
             });
@@ -667,9 +661,11 @@
             return true;
         }
 
-        function calculateStudentResultStats(marksArray) {
+        function calculateStudentResultStats(marksArray, configArray) {
             let total = 0; let validCount = 0; let hasFail = false;
             let mainPointsSum = 0; let mainSubjectCount = 0; let optionalBonusPoint = 0;
+
+            const activeConfig = configArray || subjectConfig;
 
             if (!marksArray || !Array.isArray(marksArray)) return { total: 0, grade: '-', gpa: '0.00', remarks: 'N/A' };
 
@@ -678,7 +674,7 @@
                     const num = parseFloat(m);
                     if (!isNaN(num)) {
                         total += num; validCount++;
-                        const fullMark = (subjectConfig[idx] && subjectConfig[idx].full) ? parseInt(subjectConfig[idx].full) : 100;
+                        const fullMark = (activeConfig[idx] && activeConfig[idx].full) ? parseInt(activeConfig[idx].full) : 100;
                         const percentage = fullMark === 50 ? (num * 2) : num;
                         
                         let gp = 0;
@@ -690,7 +686,7 @@
                         else if (percentage >= 40) gp = 2.0;
                         else if (percentage >= 33) gp = 1.0;
 
-                        if (subjectConfig[idx] && subjectConfig[idx].type === 'Optional') {
+                        if (activeConfig[idx] && activeConfig[idx].type === 'Optional') {
                             if (gp > 2.0) optionalBonusPoint += (gp - 2.0);
                         } else { mainPointsSum += gp; mainSubjectCount++; }
                     }
@@ -799,13 +795,21 @@
                 return;
             }
 
-            // AUTO-PADDING MAGIC: If database missing subject names, create them instantly!
-            let maxMarks = subjectConfig.length;
+            // LOAD EXACT CLASS SUBJECTS
+            let currentSubjectConfig = [];
+            if (classSubjectConfig[selectedClass]) {
+                currentSubjectConfig = [...classSubjectConfig[selectedClass]];
+            } else {
+                currentSubjectConfig = [...subjectConfig];
+            }
+
+            // AUTO-PADDING
+            let maxMarks = currentSubjectConfig.length;
             filtered.forEach(s => {
                 if(s.marks && s.marks.length > maxMarks) maxMarks = s.marks.length;
             });
-            while(subjectConfig.length < maxMarks) {
-                subjectConfig.push({ name: `Subject ${subjectConfig.length + 1}`, full: 100, type: 'Main' });
+            while(currentSubjectConfig.length < maxMarks) {
+                currentSubjectConfig.push({ name: `Subject ${currentSubjectConfig.length + 1}`, full: 100, type: 'Main' });
             }
 
             let tableHeaderHTML = `
@@ -814,16 +818,16 @@
                     <th class="p-1 border border-emerald-700 text-center w-16">ID</th>
                     <th class="p-1 border border-emerald-700 text-left min-w-[80px]">Student Name</th>
             `;
-            subjectConfig.forEach(subObj => { 
+            currentSubjectConfig.forEach(subObj => { 
                 tableHeaderHTML += `<th class="p-1 border border-emerald-700 text-center align-middle leading-tight break-words max-w-[70px]">${subObj.name}<br><span class="font-normal normal-case text-[8px] text-amber-300">(${subObj.full})</span></th>`; 
             });
             tableHeaderHTML += `<th class="p-1 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Total</th><th class="p-1 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">GPA</th><th class="p-1 border border-emerald-700 bg-amber-600 text-emerald-950 font-black text-center">Grade</th></tr>`;
 
             let rowsHTML = '';
             filtered.forEach((s, idx) => {
-                const stats = calculateStudentResultStats(s.marks || []);
+                const stats = calculateStudentResultStats(s.marks || [], currentSubjectConfig);
                 rowsHTML += `<tr class="text-center border-b border-emerald-200 even:bg-emerald-50/40 text-[9px] md:text-[10px]"><td class="p-1 border font-bold">${idx + 1}</td><td class="p-1 border font-bold text-emerald-950">${s.id}</td><td class="p-1 border text-left font-bold uppercase">${s.name}</td>`;
-                subjectConfig.forEach((_, sIdx) => { const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-'; rowsHTML += `<td class="p-1 border font-medium text-emerald-900">${mVal}</td>`; });
+                currentSubjectConfig.forEach((_, sIdx) => { const mVal = (s.marks && s.marks[sIdx] && String(s.marks[sIdx]).trim() !== '') ? s.marks[sIdx] : '-'; rowsHTML += `<td class="p-1 border font-medium text-emerald-900">${mVal}</td>`; });
                 rowsHTML += `<td class="p-1 border font-extrabold text-amber-700 bg-amber-50">${stats.total}</td><td class="p-1 border font-extrabold text-emerald-900 bg-emerald-50">${stats.gpa}</td><td class="p-1 border font-extrabold text-emerald-900 bg-emerald-50">${stats.grade}</td></tr>`;
             });
 
@@ -881,44 +885,66 @@
                 return;
             }
 
-            // AUTO-PADDING MAGIC: If database missing subject names, create them instantly!
-            if (student.marks && student.marks.length > subjectConfig.length) {
-                while(subjectConfig.length < student.marks.length) {
-                    subjectConfig.push({ name: `Subject ${subjectConfig.length + 1}`, full: 100, type: 'Main' });
+            // LOAD EXACT CLASS SUBJECTS (FIX 1)
+            let currentSubjectConfig = [];
+            if (classSubjectConfig[inputClass]) {
+                currentSubjectConfig = [...classSubjectConfig[inputClass]];
+            } else {
+                currentSubjectConfig = [...subjectConfig];
+            }
+
+            // AUTO-PADDING
+            if (student.marks && student.marks.length > currentSubjectConfig.length) {
+                while(currentSubjectConfig.length < student.marks.length) {
+                    currentSubjectConfig.push({ name: `Subject ${currentSubjectConfig.length + 1}`, full: 100, type: 'Main' });
                 }
             }
 
+            // FILTER OUT EMPTY SUBJECTS (FIX 2)
+            let validSubjects = [];
+            currentSubjectConfig.forEach((subObj, sIdx) => {
+                const markVal = (student.marks && student.marks[sIdx] !== undefined) ? String(student.marks[sIdx]).trim() : '';
+                if (markVal !== '' && markVal !== '-') {
+                    validSubjects.push({ subObj: subObj, mark: markVal });
+                }
+            });
+
             const studentPhoto = (regS && regS.photo) ? regS.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             const studentFather = (regS && regS.father) ? regS.father : 'N/A';
-            const subjectCount = subjectConfig.length;
             
+            const subjectCount = validSubjects.length;
             const rowPadClass =
                 subjectCount <= 6  ? 'py-4 px-4 text-lg md:text-xl font-bold' :
                 subjectCount <= 8  ? 'py-3 px-3 text-base md:text-lg font-bold' :
                 subjectCount <= 10 ? 'py-2 px-3 text-sm md:text-base font-bold' :
                 subjectCount <= 13 ? 'py-1.5 px-2 text-xs md:text-sm font-bold' :
                                      'py-1 px-1.5 text-[11px] md:text-xs font-bold';
-            
             const isDenseSheet = subjectCount >= 11;
 
             let subjectRowsHTML = '';
-            subjectConfig.forEach((subObj, sIdx) => {
-                const mVal = (student.marks && student.marks[sIdx] !== undefined && String(student.marks[sIdx]).trim() !== '') ? student.marks[sIdx] : '-';
-                const gradeInfo = getSubjectGradeInfo(mVal, subObj.full);
-                const typeLabel = subObj.type === 'Optional' ? ' <span class="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-bold ml-1 font-montserrat">Optional</span>' : '';
-                
-                subjectRowsHTML += `
-                    <tr class="border-b border-gray-300 bg-transparent">
-                        <td class="${rowPadClass} border-r border-gray-300 text-gray-900">${subObj.name}${typeLabel}</td>
-                        <td class="${rowPadClass} text-center text-gray-700 w-24 border-r border-gray-300">${subObj.full}</td>
-                        <td class="${rowPadClass} text-center text-emerald-950 w-28 border-r border-gray-300">${mVal}</td>
-                        <td class="${rowPadClass} text-center text-emerald-900 w-20 border-r border-gray-300 font-montserrat">${gradeInfo.lg}</td>
-                        <td class="${rowPadClass} text-center text-emerald-900 w-20 font-montserrat">${gradeInfo.gp}</td>
-                    </tr>
-                `;
-            });
+            
+            if (subjectCount === 0) {
+                subjectRowsHTML = `<tr><td colspan="5" class="py-6 text-center font-bold text-gray-500">No subject marks recorded.</td></tr>`;
+            } else {
+                validSubjects.forEach(item => {
+                    const mVal = item.mark;
+                    const subObj = item.subObj;
+                    const gradeInfo = getSubjectGradeInfo(mVal, subObj.full);
+                    const typeLabel = subObj.type === 'Optional' ? ' <span class="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-bold ml-1 font-montserrat">Optional</span>' : '';
+                    
+                    subjectRowsHTML += `
+                        <tr class="border-b border-gray-300 bg-transparent">
+                            <td class="${rowPadClass} border-r border-gray-300 text-gray-900">${subObj.name}${typeLabel}</td>
+                            <td class="${rowPadClass} text-center text-gray-700 w-24 border-r border-gray-300">${subObj.full}</td>
+                            <td class="${rowPadClass} text-center text-emerald-950 w-28 border-r border-gray-300">${mVal}</td>
+                            <td class="${rowPadClass} text-center text-emerald-900 w-20 border-r border-gray-300 font-montserrat">${gradeInfo.lg}</td>
+                            <td class="${rowPadClass} text-center text-emerald-900 w-20 font-montserrat">${gradeInfo.gp}</td>
+                        </tr>
+                    `;
+                });
+            }
 
-            const stats = calculateStudentResultStats(student.marks || []);
+            const stats = calculateStudentResultStats(student.marks || [], currentSubjectConfig);
             const currentDateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
             const resultHTML = `
@@ -1014,7 +1040,7 @@
                                 </div>
                             </div>
 
-                            <!-- SIGNATURES (FIXED ALIGNMENT) -->
+                            <!-- SIGNATURES -->
                             <div class="mt-auto pt-6 pb-2 w-full flex justify-between items-end text-xs text-gray-800 font-bold relative z-10 px-4">
                                 <div class="text-center">
                                     <div class="w-32 border-t-[2px] border-emerald-950 mx-auto mb-1.5"></div>
