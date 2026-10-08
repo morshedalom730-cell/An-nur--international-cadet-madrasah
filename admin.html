@@ -20,7 +20,6 @@
             width: 335px; height: 550px; background: #ffffff; position: relative; overflow: hidden;
             border: 1.5px solid #cbd5e1; box-shadow: 0 16px 35px rgba(0,0,0,0.18);
             display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;
-            background-color: #ffffff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
         }
         .id-top-decor { position: absolute; top: 0; left: 0; width: 100%; height: 48px; pointer-events: none; z-index: 10; }
         .id-bottom-decor { position: absolute; bottom: 0; right: 0; width: 100%; height: 42px; pointer-events: none; z-index: 10; }
@@ -28,6 +27,25 @@
         .id-card-badge-box { border: 2px solid #005a8c; background: #e2e8f0; color: #003865; font-weight: 900; font-size: 15px; letter-spacing: 2px; padding: 3px 22px; display: inline-block; }
         .id-cadet-photo-frame { width: 140px; height: 140px; border: 4px solid #047857; border-radius: 50%; object-fit: cover; margin: 6px auto; display: block; background: #f8fafc; position: relative; z-index: 5; }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        
+        /* STRICT PRINT CSS TO PREVENT BLANK PAGES & BROWSER TEXTS */
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+            html, body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; height: 100% !important; overflow: hidden !important; }
+            body * { visibility: hidden !important; }
+            #printable-area, #printable-area * { visibility: visible !important; }
+            #printable-area { 
+                display: flex !important; justify-content: center; align-items: flex-start;
+                position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; 
+                margin: 0 !important; padding: 0 !important; padding-top: 15px !important;
+            }
+            .a4-print-wrapper, .attendance-sheet-wrapper {
+                box-shadow: none !important; margin: 0 auto !important;
+                page-break-inside: avoid !important; break-inside: avoid !important;
+            }
+            @page { margin: 0 !important; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen selection:bg-amber-500 selection:text-white">
@@ -44,13 +62,14 @@
 
     <!-- MAIN ADMIN DASHBOARD -->
     <div id="admin-dashboard" class="hidden flex-grow pb-12">
-        <nav class="bg-emerald-950 text-white shadow-xl sticky top-0 z-50">
+        <nav class="bg-emerald-950 text-white shadow-xl sticky top-0 z-50 no-print">
             <div class="container mx-auto px-4 flex flex-wrap justify-between items-center py-3">
                 <h1 class="font-bold text-lg md:text-xl text-amber-400"><i class="fa-solid fa-user-shield mr-2"></i>ADMIN PANEL</h1>
                 <div class="flex items-center gap-3 md:gap-5 text-xs font-semibold overflow-x-auto">
-                    <a href="#section-students" class="hover:text-amber-300 whitespace-nowrap">Students</a>
-                    <a href="#section-results" class="hover:text-amber-300 whitespace-nowrap">Marks Entry</a>
-                    <a href="#section-website" class="hover:text-amber-300 whitespace-nowrap">Website</a>
+                    <button onclick="switchTab('students')" id="tab-students" class="text-amber-400 border-b-2 border-amber-400 pb-1">Students</button>
+                    <button onclick="switchTab('marks')" id="tab-marks" class="hover:text-amber-300 pb-1 text-slate-300">Marks Entry</button>
+                    <button onclick="switchTab('attendance')" id="tab-attendance" class="hover:text-amber-300 pb-1 text-slate-300">Attendance</button>
+                    <button onclick="switchTab('website')" id="tab-website" class="hover:text-amber-300 pb-1 text-slate-300">Website</button>
                     <a href="index.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-1.5 rounded-lg text-white whitespace-nowrap transition shadow">Public Site <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
@@ -65,32 +84,10 @@
                 <button onclick="clearAllSystemStorageWithPassword()" class="bg-red-700 hover:bg-red-600 text-xs px-3 py-1.5 rounded-lg text-white font-bold transition shadow"><i class="fa-solid fa-trash mr-1"></i> Factory Reset DB</button>
             </div>
 
-            <!-- SETTINGS: LOGO & PASSWORD -->
-            <div id="section-settings" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-emerald-950 text-white p-6 rounded-2xl shadow-lg border-2 border-amber-500 space-y-3">
-                    <div class="flex justify-between items-center border-b border-emerald-800 pb-2">
-                        <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-stamp mr-2"></i>Universal Crest Logo</h3>
-                    </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div class="flex items-center gap-3">
-                            <img id="admin-logo-preview" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="universal-logo-target w-14 h-14 object-contain bg-white p-1 rounded-full border-2 border-amber-400">
-                            <input type="file" id="universal-logo-file" accept="image/*" class="w-full p-2 border rounded-xl text-xs bg-white text-emerald-950 font-medium">
-                        </div>
-                        <button onclick="saveUniversalLogo()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-2.5 px-4 rounded-xl text-xs w-full shadow transition"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Update Logo Everywhere</button>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-3">
-                    <h3 class="text-base font-bold border-b pb-2 text-emerald-950"><i class="fa-solid fa-key text-amber-500 mr-2"></i>Admin Password</h3>
-                    <input type="password" id="new-admin-pass" placeholder="Enter New Password" class="w-full p-2.5 border rounded-xl text-xs font-bold">
-                    <button onclick="changeAdminPassword()" class="bg-red-800 text-white px-4 py-2.5 rounded-xl font-bold w-full text-xs shadow-md">Update Admin Password</button>
-                </div>
-            </div>
-
             <!-- SECTION 1: STUDENTS -->
             <div id="section-students" class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
-                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>Cadet Registration & ID Cards</h3>
+                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>Cadet Registration</h3>
                     <span id="total-registered-badge" class="bg-emerald-800 text-white text-xs px-4 py-1.5 rounded-full font-bold shadow">Total Registered: 0</span>
                 </div>
 
@@ -110,24 +107,25 @@
                     <div>
                         <label class="block font-bold mb-1">Level / Class *</label>
                         <select id="reg-class" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
-                            <option value="LEVEL-1">LEVEL-1</option>
-                            <option value="LEVEL-2">LEVEL-2</option>
-                            <option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option>
-                            <option value="LEVEL-5">LEVEL-5</option>
-                            <option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option>
-                            <option value="LEVEL-8">LEVEL-8</option>
-                            <option value="LEVEL-9">LEVEL-9</option>
-                            <option value="LEVEL-10">LEVEL-10</option>
+                            <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
+                            <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
+                            <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
                     <div><label class="block font-bold mb-1">Mobile</label><input type="tel" id="reg-phone" class="w-full p-2.5 border rounded-xl"></div>
                     <div>
                         <label class="block font-bold mb-1">Gender *</label>
                         <select id="reg-gender" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="Male">Male</option><option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <!-- NEW FIELD ADDED: Residential Status -->
+                    <div>
+                        <label class="block font-bold mb-1 text-emerald-800">Accommodation *</label>
+                        <select id="reg-accommodation" required class="w-full p-2.5 border border-emerald-300 rounded-xl bg-emerald-50 font-bold cursor-pointer outline-none">
+                            <option value="Non-Residential">Non-Residential (Day Shift)</option>
+                            <option value="Residential">Residential (Hostel)</option>
+                            <option value="Day Care">Day Care</option>
                         </select>
                     </div>
                     <div><label class="block font-bold mb-1">Photo (optional)</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white"></div>
@@ -138,7 +136,7 @@
                             <option value="Deactivated">Deactivated</option>
                         </select>
                     </div>
-                    <div class="flex items-end"><button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-6 rounded-xl shadow w-full">Register Cadet</button></div>
+                    <div class="md:col-span-3 flex items-end justify-end"><button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-8 rounded-xl shadow hover:bg-emerald-900 transition">Register Cadet</button></div>
                 </form>
 
                 <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -159,8 +157,8 @@
                         <thead>
                             <tr class="bg-emerald-900 text-white">
                                 <th class="p-2 border">Photo</th><th class="p-2 border">ID</th><th class="p-2 border">Name</th>
-                                <th class="p-2 border">Father</th><th class="p-2 border">Level</th><th class="p-2 border">Mobile</th>
-                                <th class="p-2 border">Status</th><th class="p-2 border text-center">Action</th>
+                                <th class="p-2 border">Level</th><th class="p-2 border">Type</th><th class="p-2 border">Mobile</th>
+                                <th class="p-2 border text-center">Status</th><th class="p-2 border text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="student-db-table-body" class="bg-white"></tbody>
@@ -168,8 +166,8 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: RESULTS -->
-            <div id="section-results" class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
+            <!-- SECTION 2: MARKS ENTRY -->
+            <div id="section-marks" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
                     <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-file-excel text-green-600 mr-2"></i>Results & Marks Entry</h3>
                     <div class="flex gap-2">
@@ -237,8 +235,51 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: WEBSITE SETTINGS -->
-            <div id="section-website" class="space-y-6">
+            <!-- SECTION 3: ATTENDANCE (NEW FEATURE ADDED) -->
+            <div id="section-attendance" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-5">
+                    <h3 class="text-lg font-extrabold text-emerald-950"><i class="fa-solid fa-clipboard-user text-amber-500 mr-2"></i>Monthly Attendance Register</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Select Level *</label>
+                        <select id="attendance-class" class="p-3 border border-slate-300 rounded-xl w-full bg-slate-50 font-bold text-emerald-900 outline-none cursor-pointer">
+                            <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
+                            <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
+                            <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Month & Year *</label>
+                        <input type="text" id="attendance-month" placeholder="e.g. October 2026" class="p-3 border border-slate-300 rounded-xl w-full font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-600">
+                    </div>
+                </div>
+                <button onclick="generateAttendanceSheet()" class="w-full max-w-md mx-auto block bg-emerald-800 text-amber-400 py-3.5 rounded-xl text-sm font-bold shadow-lg hover:bg-emerald-900 transition tracking-wide">Generate Attendance Sheet</button>
+            </div>
+
+            <!-- SECTION 4: WEBSITE SETTINGS -->
+            <div id="section-website" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-emerald-950 text-white p-6 rounded-2xl shadow-lg border-2 border-amber-500 space-y-3">
+                        <div class="flex justify-between items-center border-b border-emerald-800 pb-2">
+                            <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-stamp mr-2"></i>Universal Crest Logo</h3>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex items-center gap-3">
+                                <img id="admin-logo-preview-2" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="universal-logo-target w-14 h-14 object-contain bg-white p-1 rounded-full border-2 border-amber-400">
+                                <input type="file" id="universal-logo-file" accept="image/*" class="w-full p-2 border rounded-xl text-xs bg-white text-emerald-950 font-medium">
+                            </div>
+                            <button onclick="saveUniversalLogo()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-2.5 px-4 rounded-xl text-xs w-full shadow transition"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Update Logo Everywhere</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-3">
+                        <h3 class="text-base font-bold border-b pb-2 text-emerald-950"><i class="fa-solid fa-key text-amber-500 mr-2"></i>Admin Password</h3>
+                        <input type="password" id="new-admin-pass" placeholder="Enter New Password" class="w-full p-2.5 border rounded-xl text-xs font-bold">
+                        <button onclick="changeAdminPassword()" class="bg-red-800 text-white px-4 py-2.5 rounded-xl font-bold w-full text-xs shadow-md">Update Admin Password</button>
+                    </div>
+                </div>
+
                 <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
                     <h3 class="text-base font-bold border-b pb-2 text-emerald-950">Notice Board</h3>
                     <form onsubmit="handleAddNotice(event)" class="space-y-3">
@@ -250,62 +291,67 @@
                     <ul id="admin-notice-list" class="divide-y border-t mt-3"></ul>
                 </div>
             </div>
-        </div>
 
-        <!-- STUDENT EDIT MODAL POPUP -->
-        <div id="student-edit-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden no-print backdrop-blur-sm">
-            <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-4 border-2 border-emerald-800">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="font-bold text-emerald-950 text-base"><i class="fa-solid fa-pen-to-square text-amber-600 mr-1"></i>Edit Cadet Data</h3>
-                    <button onclick="closeStudentEditModal()" class="text-red-600 font-bold text-xl hover:text-red-800">&times;</button>
-                </div>
-                <form onsubmit="saveEditedStudentData(event)" class="space-y-3 text-xs">
-                    <input type="hidden" id="edit-std-realindex">
-                    <div class="flex items-center gap-3">
-                        <img id="edit-std-photo-preview" src="" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-700 shrink-0" alt="Current Photo">
-                        <div class="flex-grow">
-                            <label class="block font-bold mb-1">Change Photo (optional)</label>
-                            <input type="file" id="edit-std-photo-file" accept="image/*" onchange="previewEditStudentPhoto(event)" class="w-full p-1.5 border rounded-xl bg-white text-[11px]">
-                        </div>
-                    </div>
-                    <div><label class="block font-bold mb-1">Student ID</label><input type="text" id="edit-std-id" required class="w-full p-2.5 border rounded-xl font-bold uppercase"></div>
-                    <div><label class="block font-bold mb-1">Cadet Full Name</label><input type="text" id="edit-std-name" required class="w-full p-2.5 border rounded-xl font-semibold uppercase"></div>
-                    <div><label class="block font-bold mb-1">Father's Name</label><input type="text" id="edit-std-father" required class="w-full p-2.5 border rounded-xl font-semibold uppercase"></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-bold mb-1">Gender</label>
-                            <select id="edit-std-gender" class="w-full p-2.5 border rounded-xl bg-white font-bold">
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-bold mb-1">Status</label>
-                            <select id="edit-std-status" class="w-full p-2.5 border rounded-xl bg-white font-bold">
-                                <option value="Active">Active</option>
-                                <option value="Deactivated">Deactivated</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-bold mb-1">Level / Class</label>
-                            <select id="edit-std-class" required class="w-full p-2.5 border rounded-xl bg-white font-bold">
-                                <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option>
-                                <option value="LEVEL-3">LEVEL-3</option><option value="LEVEL-4">LEVEL-4</option>
-                                <option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
-                                <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option>
-                                <option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div><label class="block font-bold mb-1">Guardian Mobile</label><input type="tel" id="edit-std-phone" class="w-full p-2.5 border rounded-xl font-semibold"></div>
-                    <div class="flex gap-2 pt-2">
-                        <button type="submit" class="bg-emerald-800 text-white font-bold py-2.5 rounded-xl shadow w-full hover:bg-emerald-900 transition">Save Changes</button>
-                        <button type="button" onclick="closeStudentEditModal()" class="bg-gray-400 text-white font-bold py-2.5 rounded-xl shadow w-1/3 hover:bg-gray-500 transition">Cancel</button>
-                    </div>
-                </form>
+            <!-- DYNAMIC PRINT AREA -->
+            <div id="printable-area" class="mt-4 hidden no-print"></div>
+
+        </div>
+    </div>
+
+    <!-- STUDENT EDIT MODAL POPUP -->
+    <div id="student-edit-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden no-print backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-4 border-[3px] border-emerald-900">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-emerald-950 text-base"><i class="fa-solid fa-pen-to-square text-amber-600 mr-1"></i>Edit Cadet Data</h3>
+                <button onclick="closeStudentEditModal()" class="text-red-600 font-bold text-2xl hover:text-red-800 leading-none">&times;</button>
             </div>
+            <form onsubmit="saveEditedStudentData(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="edit-std-realindex">
+                <div class="flex items-center gap-3">
+                    <img id="edit-std-photo-preview" src="" class="w-14 h-14 rounded-full object-cover border-2 border-emerald-700 shrink-0" alt="Current Photo">
+                    <div class="flex-grow">
+                        <label class="block font-bold mb-1">Change Photo</label>
+                        <input type="file" id="edit-std-photo-file" accept="image/*" onchange="previewEditStudentPhoto(event)" class="w-full p-1 border rounded-xl bg-white text-[11px]">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block font-bold mb-1">Student ID</label><input type="text" id="edit-std-id" required class="w-full p-2 border rounded-lg font-bold uppercase outline-none focus:border-emerald-600"></div>
+                    <div><label class="block font-bold mb-1">Level / Class</label><input type="text" id="edit-std-class" readonly class="w-full p-2 border rounded-lg font-bold bg-gray-100 cursor-not-allowed"></div>
+                </div>
+                <div><label class="block font-bold mb-1">Cadet Full Name</label><input type="text" id="edit-std-name" required class="w-full p-2 border rounded-lg font-bold uppercase outline-none focus:border-emerald-600"></div>
+                <div><label class="block font-bold mb-1">Father's Name</label><input type="text" id="edit-std-father" required class="w-full p-2 border rounded-lg font-semibold uppercase outline-none focus:border-emerald-600"></div>
+                
+                <!-- NEW FIELD ADDED IN EDIT MODAL -->
+                <div>
+                    <label class="block font-bold mb-1 text-emerald-800">Accommodation Status</label>
+                    <select id="edit-std-accommodation" required class="w-full p-2 border border-emerald-300 rounded-lg bg-emerald-50 font-bold outline-none cursor-pointer">
+                        <option value="Non-Residential">Non-Residential (Day Shift)</option>
+                        <option value="Residential">Residential (Hostel)</option>
+                        <option value="Day Care">Day Care</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">Gender</label>
+                        <select id="edit-std-gender" class="w-full p-2 border rounded-lg bg-white font-bold outline-none">
+                            <option value="Male">Male</option><option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">Status</label>
+                        <select id="edit-std-status" class="w-full p-2 border rounded-lg bg-white font-bold outline-none">
+                            <option value="Active">Active</option><option value="Deactivated">Deactivated</option>
+                        </select>
+                    </div>
+                </div>
+                <div><label class="block font-bold mb-1">Mobile</label><input type="tel" id="edit-std-phone" class="w-full p-2 border rounded-lg font-semibold outline-none focus:border-emerald-600"></div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-emerald-800 text-white font-bold py-2 rounded-xl shadow w-full hover:bg-emerald-900 transition">Save Changes</button>
+                    <button type="button" onclick="closeStudentEditModal()" class="bg-gray-300 text-gray-800 font-bold py-2 rounded-xl shadow w-1/3 hover:bg-gray-400 transition">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -326,8 +372,8 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const BOY_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M40%20200%20Q100%20142%20160%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cpath%20d%3D%22M72%20200%20L100%20168%20L128%20200%20Z%22%20fill%3D%22%23fdfdfd%22/%3E%3Crect%20x%3D%2288%22%20y%3D%22122%22%20width%3D%2224%22%20height%3D%2226%22%20rx%3D%227%22%20fill%3D%22%23d9a066%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%2298%22%20rx%3D%2238%22%20ry%3D%2244%22%20fill%3D%22%23e2b183%22/%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%22102%22%20r%3D%227%22%20fill%3D%22%23e2b183%22/%3E%3Ccircle%20cx%3D%22138%22%20cy%3D%22102%22%20r%3D%227%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M61%2070%20A39%2034%200%200%201%20139%2070%20Z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%2270%22%20rx%3D%2239%22%20ry%3D%229%22%20fill%3D%22%23f8fafc%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22/%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2297%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22116%22%20cy%3D%2297%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20113%20Q100%20121%20113%20113%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
-        const GIRL_DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22100%22%20r%3D%22100%22%20fill%3D%22%23e6f4ee%22/%3E%3Cpath%20d%3D%22M30%20200%20Q42%20132%20100%20130%20Q158%20132%20170%20200%20Z%22%20fill%3D%22%23065f46%22/%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22104%22%20rx%3D%2236%22%20ry%3D%2242%22%20fill%3D%22%23e2b183%22/%3E%3Cpath%20d%3D%22M100%2046%20C58%2046%2044%2084%2044%20120%20C44%20141%2054%20153%2062%20161%20L62%20132%20C62%2092%2078%2064%20100%2064%20C122%2064%20138%2092%20138%20132%20L138%20161%20C146%20153%20156%20141%20156%20120%20C156%2084%20142%2046%20100%2046%20Z%22%20fill%3D%22%237c2d12%22/%3E%3Ccircle%20cx%3D%2286%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Ccircle%20cx%3D%22114%22%20cy%3D%22102%22%20r%3D%223.4%22%20fill%3D%22%233f2a1d%22/%3E%3Cpath%20d%3D%22M87%20118%20Q100%20126%20113%20118%22%20stroke%3D%22%237a4a2b%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E";
+        const BOY_DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        const GIRL_DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         function getDefaultAvatarByGender(gender) { return gender === 'Female' ? GIRL_DEFAULT_AVATAR : BOY_DEFAULT_AVATAR; }
         function isDefaultAvatarPhoto(photo) { return photo === BOY_DEFAULT_AVATAR || photo === GIRL_DEFAULT_AVATAR || photo === 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' || !photo; }
 
@@ -335,14 +381,10 @@
             try {
                 const cacheSafeStudents = registeredStudents.map(({ photo, ...rest }) => rest);
                 localStorage.setItem('annur_final_db_2026', JSON.stringify(cacheSafeStudents));
-            } catch (err) {
-                console.warn('Local cache skipped:', err);
-                try { localStorage.removeItem('annur_final_db_2026'); } catch (e2) {}
-            }
+            } catch (err) {}
         }
         function safeCacheResultsLocally() {
-            try { localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents)); } 
-            catch (err) { try { localStorage.removeItem('annur_final_results_2026'); } catch (e2) {} }
+            try { localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents)); } catch (err) {}
         }
         
         let pendingEditPhotoBase64 = null;
@@ -356,6 +398,7 @@
         }
 
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
+        let madrasahName = "AN-NUR INTERNATIONAL CADET MADRASAH"; // FIXED NAME
         let resultPublishStatus = 'PUBLISHED';
         let resultPublishDatetime = '';
         let classSubjectConfig = {}; 
@@ -364,15 +407,29 @@
         let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
         let notices = [];
 
+        let subjectConfig = [
+            { name: 'Holy Quran & Tajweed', full: 100, type: 'Main' }, { name: 'English Language', full: 100, type: 'Main' },
+            { name: 'Mathematics', full: 100, type: 'Main' }, { name: 'Bangla Literature', full: 100, type: 'Main' },
+            { name: 'General Science & ICT', full: 50, type: 'Optional' }
+        ];
+
+        function switchTab(tabId) {
+            ['students','marks','attendance','website'].forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('text-amber-400', 'border-b-2', 'border-amber-400');
+                document.getElementById(`tab-${t}`).classList.add('text-slate-300');
+            });
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('text-amber-400', 'border-b-2', 'border-amber-400');
+            document.getElementById(`tab-${tabId}`).classList.remove('text-slate-300');
+            document.getElementById('printable-area').classList.add('hidden');
+        }
+
         function applyAdminUniversalLogo() {
             document.querySelectorAll('.universal-logo-target').forEach(img => img.src = universalLogo);
             const favicon = document.getElementById('dynamic-favicon');
             if (favicon) favicon.href = universalLogo;
         }
-
-        db.ref('settings/universalLogo').once('value').then(snap => {
-            if (snap.exists()) { universalLogo = snap.val(); applyAdminUniversalLogo(); }
-        }).catch(() => {});
 
         function checkAdminLogin() {
             const pass = document.getElementById('login-password').value;
@@ -412,8 +469,7 @@
             });
             db.ref('results').on('value', snap => {
                 if (snap.exists()) {
-                    const rawData = snap.val();
-                    const uniqueMap = new Map();
+                    const rawData = snap.val(); const uniqueMap = new Map();
                     if (Array.isArray(rawData)) {
                         rawData.forEach(item => { if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item); });
                     } else if (typeof rawData === 'object') {
@@ -440,11 +496,8 @@
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         let width = img.width; let height = img.height;
-                        if (width > height) {
-                            if (width > maxWidth) { height = Math.round((height *= maxWidth / width)); width = maxWidth; }
-                        } else {
-                            if (height > maxHeight) { width = Math.round((width *= maxHeight / height)); height = maxHeight; }
-                        }
+                        if (width > height) { if (width > maxWidth) { height = Math.round((height *= maxWidth / width)); width = maxWidth; } } 
+                        else { if (height > maxHeight) { width = Math.round((width *= maxHeight / height)); height = maxHeight; } }
                         canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
@@ -459,8 +512,7 @@
             const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
             if (pass === adminPass) {
                 if (confirm('Are you absolutely sure you want to delete all students and results?')) {
-                    db.ref('students').remove();
-                    db.ref('results').remove();
+                    db.ref('students').remove(); db.ref('results').remove();
                     registeredStudents = []; excelStudents = [];
                     localStorage.removeItem('annur_final_db_2026'); localStorage.removeItem('annur_final_results_2026');
                     renderStudentDBTable(); renderExcelTable();
@@ -515,6 +567,7 @@
             const stdClass = document.getElementById('reg-class').value;
             const phone = document.getElementById('reg-phone').value.trim() || 'N/A';
             const gender = document.getElementById('reg-gender').value;
+            const accommodation = document.getElementById('reg-accommodation').value; // NEW FIELD
             const status = document.getElementById('reg-status').value;
             const photoInput = document.getElementById('reg-photo-file');
 
@@ -526,26 +579,16 @@
             let photoBase64 = getDefaultAvatarByGender(gender);
             if (photoInput.files && photoInput.files[0]) photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
 
-            const newStudent = { id, name, father, class: stdClass, phone, gender, status, photo: photoBase64 };
+            const newStudent = { id, name, father, class: stdClass, phone, gender, accommodation, status, photo: photoBase64 };
             registeredStudents.unshift(newStudent);
             safeCacheStudentsLocally();
             renderStudentDBTable(); syncRegisteredStudentsToResults(false);
 
-            const resetRegisterButton = () => {
+            db.ref('students/' + id).set(newStudent).then(() => {
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-father').value = '';
                 document.getElementById('reg-id').value = ''; document.getElementById('reg-phone').value = '';
                 photoInput.value = ''; btn.innerHTML = 'Register Cadet'; btn.disabled = false;
-            };
-            
-            const cloudSaveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000));
-            Promise.race([db.ref('students/' + id).set(newStudent), cloudSaveTimeout]).then(() => {
-                resetRegisterButton();
                 alert('Registered Successfully!');
-            }).catch(err => {
-                resetRegisterButton();
-                if (err && err.message === 'timeout') {
-                    alert('Saved locally. Cloud sync is taking longer than usual.');
-                } else { alert('Saved locally.'); }
             });
         }
 
@@ -559,7 +602,6 @@
             if(badge) badge.innerText = `Total Registered: ${registeredStudents.length}`;
 
             let filtered = [...registeredStudents];
-            
             filtered.sort((a, b) => {
                 const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
                 const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
@@ -574,16 +616,24 @@
             filtered.forEach((s) => {
                 const realIdx = registeredStudents.indexOf(s);
                 const statusBadge = s.status === 'Deactivated' ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Discharged</span>' : '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold text-[10px]">Active</span>';
+                
+                // Accommodation Badge
+                let accBadge = `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold">N/A</span>`;
+                if(s.accommodation === 'Residential') accBadge = `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-300">Residential</span>`;
+                else if(s.accommodation === 'Non-Residential') accBadge = `<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-300">Non-Res</span>`;
+                else if(s.accommodation === 'Day Care') accBadge = `<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-[10px] font-bold border border-purple-300">Day Care</span>`;
+
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-emerald-50 text-xs">
-                        <td class="p-2 border"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border"></td>
+                        <td class="p-2 border"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border border-emerald-500"></td>
                         <td class="p-2 border font-bold text-emerald-950">${s.id}</td><td class="p-2 border font-bold">${s.name}</td>
-                        <td class="p-2 border">${s.father}</td><td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
-                        <td class="p-2 border font-semibold">${s.phone}</td><td class="p-2 border">${statusBadge}</td>
+                        <td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
+                        <td class="p-2 border text-center">${accBadge}</td>
+                        <td class="p-2 border font-medium">${s.phone}</td><td class="p-2 border text-center">${statusBadge}</td>
                         <td class="p-2 border text-center whitespace-nowrap space-x-1">
-                            <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2.5 py-1 rounded text-[11px]" title="Print ID Card"><i class="fa-solid fa-id-card"></i></button>
+                            <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2 py-1 rounded text-[11px]" title="ID Card"><i class="fa-solid fa-id-card"></i></button>
                             <button onclick="openStudentEditModal(${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete Student"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="deleteRegisteredStudent('${s.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-[11px]" title="Delete"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -599,12 +649,14 @@
             document.getElementById('edit-std-class').value = s.class;
             document.getElementById('edit-std-phone').value = s.phone;
             document.getElementById('edit-std-gender').value = s.gender || 'Male';
+            document.getElementById('edit-std-accommodation').value = s.accommodation || 'Non-Residential';
             document.getElementById('edit-std-status').value = s.status || 'Active';
             document.getElementById('edit-std-photo-preview').src = s.photo || BOY_DEFAULT_AVATAR;
             document.getElementById('edit-std-photo-file').value = '';
             pendingEditPhotoBase64 = null;
             document.getElementById('student-edit-modal').classList.remove('hidden');
         }
+        
         function closeStudentEditModal() { document.getElementById('student-edit-modal').classList.add('hidden'); pendingEditPhotoBase64 = null; }
         
         function saveEditedStudentData(e) {
@@ -613,30 +665,114 @@
             const s = registeredStudents[realIdx]; if(!s) return;
             const newGender = document.getElementById('edit-std-gender').value;
             const newPhoto = pendingEditPhotoBase64 || (isDefaultAvatarPhoto(s.photo) ? getDefaultAvatarByGender(newGender) : s.photo);
+            
             const updatedData = {
                 id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
                 name: document.getElementById('edit-std-name').value.trim().toUpperCase(),
                 father: document.getElementById('edit-std-father').value.trim().toUpperCase(),
-                class: document.getElementById('edit-std-class').value,
+                class: s.class, 
                 phone: document.getElementById('edit-std-phone').value.trim(),
                 gender: newGender,
+                accommodation: document.getElementById('edit-std-accommodation').value,
                 status: document.getElementById('edit-std-status').value,
                 photo: newPhoto
             };
+            
             registeredStudents[realIdx] = updatedData;
             safeCacheStudentsLocally();
             renderStudentDBTable(); db.ref('students/' + updatedData.id).set(updatedData);
-            closeStudentEditModal(); alert('Cadet updated!');
+            
+            const resIdx = excelStudents.findIndex(ex => ex.id === updatedData.id);
+            if(resIdx !== -1) {
+                excelStudents[resIdx].name = updatedData.name;
+                safeCacheResultsLocally();
+                db.ref('results/' + updatedData.id).set(excelStudents[resIdx]);
+            }
+            closeStudentEditModal(); alert('Cadet updated successfully!');
         }
         
         function deleteRegisteredStudent(studentId) {
-            if(confirm('Delete cadet completely from Database? (This will also remove them from Results sync)')) {
+            if(confirm('Delete cadet completely from Database? (This is a permanent deep-clean across all tabs)')) {
                 registeredStudents = registeredStudents.filter(s => s.id !== studentId);
-                safeCacheStudentsLocally();
-                renderStudentDBTable(); db.ref('students/' + studentId).remove();
+                excelStudents = excelStudents.filter(s => s.id !== studentId); 
+                safeCacheStudentsLocally(); safeCacheResultsLocally();
+                renderStudentDBTable(); renderExcelTable(); 
+                db.ref('students/' + studentId).remove(); db.ref('results/' + studentId).remove();
             }
         }
 
+        // ==========================================
+        // ATTENDANCE SHEET (WITH HEADER CONFIGURATION)
+        // ==========================================
+        function generateAttendanceSheet() {
+            const cls = document.getElementById('attendance-class').value;
+            const month = document.getElementById('attendance-month').value.trim();
+            const printArea = document.getElementById('printable-area');
+
+            if(!cls || !month) { alert('Please enter Month Name and select Level!'); return; }
+
+            let filtered = registeredStudents.filter(s => s.class === cls);
+            if(filtered.length === 0) { alert('No students found in this class!'); return; }
+            filtered.sort((a,b) => parseInt(a.id.replace(/\D/g, '')) - parseInt(b.id.replace(/\D/g, '')));
+
+            let daysHtml = '';
+            for(let i=1; i<=31; i++) { daysHtml += `<th class="border border-emerald-700 p-1 text-center w-[20px] bg-emerald-50">${i}</th>`; }
+
+            let rowsHtml = '';
+            filtered.forEach((s, idx) => {
+                let emptyCells = '';
+                for(let i=1; i<=31; i++) { emptyCells += `<td class="border border-emerald-400 p-1 text-center"></td>`; }
+                rowsHtml += `
+                    <tr class="text-[9px] md:text-[10px] text-emerald-950 h-6 even:bg-emerald-50/30">
+                        <td class="border border-emerald-500 p-1 text-center font-bold">${idx+1}</td>
+                        <td class="border border-emerald-500 p-1 text-center font-bold">${s.id}</td>
+                        <td class="border border-emerald-500 p-1 font-bold whitespace-nowrap overflow-hidden">${s.name}</td>
+                        ${emptyCells}
+                    </tr>
+                `;
+            });
+
+            const sheetHTML = `
+                <div id="target-attendance-a4-node" class="bg-white p-6 border-[8px] border-emerald-900 w-[1123px] min-h-[794px] mx-auto box-border flex flex-col justify-start relative">
+                    <div class="flex items-center justify-between border-b-2 border-emerald-800 pb-3 mb-4">
+                        <img src="${universalLogo}" class="w-16 h-16 object-contain">
+                        <div class="text-center flex-grow">
+                            <h1 class="font-brand text-[22px] font-black text-emerald-950 uppercase tracking-widest">${madrasahName}</h1>
+                            <h2 class="text-sm font-bold text-amber-600 mt-1 uppercase tracking-wide">Monthly Student Attendance Register</h2>
+                        </div>
+                        <div class="text-right text-xs font-bold text-emerald-900 space-y-1">
+                            <p>Level: <span class="text-amber-700 uppercase">${cls}</span></p>
+                            <p>Month: <span class="text-amber-700 border-b border-dashed border-emerald-500 pb-0.5">${month}</span></p>
+                        </div>
+                    </div>
+                    <table class="w-full border-collapse border-2 border-emerald-900">
+                        <thead>
+                            <tr class="bg-emerald-900 text-[10px] text-white uppercase tracking-wide">
+                                <th class="border border-emerald-700 p-1 w-6 text-center">SL</th>
+                                <th class="border border-emerald-700 p-1 w-14 text-center">ID</th>
+                                <th class="border border-emerald-700 p-1 text-left w-48">Student Name</th>
+                                ${daysHtml}
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                    
+                    <div class="mt-auto pt-8 pb-2 flex justify-between text-[11px] font-bold text-emerald-950 px-4">
+                        <div class="text-center"><div class="w-40 border-t-2 border-emerald-800 mb-1"></div><span>Class Teacher Signature</span></div>
+                        <div class="text-center"><div class="w-40 border-t-[2.5px] border-emerald-950 mb-1"></div><span>Principal Signature</span></div>
+                    </div>
+                </div>
+            `;
+
+            printArea.innerHTML = sheetHTML + `<div class="mt-4 no-print max-w-xl mx-auto"><button onclick="executeDirectPrint('target-attendance-a4-node', 'landscape')" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3.5 px-8 rounded-xl w-full shadow-lg transition"><i class="fa-solid fa-print mr-2"></i> Print Attendance Sheet</button></div>`;
+            printArea.classList.remove('hidden');
+            printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+        // ==========================================
+        // ID CARD GENERATION
+        // ==========================================
         function renderDirectIDCardFromInput() {
             const inputVal = document.getElementById('direct-idcard-input').value.trim().toUpperCase();
             if (!inputVal) { alert('Enter Cadet ID!'); return; }
@@ -661,13 +797,13 @@
                         <div class="text-center mt-1"><span class="id-card-badge-box font-montserrat">ID CARD</span></div>
                         <img src="${s.photo}" class="id-cadet-photo-frame shadow-sm" alt="Cadet Photo">
                         <h3 class="text-center font-black text-[15.5px] text-[#0369a1] uppercase mt-1 tracking-wide px-2">${s.name}</h3>
-                        <div class="relative px-7 py-2.5 mt-1 border-y border-gray-100 bg-slate-50/40">
+                        <div class="relative px-7 py-2 mt-1 border-y border-gray-100 bg-slate-50/40">
                             <img src="${universalLogo}" class="id-info-watermark-bg" alt="Watermark">
-                            <div class="space-y-2 text-[14px] text-[#0369a1] font-black relative z-10 leading-snug">
-                                <div class="flex"><span class="w-24 text-[#0369a1]">FATHER</span><span class="mr-2">:</span><span class="uppercase">${s.father || 'N/A'}</span></div>
+                            <div class="space-y-1.5 text-[14px] text-[#0369a1] font-black relative z-10 leading-snug">
+                                <div class="flex"><span class="w-24 text-[#0369a1]">FATHER</span><span class="mr-2">:</span><span class="uppercase text-[12px] pt-0.5">${s.father || 'N/A'}</span></div>
                                 <div class="flex"><span class="w-24 text-[#0369a1]">LEVEL</span><span class="mr-2">:</span><span class="uppercase">${levelWord}</span></div>
                                 <div class="flex"><span class="w-24 text-[#0369a1]">ID NO</span><span class="mr-2">:</span><span>${s.id}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">MOBILE</span><span class="mr-2">:</span><span>${s.phone || 'N/A'}</span></div>
+                                <div class="flex"><span class="w-24 text-[#0369a1]">TYPE</span><span class="mr-2">:</span><span class="text-[12px] pt-0.5">${s.accommodation || 'DAY SHIFT'}</span></div>
                             </div>
                         </div>
                     </div>
@@ -682,7 +818,6 @@
             liveBox.innerHTML = idCardHTML + `
                 <div class="mt-4 no-print flex flex-wrap gap-3 justify-center">
                     <button onclick="executeIsolatedIDCardPrint()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Print Card</button>
-                    <button onclick="executeDirectIDCardPDFDownload('${s.id}', '${s.name}')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
                     <button onclick="document.getElementById('admin-idcard-live-box').classList.add('hidden')" class="bg-gray-600 text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow">Close</button>
                 </div>
             `;
@@ -703,13 +838,9 @@
             setTimeout(() => { printFrame.contentWindow.focus(); printFrame.contentWindow.print(); }, 600);
         }
 
-        function executeDirectIDCardPDFDownload(cadetId, cadetName) {
-            const element = document.getElementById('target-id-card-node');
-            if(!element) return;
-            const opt = { margin: [5,5,5,5], filename: `ID_Card_${cadetId}_${cadetName.replace(/\s+/g, '_')}.pdf`, image: {type:'jpeg', quality:0.98}, html2canvas: {scale:3, useCORS:true, letterRendering:true}, jsPDF: {unit:'mm', format:[95, 155], orientation:'portrait'} };
-            html2pdf().set(opt).from(element).save();
-        }
-
+        // ==========================================
+        // MARKS ENTRY & DB CALCULATION
+        // ==========================================
         function getGradePoint(percentage) {
             if (percentage >= 80) return { point: 5.00, isFail: false };
             if (percentage >= 70) return { point: 4.00, isFail: false };
@@ -720,13 +851,9 @@
             return { point: 0.00, isFail: true };
         }
         function getLetterGrade(gpa) {
-            if (gpa >= 5.00) return 'A+';
-            if (gpa >= 4.00) return 'A';
-            if (gpa >= 3.50) return 'A-';
-            if (gpa >= 3.00) return 'B';
-            if (gpa >= 2.00) return 'C';
-            if (gpa >= 1.00) return 'D';
-            return 'F';
+            if (gpa >= 5.00) return 'A+'; if (gpa >= 4.00) return 'A';
+            if (gpa >= 3.50) return 'A-'; if (gpa >= 3.00) return 'B';
+            if (gpa >= 2.00) return 'C'; if (gpa >= 1.00) return 'D'; return 'F';
         }
 
         function calculateStudentResultStats(marks) {
@@ -738,43 +865,39 @@
                 if (raw === '') return;
                 const markNum = parseFloat(raw);
                 if (isNaN(markNum)) return;
-                anyMarkEntered = true;
-                total += markNum;
+                anyMarkEntered = true; total += markNum;
                 const fullMark = subject.full || 100;
                 const percentage = (markNum / fullMark) * 100;
                 const { point, isFail } = getGradePoint(percentage);
-                if (subject.type === 'Optional') {
-                    bonus += Math.max(0, point - 2);
-                } else {
-                    mainSum += point; mainCount++;
-                    if (isFail) hasFail = true;
-                }
+                if (subject.type === 'Optional') { bonus += Math.max(0, point - 2); } 
+                else { mainSum += point; mainCount++; if (isFail) hasFail = true; }
             });
             if (!anyMarkEntered) return { total: 0, gpa: '0.00', grade: 'N/A' };
             if (hasFail || mainCount === 0) return { total, gpa: '0.00', grade: 'F' };
-            let gpa = (mainSum / mainCount) + bonus;
-            if (gpa > 5) gpa = 5;
+            let gpa = (mainSum / mainCount) + bonus; if (gpa > 5) gpa = 5;
             return { total, gpa: gpa.toFixed(2), grade: getLetterGrade(gpa) };
         }
 
         function loadClassSubjectsAndRender() {
             const currentSelectedClass = document.getElementById('admin-global-class').value;
-            if (classSubjectConfig[currentSelectedClass]) {
-                currentClassSubjects = classSubjectConfig[currentSelectedClass];
-            } else {
-                currentClassSubjects = []; 
-            }
+            if (classSubjectConfig[currentSelectedClass]) { currentClassSubjects = classSubjectConfig[currentSelectedClass]; } 
+            else { currentClassSubjects = [...subjectConfig]; }
             renderExcelTable();
         }
 
         function syncRegisteredStudentsToResults(showAlert = true) {
             registeredStudents.forEach(reg => {
                 const existing = excelStudents.find(s => s.id === reg.id);
+                let clsConfig = classSubjectConfig[reg.class] ? classSubjectConfig[reg.class] : subjectConfig;
+                let targetLen = clsConfig.length;
+                
                 if (!existing) {
-                    const emptyMarks = new Array(currentClassSubjects.length).fill('');
+                    const emptyMarks = new Array(targetLen).fill('');
                     excelStudents.push({ id: reg.id, name: reg.name, class: reg.class, session: '2026', exam: 'Annual Examination', marks: emptyMarks });
                 } else { 
                     existing.name = reg.name; existing.class = reg.class; 
+                    if (!existing.marks) existing.marks = [];
+                    while(existing.marks.length < targetLen) existing.marks.push('');
                 }
             });
             renderExcelTable();
@@ -795,33 +918,36 @@
                 return numA - numB;
             });
 
-            let headerHTML = `<th class="p-1 border w-16">ID</th><th class="p-1 border w-32">Name</th>`;
+            if (!classSubjectConfig[currentSelectedClass]) classSubjectConfig[currentSelectedClass] = [...subjectConfig];
+            currentClassSubjects = classSubjectConfig[currentSelectedClass];
+
+            let headerHTML = `<th class="p-1 border w-16 text-center">ID</th><th class="p-1 border w-32">Name</th>`;
             currentClassSubjects.forEach((subObj, sIdx) => {
                 headerHTML += `<th class="p-1 border bg-emerald-800 min-w-[80px] max-w-[100px] text-center">
                     <div class="space-y-1">
                         <div class="flex justify-between gap-1"><input type="text" value="${subObj.name}" class="sub-header-input bg-emerald-950 text-amber-300 font-bold p-0.5 rounded w-full border border-amber-400/50 text-center text-[10px]" data-idx="${sIdx}"><button onclick="removeSubjectColumn(${sIdx})" class="text-red-400 hover:text-red-200 font-bold px-0.5 text-xs">×</button></div>
                         <div class="flex gap-1">
-                            <select onchange="updateSubjectFullMark(${sIdx}, this.value)" class="bg-emerald-950 text-amber-200 font-bold p-0.5 rounded text-[9px] w-1/2 cursor-pointer"><option value="100" ${subObj.full == 100 ? 'selected' : ''}>100 M</option><option value="50" ${subObj.full == 50 ? 'selected' : ''}>50 M</option></select>
-                            <select onchange="updateSubjectType(${sIdx}, this.value)" class="bg-emerald-950 text-emerald-200 font-bold p-0.5 rounded text-[9px] w-1/2 cursor-pointer"><option value="Main" ${subObj.type === 'Main' ? 'selected' : ''}>Main</option><option value="Optional" ${subObj.type === 'Optional' ? 'selected' : ''}>Opt.</option></select>
+                            <select onchange="updateSubjectFullMark(${sIdx}, this.value)" class="bg-emerald-950 text-white font-bold p-0.5 rounded text-[9px] w-1/2 cursor-pointer border border-emerald-700"><option value="100" ${subObj.full == 100 ? 'selected' : ''}>100 M</option><option value="50" ${subObj.full == 50 ? 'selected' : ''}>50 M</option></select>
+                            <select onchange="updateSubjectType(${sIdx}, this.value)" class="bg-emerald-950 text-emerald-200 font-bold p-0.5 rounded text-[9px] w-1/2 cursor-pointer border border-emerald-700"><option value="Main" ${subObj.type === 'Main' ? 'selected' : ''}>Main</option><option value="Optional" ${subObj.type === 'Optional' ? 'selected' : ''}>Opt.</option></select>
                         </div>
                     </div></th>`;
             });
             headerHTML += `<th class="p-1 border bg-amber-600 text-emerald-950 font-extrabold w-12 text-center">Total</th><th class="p-1 border bg-amber-600 text-emerald-950 font-extrabold w-12 text-center">GPA</th><th class="p-1 border text-center w-8 bg-red-800">Del</th>`;
             headerRow.innerHTML = headerHTML; tbody.innerHTML = '';
 
-            if (currentClassStudents.length === 0) { tbody.innerHTML = `<tr><td colspan="${2 + currentClassSubjects.length + 3}" class="p-4 text-center font-bold text-gray-500">No students. Sync first.</td></tr>`; return; }
+            if (currentClassStudents.length === 0) { tbody.innerHTML = `<tr><td colspan="${2 + currentClassSubjects.length + 3}" class="p-4 text-center font-bold text-gray-500">No students found. Sync first.</td></tr>`; return; }
 
             currentClassStudents.forEach((s, rowIdx) => {
                 const realIndex = excelStudents.indexOf(s);
                 const stats = calculateStudentResultStats(s.marks || []);
-                let rowHTML = `<tr class="border-b spreadsheet-row"><td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1 font-bold text-center bg-gray-100 uppercase text-[10px]"></td><td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1 font-semibold bg-gray-100 uppercase text-[10px]"></td><input type="hidden" value="${s.session || '2026'}" class="ex-session">`;
+                let rowHTML = `<tr class="border-b border-emerald-200 hover:bg-emerald-100 spreadsheet-row"><td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1.5 font-bold text-center bg-transparent uppercase text-emerald-950 text-[10px]"></td><td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1.5 font-semibold bg-transparent uppercase text-[10px]"></td><input type="hidden" value="${s.session || '2026'}" class="ex-session">`;
                 
-                currentClassSubjects.forEach((subObj, sIdx) => {
+                currentClassSubjects.forEach((_, sIdx) => {
                     const markVal = (s.marks && s.marks[sIdx] !== undefined) ? s.marks[sIdx] : '';
-                    rowHTML += `<td class="p-0 border"><input type="text" value="${markVal}" onkeydown="handleEnterNavigation(event, ${sIdx}, ${rowIdx})" class="ex-mark sub-mark-${sIdx} row-idx-${rowIdx} w-full p-1 border-0 text-center font-bold text-emerald-900 bg-transparent text-[11px] focus:bg-amber-100 focus:outline-none" tabindex="${sIdx + 1}"></td>`;
+                    rowHTML += `<td class="p-0 border"><input type="text" value="${markVal}" onkeydown="handleEnterNavigation(event, ${sIdx}, ${rowIdx})" class="ex-mark sub-mark-${sIdx} row-idx-${rowIdx} w-full p-1.5 border-0 text-center font-bold text-emerald-900 bg-transparent text-[11px] focus:bg-amber-100 focus:outline-none" tabindex="${sIdx + 1}"></td>`;
                 });
                 
-                rowHTML += `<td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50 text-[10px]">${stats.total}</td><td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50 text-[10px]">${stats.gpa}</td><td class="p-0 border text-center"><button onclick="deleteExcelRow(${realIndex})" class="text-red-600 hover:text-red-800 font-bold p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                rowHTML += `<td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50 text-[10px]">${stats.total}</td><td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50 text-[10px]">${stats.gpa}</td><td class="p-0 border text-center"><button onclick="deleteExcelRow(${realIndex})" class="text-red-600 hover:text-red-800 font-bold p-1.5"><i class="fa-solid fa-trash"></i></button></td></tr>`;
                 tbody.innerHTML += rowHTML;
             });
         }
@@ -830,101 +956,59 @@
             if (e.key === 'Enter' || e.key === 'ArrowDown') {
                 e.preventDefault();
                 const nextRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx + 1}`);
-                if (nextRowInput) {
-                    nextRowInput.focus();
-                    nextRowInput.select();
-                }
+                if (nextRowInput) { nextRowInput.focus(); nextRowInput.select(); }
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 const prevRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx - 1}`);
-                if (prevRowInput) {
-                    prevRowInput.focus();
-                    prevRowInput.select();
-                }
+                if (prevRowInput) { prevRowInput.focus(); prevRowInput.select(); }
             }
         }
 
-        // ==========================================
-        // 100% GHOST-ENTRY AUTO-CLEAN DATABASE FIX
-        // ==========================================
-        
+        // DEEP CLEAN GHOST DATA FIX
         function updateSubjectFullMark(sIdx, newFull) { 
             const currentClass = document.getElementById('admin-global-class').value;
             currentClassSubjects[sIdx].full = parseInt(newFull); 
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
-            db.ref('settings/subjects').set(currentClassSubjects);
             renderExcelTable(); 
         }
-        
         function updateSubjectType(sIdx, newType) { 
             const currentClass = document.getElementById('admin-global-class').value;
             currentClassSubjects[sIdx].type = newType; 
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
-            db.ref('settings/subjects').set(currentClassSubjects);
             renderExcelTable(); 
         }
-        
         function addSubjectColumn() {
             const currentClass = document.getElementById('admin-global-class').value;
             saveExcelData(false); 
             currentClassSubjects.push({ name: `Subject ${currentClassSubjects.length + 1}`, full: 100, type: 'Main' });
-            
-            excelStudents.forEach(s => { 
-                if(s.class === currentClass) {
-                    if(!s.marks) s.marks = []; 
-                    s.marks.push(''); 
-                }
-            });
-            
+            excelStudents.forEach(s => { if(s.class === currentClass) { if(!s.marks) s.marks = []; s.marks.push(''); } });
             classSubjectConfig[currentClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig); 
-            db.ref('settings/subjects').set(currentClassSubjects);
-            
-            // Auto-Clean Write
-            const updates = {};
-            excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-            db.ref('results').set(updates);
-            
-            renderExcelTable();
+            const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+            db.ref('results').set(updates); renderExcelTable();
         }
-
         function removeSubjectColumn(subIdx) {
             const currentClass = document.getElementById('admin-global-class').value;
             if(currentClassSubjects.length <= 1) { alert('Minimum 1 subject required!'); return; }
             if(confirm(`Delete "${currentClassSubjects[subIdx].name}" from ${currentClass}?`)) {
                 saveExcelData(false); 
                 currentClassSubjects.splice(subIdx, 1);
-                
-                excelStudents.forEach(s => { 
-                    if(s.class === currentClass && s.marks) s.marks.splice(subIdx, 1); 
-                });
-                
+                excelStudents.forEach(s => { if(s.class === currentClass && s.marks) s.marks.splice(subIdx, 1); });
                 classSubjectConfig[currentClass] = currentClassSubjects;
                 db.ref('settings/classSubjects').set(classSubjectConfig); 
-                db.ref('settings/subjects').set(currentClassSubjects);
-                
-                // Auto-Clean Write
-                const updates = {};
-                excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-                db.ref('results').set(updates);
-                
-                renderExcelTable();
+                const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+                db.ref('results').set(updates); renderExcelTable();
             }
         }
 
         function deleteExcelRow(realIdx) {
             if (confirm('Delete this result row? (Remember to delete from "Students" tab too, or they will sync back!)')) {
-                const removedStudent = excelStudents.splice(realIdx, 1)[0];
+                excelStudents.splice(realIdx, 1);
                 safeCacheResultsLocally(); 
-                
-                // FULL DATABASE AUTO-CLEAN: Overwrites all valid IDs and removes ghost/array index data
-                const updates = {};
-                excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-                db.ref('results').set(updates).then(() => {
-                    renderExcelTable();
-                });
+                const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+                db.ref('results').set(updates).then(() => { renderExcelTable(); });
             }
         }
 
@@ -933,19 +1017,14 @@
             const selectedExam = document.getElementById('admin-global-exam').value;
             const headerInputs = document.querySelectorAll('.sub-header-input');
             
-            headerInputs.forEach((input, i) => { 
-                if(currentClassSubjects[i]) currentClassSubjects[i].name = input.value.trim() || 'Subject'; 
-            });
-            
+            headerInputs.forEach((input, i) => { if(currentClassSubjects[i]) currentClassSubjects[i].name = input.value.trim() || 'Subject'; });
             classSubjectConfig[currentSelectedClass] = currentClassSubjects;
             db.ref('settings/classSubjects').set(classSubjectConfig);
-            db.ref('settings/subjects').set(currentClassSubjects);
 
             const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
-            const rows = document.querySelectorAll('#excel-table-body tr.spreadsheet-row');
             const updatedCurrentClassStudents = [];
-
-            rows.forEach(row => {
+            
+            document.querySelectorAll('#excel-table-body tr.spreadsheet-row').forEach(row => {
                 const idInput = row.querySelector('.ex-id'); if(!idInput) return;
                 const id = idInput.value.trim().toUpperCase();
                 const name = row.querySelector('.ex-name').value.trim().toUpperCase();
@@ -964,17 +1043,16 @@
             excelStudents = [...otherClassStudents, ...updatedCurrentClassStudents];
             safeCacheResultsLocally();
             
-            // FULL DATABASE AUTO-CLEAN
-            const updates = {};
-            excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
+            const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
             db.ref('results').set(updates).then(() => {
                 renderExcelTable();
                 if(showAlert) alert(`${currentSelectedClass} Results saved successfully! Ghost data cleaned.`);
             });
         }
-        
-        // ==========================================
 
+        // ==========================================
+        // NOTICE BOARD
+        // ==========================================
         function handleAddNotice(e) {
             e.preventDefault();
             const id = Date.now().toString();
@@ -988,10 +1066,39 @@
             const adminList = document.getElementById('admin-notice-list');
             if(!adminList) return; adminList.innerHTML = '';
             notices.forEach((n) => {
-                adminList.innerHTML += `<li class="py-2 flex justify-between items-center text-xs"><span class="font-bold truncate pr-2">${n.title}</span><button onclick="deleteNotice('${n.id}')" class="text-red-600 font-bold hover:text-red-800 px-2 py-0.5" title="Delete"><i class="fa-solid fa-trash"></i></button></li>`;
+                adminList.innerHTML += `<li class="py-2 flex justify-between items-center text-xs"><span class="font-bold truncate pr-2 text-emerald-950">${n.title}</span><button onclick="deleteNotice('${n.id}')" class="text-red-600 font-bold hover:text-red-800 px-2 py-0.5" title="Delete"><i class="fa-solid fa-trash"></i></button></li>`;
             });
         }
         function deleteNotice(id) { if(confirm('Delete notice?')) db.ref('notices/' + id).remove(); }
+
+        // PRINT UTILITY 
+        function executeDirectPrint(targetNodeId, orientation) {
+            let pageStyle = document.getElementById('dynamic-print-style');
+            if (!pageStyle) {
+                pageStyle = document.createElement('style');
+                pageStyle.id = 'dynamic-print-style';
+                document.head.appendChild(pageStyle);
+            }
+            pageStyle.innerHTML = `
+                @media print {
+                    @page { size: A4 ${orientation}; margin: 0 !important; }
+                    html, body { width: 100% !important; height: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+                    #${targetNodeId} {
+                        width: ${orientation === 'portrait' ? '794px' : '1123px'} !important;
+                        height: ${orientation === 'portrait' ? '1060px' : '794px'} !important;
+                        margin: 0 auto !important;
+                        margin-top: 15px !important;
+                        transform: scale(0.96) !important;
+                        transform-origin: top center !important;
+                    }
+                }
+            `;
+            setTimeout(() => { window.print(); setTimeout(() => { if (pageStyle) pageStyle.innerHTML = ''; }, 1000); }, 300);
+        }
+
+        window.onload = function() {
+            // Keep user on login screen initially
+        };
     </script>
 </body>
 </html>
