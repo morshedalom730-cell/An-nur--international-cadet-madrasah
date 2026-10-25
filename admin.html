@@ -8,9 +8,10 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Inter', 'Anek Bangla', sans-serif; background-color: #f8faf9; }
@@ -27,8 +28,8 @@
         .id-card-badge-box { border: 2px solid #005a8c; background: #e2e8f0; color: #003865; font-weight: 900; font-size: 15px; letter-spacing: 2px; padding: 3px 22px; display: inline-block; }
         .id-cadet-photo-frame { width: 140px; height: 140px; border: 4px solid #047857; border-radius: 50%; object-fit: cover; margin: 6px auto; display: block; background: #f8fafc; position: relative; z-index: 5; }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-brand { font-family: 'Montserrat', sans-serif; }
         
-        /* STRICT PRINT CSS */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
             html, body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; height: 100% !important; overflow: hidden !important; }
@@ -85,7 +86,7 @@
             <!-- SECTION 1: STUDENTS -->
             <div id="section-students" class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
-                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>Cadet Registration</h3>
+                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>Cadet Registration & ID Cards</h3>
                     <span id="total-registered-badge" class="bg-emerald-800 text-white text-xs px-4 py-1.5 rounded-full font-bold shadow">Total Registered: 0</span>
                 </div>
 
@@ -120,20 +121,22 @@
                     <div>
                         <label class="block font-bold mb-1 text-emerald-800">Accommodation *</label>
                         <select id="reg-accommodation" required class="w-full p-2.5 border border-emerald-300 rounded-xl bg-emerald-50 font-bold cursor-pointer outline-none">
-                            <option value="Non-Residential">Non-Residential</option>
-                            <option value="Residential">Residential</option>
+                            <option value="Non-Residential">Non-Residential (Day Shift)</option>
+                            <option value="Residential">Residential (Hostel)</option>
                             <option value="Day Care">Day Care</option>
                         </select>
                     </div>
-                    <div><label class="block font-bold mb-1">Photo (optional)</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white outline-none"></div>
                     <div>
-                        <label class="block font-bold mb-1">Status</label>
-                        <select id="reg-status" class="w-full p-2.5 border rounded-xl bg-white font-semibold outline-none">
-                            <option value="Active" selected>Active</option>
-                            <option value="Deactivated">Deactivated</option>
+                        <label class="block font-bold mb-1 text-amber-700">Activation Month *</label>
+                        <select id="reg-activation-month" required class="w-full p-2.5 border border-amber-300 rounded-xl bg-amber-50 font-bold cursor-pointer outline-none">
+                            <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                            <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                            <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                            <option value="October" selected>October</option><option value="November">November</option><option value="December">December</option>
                         </select>
                     </div>
-                    <div class="md:col-span-3 flex items-end justify-end"><button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-8 rounded-xl shadow w-full md:w-auto hover:bg-emerald-900 transition">Register Cadet</button></div>
+                    <div class="md:col-span-2"><label class="block font-bold mb-1">Photo (optional)</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white outline-none"></div>
+                    <div class="md:col-span-2 flex items-end justify-end"><button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-8 rounded-xl shadow w-full hover:bg-emerald-900 transition">Register Cadet</button></div>
                 </form>
 
                 <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -155,8 +158,8 @@
                             <tr class="bg-emerald-900 text-white">
                                 <th class="p-3 border text-center">Photo</th>
                                 <th class="p-3 border">ID</th><th class="p-3 border">Name</th>
-                                <th class="p-3 border">Level</th><th class="p-3 border">Type</th>
-                                <th class="p-3 border">Mobile</th><th class="p-3 border text-center">Status</th>
+                                <th class="p-3 border">Level</th><th class="p-3 border">Act. Month</th>
+                                <th class="p-3 border">Type</th>
                                 <th class="p-3 border text-center">Action</th>
                             </tr>
                         </thead>
@@ -165,13 +168,13 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: MARKS ENTRY (UPDATED LOGIC) -->
+            <!-- SECTION 2: MARKS ENTRY (FIXED EXAM LOGIC) -->
             <div id="section-marks" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
                     <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-file-excel text-green-600 mr-2"></i>Results & Marks Entry</h3>
                     <div class="flex gap-2">
                         <button onclick="addSubjectColumn()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 text-xs px-4 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-plus mr-1"></i> Add Subject</button>
-                        <button onclick="syncRegisteredStudentsToResults()" class="bg-emerald-800 hover:bg-emerald-900 text-white text-xs px-4 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-cloud-arrow-down mr-1"></i> Fetch Students</button>
+                        <button onclick="renderExcelTable()" class="bg-emerald-800 hover:bg-emerald-900 text-white text-xs px-4 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-rotate mr-1"></i> Refresh List</button>
                     </div>
                 </div>
 
@@ -185,8 +188,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-amber-900 mb-1">Academic Session:</label>
-                        <!-- Updated Year up to 2035 -->
+                        <label class="block font-bold text-amber-900 mb-1">Academic Session (Year):</label>
                         <select id="admin-global-session" onchange="renderExcelTable()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 outline-none">
                             <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
                             <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
@@ -212,7 +214,7 @@
                         <tbody id="excel-table-body" class="bg-emerald-50/20"></tbody>
                     </table>
                 </div>
-                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-8 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-lock mr-2"></i> Save Marks (Password Protected)</button>
+                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-8 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-lock mr-2"></i> Save Marks (Requires Password)</button>
             </div>
 
             <!-- SECTION 3: ATTENDANCE -->
@@ -253,7 +255,7 @@
                 <button onclick="generateAttendanceSheet()" class="w-full max-w-md mx-auto block bg-emerald-800 text-amber-400 py-3.5 rounded-xl text-sm font-bold shadow-lg hover:bg-emerald-900 transition">Generate Attendance Sheet</button>
             </div>
 
-            <!-- SECTION 4: FEES & PAYMENTS (UPDATED WITH RECEIPTS & EXTRA FEES) -->
+            <!-- SECTION 4: FEES & PAYMENTS (WITH COLOR LOGIC & RECEIPTS) -->
             <div id="section-fees" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex justify-between items-center border-b pb-3 mb-5">
                     <h3 class="text-lg font-extrabold text-emerald-950"><i class="fa-solid fa-money-check-dollar text-amber-500 mr-2"></i>Fee & Payment Management</h3>
@@ -288,7 +290,7 @@
                                 <option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
                             </select>
                         </div>
-                        <button onclick="renderFeeTable()" class="bg-emerald-800 text-white font-bold p-2.5 rounded-xl shadow w-full">Fetch Students</button>
+                        <button onclick="renderFeeTable()" class="bg-emerald-800 text-white font-bold p-2.5 rounded-xl shadow w-full hover:bg-emerald-900 transition">Fetch Students</button>
                     </div>
                 </div>
 
@@ -303,26 +305,25 @@
                         <thead>
                             <tr class="bg-emerald-900 text-white">
                                 <th class="p-3 border text-center w-8">SL</th>
-                                <th class="p-3 border text-center w-20">ID</th>
-                                <th class="p-3 border">Student Name & Father</th>
+                                <th class="p-3 border text-center w-16">ID</th>
+                                <th class="p-3 border">Student Name & Info</th>
                                 <th class="p-3 border text-center w-24">Monthly Fee</th>
                                 <th class="p-3 border text-center w-24">Extra Fee</th>
                                 <th class="p-3 border text-center bg-amber-600 w-24 text-emerald-950 font-black">Total Amount</th>
-                                <th class="p-3 border text-center w-28">Paid Amount</th>
+                                <th class="p-3 border text-center w-24">Paid Amount</th>
                                 <th class="p-3 border text-center w-20">Due (৳)</th>
-                                <th class="p-3 border text-center w-20">Status</th>
                                 <th class="p-3 border text-center w-24">Receipt</th>
                             </tr>
                         </thead>
                         <tbody id="fee-table-body" class="bg-white">
-                            <tr><td colspan="10" class="p-4 text-center font-bold text-gray-500">Please fetch students to view fee records.</td></tr>
+                            <tr><td colspan="9" class="p-4 text-center font-bold text-gray-500">Please fetch students to view fee records.</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <button onclick="saveFees()" class="bg-emerald-800 text-white px-8 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-floppy-disk mr-1"></i> Save All Payments</button>
+                <button onclick="saveFees()" class="bg-emerald-800 text-white px-8 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-lock mr-1"></i> Save All Payments</button>
             </div>
 
-            <!-- SECTION 5: ACCOUNTS & FINANCE (UPDATED WITH NAMES & VOUCHERS) -->
+            <!-- SECTION 5: ACCOUNTS & FINANCE -->
             <div id="section-finance" class="hidden space-y-6">
                 <div class="bg-emerald-950 p-6 rounded-2xl shadow-xl border-2 border-amber-500 text-white">
                     <h3 class="text-xl font-black text-amber-400 border-b border-emerald-800 pb-3 mb-5"><i class="fa-solid fa-chart-line mr-2"></i>Accounts & Finance Dashboard</h3>
@@ -338,6 +339,7 @@
                             <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
                             <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                             <option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+                            <option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
                         </select>
                         <button onclick="renderFinanceDashboard()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-3 px-8 rounded-xl shadow transition w-full md:w-auto">Load Report</button>
                     </div>
@@ -489,13 +491,22 @@
                 <div><label class="block font-bold mb-1">Cadet Full Name</label><input type="text" id="edit-std-name" required class="w-full p-2 border rounded-lg font-bold uppercase outline-none focus:border-emerald-600"></div>
                 <div><label class="block font-bold mb-1">Father's Name</label><input type="text" id="edit-std-father" required class="w-full p-2 border rounded-lg font-semibold uppercase outline-none focus:border-emerald-600"></div>
                 
-                <div>
-                    <label class="block font-bold mb-1 text-emerald-800">Accommodation Status</label>
-                    <select id="edit-std-accommodation" required class="w-full p-2 border border-emerald-300 rounded-lg bg-emerald-50 font-bold outline-none cursor-pointer">
-                        <option value="Non-Residential">Non-Residential</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Day Care">Day Care</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1 text-emerald-800">Accommodation</label>
+                        <select id="edit-std-accommodation" required class="w-full p-2 border border-emerald-300 rounded-lg bg-emerald-50 font-bold outline-none cursor-pointer">
+                            <option value="Non-Residential">Non-Residential</option><option value="Residential">Residential</option><option value="Day Care">Day Care</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1 text-amber-700">Activation Month</label>
+                        <select id="edit-std-activation-month" required class="w-full p-2 border border-amber-300 rounded-lg bg-amber-50 font-bold outline-none cursor-pointer">
+                            <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                            <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                            <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                            <option value="October">October</option><option value="November">November</option><option value="December">December</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -708,6 +719,7 @@
             const phone = document.getElementById('reg-phone').value.trim() || 'N/A';
             const gender = document.getElementById('reg-gender').value;
             const accommodation = document.getElementById('reg-accommodation').value; 
+            const activationMonth = document.getElementById('reg-activation-month').value; // NEW FIELD
             const status = document.getElementById('reg-status').value;
             const photoInput = document.getElementById('reg-photo-file');
 
@@ -716,7 +728,7 @@
             let photoBase64 = getDefaultAvatarByGender(gender);
             if (photoInput.files && photoInput.files[0]) photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
 
-            const newStudent = { id, name, father, class: stdClass, phone, gender, accommodation, status, photo: photoBase64 };
+            const newStudent = { id, name, father, class: stdClass, phone, gender, accommodation, activationMonth, status, photo: photoBase64 };
             registeredStudents.unshift(newStudent); safeCacheStudentsLocally();
             renderStudentDBTable();
 
@@ -755,10 +767,10 @@
 
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-emerald-50 text-xs">
-                        <td class="p-2 border text-center"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border border-emerald-500 mx-auto"></td>
+                        <td class="p-2 border text-center"><img src="${s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" class="w-8 h-8 rounded-full object-cover border mx-auto"></td>
                         <td class="p-2 border font-bold text-emerald-950">${s.id}</td><td class="p-2 border font-bold">${s.name}</td>
                         <td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
-                        <td class="p-2 border text-center">${accBadge}</td>
+                        <td class="p-2 border text-center"><span class="block mb-1">${accBadge}</span><span class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[9px] font-bold">${s.activationMonth || 'N/A'}</span></td>
                         <td class="p-2 border font-medium">${s.phone}</td><td class="p-2 border text-center">${statusBadge}</td>
                         <td class="p-2 border text-center whitespace-nowrap space-x-1">
                             <button onclick="renderIDCardDirectlyInAdmin(${realIdx})" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-2 py-1 rounded text-[11px]" title="ID Card"><i class="fa-solid fa-id-card"></i></button>
@@ -770,18 +782,27 @@
             });
         }
 
+        let pendingEditPhotoBase64 = null;
+        function previewEditStudentPhoto(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            compressImage(file, 250, 250, 0.7).then(base64 => {
+                pendingEditPhotoBase64 = base64; document.getElementById('edit-std-photo-preview').src = base64;
+            });
+        }
+
         function openStudentEditModal(realIdx) {
             const s = registeredStudents[realIdx]; if(!s) return;
             document.getElementById('edit-std-realindex').value = realIdx;
             document.getElementById('edit-std-id').value = s.id;
             document.getElementById('edit-std-name').value = s.name;
             document.getElementById('edit-std-father').value = s.father || '';
+            document.getElementById('edit-std-phone').value = s.phone || '';
             document.getElementById('edit-std-class').value = s.class;
-            document.getElementById('edit-std-phone').value = s.phone;
-            document.getElementById('edit-std-gender').value = s.gender || 'Male';
             document.getElementById('edit-std-accommodation').value = s.accommodation || 'Non-Residential';
+            document.getElementById('edit-std-activation-month').value = s.activationMonth || 'January'; // NEW FIELD
             document.getElementById('edit-std-status').value = s.status || 'Active';
-            document.getElementById('edit-std-photo-preview').src = s.photo || BOY_DEFAULT_AVATAR;
+            document.getElementById('edit-std-photo-preview').src = s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             document.getElementById('edit-std-photo-file').value = '';
             pendingEditPhotoBase64 = null;
             document.getElementById('student-edit-modal').classList.remove('hidden');
@@ -792,24 +813,36 @@
             e.preventDefault();
             const realIdx = document.getElementById('edit-std-realindex').value;
             const s = registeredStudents[realIdx]; if(!s) return;
-            const newGender = document.getElementById('edit-std-gender').value;
-            const newPhoto = pendingEditPhotoBase64 || (isDefaultAvatarPhoto(s.photo) ? getDefaultAvatarByGender(newGender) : s.photo);
             
+            const newPhoto = pendingEditPhotoBase64 || s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+
             const updatedData = {
                 id: document.getElementById('edit-std-id').value.trim().toUpperCase(),
                 name: document.getElementById('edit-std-name').value.trim().toUpperCase(),
                 father: document.getElementById('edit-std-father').value.trim().toUpperCase(),
-                class: s.class, 
-                phone: document.getElementById('edit-std-phone').value.trim(),
-                gender: newGender, accommodation: document.getElementById('edit-std-accommodation').value,
-                status: document.getElementById('edit-std-status').value, photo: newPhoto
+                class: document.getElementById('edit-std-class').value, 
+                phone: document.getElementById('edit-std-phone').value.trim(), 
+                gender: document.getElementById('edit-std-gender').value,
+                accommodation: document.getElementById('edit-std-accommodation').value,
+                activationMonth: document.getElementById('edit-std-activation-month').value,
+                status: document.getElementById('edit-std-status').value,
+                photo: newPhoto
             };
             
-            registeredStudents[realIdx] = updatedData; safeCacheStudentsLocally();
-            db.ref('students/' + updatedData.id).set(updatedData); renderStudentDBTable();
-            closeStudentEditModal(); alert('Cadet updated successfully!');
+            registeredStudents[realIdx] = updatedData;
+            try { localStorage.setItem('m3_db', JSON.stringify(registeredStudents)); } catch(err){}
+            renderStudentDBTable(); db.ref('students/' + updatedData.id).set(updatedData);
+            
+            // Sync with results array if needed
+            const resIdx = excelStudents.findIndex(ex => ex.id === updatedData.id);
+            if(resIdx !== -1) {
+                excelStudents[resIdx].name = updatedData.name;
+                try { localStorage.setItem('m3_results', JSON.stringify(excelStudents)); } catch(err){}
+                // No need to update specific result key here, we let real-time handle or next save handle it
+            }
+            closeStudentEditModal(); alert('Student data updated successfully!');
         }
-        
+
         // DEEP GHOST DATA REMOVAL
         function deleteRegisteredStudent(studentId) {
             const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
@@ -840,7 +873,7 @@
         }
 
         // ==========================================
-        // FEES & PAYMENTS MANAGEMENT (WITH RECEIPTS)
+        // FEES & PAYMENTS MANAGEMENT (COLOR CODING & RECEIPTS)
         // ==========================================
         function renderFeeTable() {
             const cls = document.getElementById('fee-class').value;
@@ -870,7 +903,6 @@
                 const fData = currentMonthFees[s.id] || { base: '', extraName: '', extraAmount: '', paid: '' };
                 const baseFee = parseFloat(fData.base) || 0;
                 
-                // If saved extra fee exists, use it. Otherwise use the global input
                 const exName = fData.extraName || globalExtraName;
                 const exAmt = fData.extraAmount !== '' && fData.extraAmount !== undefined ? parseFloat(fData.extraAmount) : globalExtraAmount;
                 const totalFee = baseFee + (exAmt || 0);
@@ -878,25 +910,47 @@
                 const paidVal = parseFloat(fData.paid) || 0;
                 const dueVal = Math.max(0, totalFee - paidVal);
                 
+                // Color Logic based on Due Months
+                let rowColorClass = 'bg-white hover:bg-gray-50'; // Default (1 month due / unpaid running month)
                 let statusBadge = `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold">Unpaid</span>`;
-                if(totalFee > 0) {
-                    if(paidVal >= totalFee) statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
-                    else if(paidVal > 0) statusBadge = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial</span>`;
+                
+                if(baseFee > 0) {
+                    const dueMonths = dueVal / baseFee; // E.g., Due 3000 / Base 1500 = 2 months
+                    
+                    if(dueVal === 0 && paidVal >= totalFee) {
+                        rowColorClass = 'bg-green-100 hover:bg-green-200'; // All clear
+                        statusBadge = `<span class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
+                    } else if (paidVal > 0 && dueVal > 0 && dueMonths <= 1) {
+                        rowColorClass = 'bg-white hover:bg-gray-50';
+                        statusBadge = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial</span>`;
+                    } else if (dueMonths > 1 && dueMonths <= 2) {
+                        rowColorClass = 'bg-red-100 hover:bg-red-200'; // 2 months due
+                        statusBadge = `<span class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">2 Mos Due</span>`;
+                    } else if (dueMonths > 2) {
+                        rowColorClass = 'bg-red-400 hover:bg-red-500'; // 3+ months due
+                        statusBadge = `<span class="bg-red-900 text-white px-2 py-0.5 rounded text-[10px] font-bold">Alert!</span>`;
+                    }
+                } else if (paidVal > 0 && dueVal === 0) {
+                    rowColorClass = 'bg-green-100 hover:bg-green-200';
+                    statusBadge = `<span class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
                 }
 
+                // Ensure text visibility on dark red background
+                const textColId = (baseFee > 0 && (dueVal/baseFee) > 2) ? 'text-white' : 'text-emerald-950';
+
                 tbody.innerHTML += `
-                    <tr class="border-b border-emerald-200 hover:bg-emerald-50 fee-row">
-                        <td class="p-2 border text-center font-bold">${idx+1}</td>
-                        <td class="p-2 border font-bold text-emerald-950"><input type="text" readonly value="${s.id}" class="fee-id bg-transparent w-full outline-none font-bold text-center uppercase text-[10px]"></td>
-                        <td class="p-2 border font-bold text-sm uppercase text-[11px] leading-tight">${s.name}<br><span class="text-[9px] text-gray-500">${s.father}</span></td>
-                        <td class="p-2 border"><input type="number" value="${fData.base}" class="fee-base w-full p-1.5 border border-emerald-200 rounded outline-none text-center focus:ring-2 focus:ring-emerald-400 font-bold text-emerald-900" placeholder="Base Fee" onkeyup="calcDue(this)"></td>
+                    <tr class="border-b border-gray-300 fee-row ${rowColorClass} transition">
+                        <td class="p-2 border text-center font-bold ${textColId}">${idx+1}</td>
+                        <td class="p-2 border font-bold"><input type="text" readonly value="${s.id}" class="fee-id bg-transparent w-full outline-none font-bold text-center uppercase text-[10px] ${textColId}"></td>
+                        <td class="p-2 border font-bold text-sm uppercase text-[11px] leading-tight ${textColId}">${s.name}<br><span class="text-[9px] opacity-80">${s.father}</span></td>
+                        <td class="p-2 border"><input type="number" value="${fData.base}" class="fee-base w-full p-1.5 border border-gray-300 rounded outline-none text-center focus:ring-2 focus:ring-emerald-400 font-bold text-emerald-900" placeholder="Base Fee" onkeyup="calcDue(this)"></td>
                         <td class="p-2 border">
                             <input type="hidden" value="${exName}" class="fee-ex-name">
-                            <input type="number" value="${exAmt}" class="fee-ex-amount w-full p-1.5 border border-emerald-200 rounded outline-none text-center text-emerald-700 font-bold" title="${exName}" placeholder="Extra" onkeyup="calcDue(this)">
+                            <input type="number" value="${exAmt}" class="fee-ex-amount w-full p-1.5 border border-gray-300 rounded outline-none text-center text-emerald-700 font-bold" title="${exName}" placeholder="Extra" onkeyup="calcDue(this)">
                         </td>
-                        <td class="p-2 border text-center font-black text-emerald-950 text-[13px] bg-amber-50 fee-total">${totalFee}</td>
+                        <td class="p-2 border text-center font-black text-[13px] bg-amber-50 text-emerald-950 fee-total">${totalFee}</td>
                         <td class="p-2 border"><input type="number" value="${fData.paid}" class="fee-paid w-full p-1.5 border-2 border-emerald-400 rounded outline-none text-center bg-white focus:ring-2 focus:ring-emerald-500 font-black text-green-700" placeholder="Paid Amt" onkeyup="calcDue(this)"></td>
-                        <td class="p-2 border text-center font-black text-red-600 text-[13px] fee-due">${dueVal}</td>
+                        <td class="p-2 border text-center font-black text-[13px] fee-due ${textColId}">${dueVal}</td>
                         <td class="p-2 border text-center fee-status">${statusBadge}</td>
                         <td class="p-2 border text-center"><button onclick="printFeeReceipt(this, '${s.name}', '${s.class}')" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-2 py-1.5 rounded text-[10px] shadow"><i class="fa-solid fa-print"></i> Receipt</button></td>
                     </tr>
@@ -931,8 +985,9 @@
             totalCell.innerText = total;
             dueCell.innerText = due;
             
+            // Re-evaluating color locally before saving is complex, so we just update status text
             if(total > 0) {
-                if(paid >= total) statusCell.innerHTML = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
+                if(paid >= total) statusCell.innerHTML = `<span class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
                 else if(paid > 0) statusCell.innerHTML = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial</span>`;
                 else statusCell.innerHTML = `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold">Unpaid</span>`;
             } else {
@@ -944,7 +999,7 @@
             const cls = document.getElementById('fee-class').value;
             const month = document.getElementById('fee-month').value;
             const year = document.getElementById('fee-year').value;
-            if(!cls || !month || !year) { alert('Please select Level, Month and Year'); return; }
+            if(!cls || !month || !year) { alert('Please select Level and Month'); return; }
 
             const pass = prompt('Enter Admin Password to save payments:');
             const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
@@ -966,6 +1021,7 @@
 
             db.ref('fees/' + monthKey).set(studentFees[monthKey]).then(() => {
                 localStorage.setItem('annur_final_fees_2026', JSON.stringify(studentFees));
+                renderFeeTable(); // Re-render to update background colors!
                 alert('Payment Records saved successfully to the Cloud!');
                 if(!document.getElementById('section-finance').classList.contains('hidden')) renderFinanceDashboard();
             });
@@ -991,11 +1047,10 @@
             }
 
             const receiptHTML = `
-                <div id="target-receipt-node" class="bg-white mx-auto border-2 border-emerald-950 p-4 relative font-sans" style="width: 350px; height: auto;">
+                <div id="target-receipt-node" class="bg-white mx-auto border-[3px] border-emerald-950 p-5 relative font-sans" style="width: 350px; height: auto;">
                     <div class="text-center border-b-2 border-emerald-800 pb-2 mb-3">
                         <img src="${universalLogo}" class="w-12 h-12 mx-auto mb-1">
-                        <h2 class="text-sm font-black text-emerald-950 font-brand">AN-NUR INTL. CADET MADRASAH</h2>
-                        <p class="text-[9px] font-bold text-gray-600">Mohara, Chandgaon, Chattogram</p>
+                        <h2 class="text-sm font-black text-emerald-950 font-brand uppercase">${madrasahName}</h2>
                         <span class="inline-block bg-emerald-100 text-emerald-800 px-3 py-0.5 rounded font-black text-[10px] mt-1 border border-emerald-300">MONEY RECEIPT</span>
                     </div>
                     
@@ -1007,7 +1062,7 @@
 
                     <div class="text-[11px] mb-4">
                         <div class="bg-emerald-900 text-white flex justify-between px-2 py-1 font-bold"><span>Description</span><span>Amount</span></div>
-                        <div class="flex justify-between py-1 border-b border-dashed border-gray-300"><span class="text-gray-600">Monthly Tuition Fee</span><span class="font-bold">৳ ${baseFee}</span></div>
+                        <div class="flex justify-between py-1 border-b border-dashed border-gray-300"><span class="text-gray-600">Monthly Tuition/Base Fee</span><span class="font-bold">৳ ${baseFee}</span></div>
                         ${extraRowHTML}
                         <div class="flex justify-between py-1 border-b-2 border-emerald-950 bg-amber-50 px-1 mt-1"><span class="font-black text-emerald-900">Total Payable</span><span class="font-black text-emerald-900">৳ ${totalFee}</span></div>
                         <div class="flex justify-between py-1 border-b border-dashed border-gray-300 px-1"><span class="font-bold text-green-700">Amount Paid</span><span class="font-black text-green-700">৳ ${paid}</span></div>
@@ -1027,7 +1082,7 @@
         }
 
         // ==========================================
-        // MARKS ENTRY & RESULTS (UPDATED FOR UNIQUE EXAMS)
+        // MARKS ENTRY & RESULTS (UNIQUE EXAMS FIX)
         // ==========================================
         function loadClassSubjectsAndRender() {
             const cls = document.getElementById('admin-global-class').value;
@@ -1071,12 +1126,16 @@
             if (registeredInClass.length === 0) { tbody.innerHTML = `<tr><td colspan="${2 + currentClassSubjects.length + 3}" class="p-4 text-center font-bold text-gray-500">No students found. Register students first.</td></tr>`; return; }
 
             registeredInClass.forEach((s, rowIdx) => {
-                // Find if this student has marks for THIS SPECIFIC EXAM
-                const existingResult = currentExamResults.find(r => r.id === s.id);
-                const marksToDisplay = existingResult && existingResult.marks ? existingResult.marks : new Array(currentClassSubjects.length).fill('');
-                const dbKey = existingResult ? existingResult.dbKey : `${s.id}_${ses}_${exm}`.replace(/\s+/g, '_');
+                // Determine if this student has marks for THIS SPECIFIC EXAM
+                const dbKey = `${s.id}_${ses}_${exm}`.replace(/\s+/g, '_');
+                
+                // Fallback for legacy data (if any was saved before session/exam keys)
+                let existingResult = currentExamResults.find(r => r.dbKey === dbKey || (r.id === s.id && r.session === ses && r.exam === exm));
+                if(!existingResult) existingResult = excelStudents.find(r => r.id === s.id && r.exam === exm && !r.session);
 
+                const marksToDisplay = existingResult && existingResult.marks ? existingResult.marks : new Array(currentClassSubjects.length).fill('');
                 const stats = calculateStudentResultStats(marksToDisplay);
+
                 let rowHTML = `<tr class="border-b border-emerald-200 hover:bg-emerald-100 spreadsheet-row">
                     <td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1.5 font-bold text-center bg-transparent uppercase text-emerald-950 text-[10px]"></td>
                     <td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1.5 font-semibold bg-transparent uppercase text-[10px]"></td>`;
@@ -1099,10 +1158,7 @@
         }
 
         function syncRegisteredStudentsToResults() {
-            // Because our table now auto-pulls from registeredStudents and maps empty arrays if no result exists, 
-            // the "Sync" button is mainly to refresh the table.
-            renderExcelTable();
-            alert('Table Refreshed with active Cadets!');
+            renderExcelTable(); alert('Table Refreshed with active Cadets!');
         }
 
         function saveExcelData() {
@@ -1143,9 +1199,7 @@
             });
 
             if(Object.keys(updates).length > 0) {
-                db.ref('results').update(updates).then(() => {
-                    alert(`${exm} Results Saved Successfully!`);
-                });
+                db.ref('results').update(updates).then(() => { alert(`${exm} Results Saved Successfully!`); });
             } else { alert('No marks entered to save!'); }
         }
 
@@ -1181,20 +1235,15 @@
             
             const searchPattern = `${monthInput}_${yearInput}_`.toUpperCase();
 
-            // 1. Calculate Total Fees Collected from Student Fees
             let totalFeesCollected = 0;
             Object.keys(studentFees).forEach(key => {
                 if(key.includes(searchPattern)) {
-                    Object.values(studentFees[key]).forEach(f => {
-                        totalFeesCollected += (parseFloat(f.paid) || 0);
-                    });
+                    Object.values(studentFees[key]).forEach(f => { totalFeesCollected += (parseFloat(f.paid) || 0); });
                 }
             });
 
-            // 2. Calculate Manual Transactions
             let manualIncome = 0; let totalExpense = 0;
             const monthTrans = transactions.filter(t => {
-                // Ensure date parsing matches month/year
                 if(!t.date) return false;
                 const d = new Date(t.date);
                 return d.toLocaleString('en', { month: 'long' }) === monthInput && String(d.getFullYear()) === yearInput;
