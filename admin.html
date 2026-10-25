@@ -8,10 +8,9 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.13.0/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Inter', 'Anek Bangla', sans-serif; background-color: #f8faf9; }
@@ -29,6 +28,7 @@
         .id-cadet-photo-frame { width: 140px; height: 140px; border: 4px solid #047857; border-radius: 50%; object-fit: cover; margin: 6px auto; display: block; background: #f8fafc; position: relative; z-index: 5; }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
         
+        /* STRICT PRINT CSS */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
             html, body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; height: 100% !important; overflow: hidden !important; }
@@ -39,10 +39,6 @@
                 position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; 
                 margin: 0 !important; padding: 0 !important; padding-top: 15px !important;
             }
-            .a4-print-wrapper, .attendance-sheet-wrapper {
-                box-shadow: none !important; margin: 0 auto !important;
-                page-break-inside: avoid !important; break-inside: avoid !important;
-            }
             @page { margin: 0 !important; }
             .no-print { display: none !important; }
         }
@@ -50,7 +46,7 @@
 </head>
 <body class="flex flex-col min-h-screen selection:bg-amber-500 selection:text-white">
 
-    <!-- SECURE LOGIN SCREEN -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center bg-emerald-950 px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full border-t-4 border-amber-500 text-center">
             <img id="login-logo-preview" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="universal-logo-target w-20 h-20 mx-auto mb-4 object-contain rounded-full border shadow">
@@ -72,7 +68,7 @@
                     <button onclick="switchTab('fees')" id="tab-fees" class="hover:text-amber-300 pb-1 text-slate-300 whitespace-nowrap">Fees</button>
                     <button onclick="switchTab('finance')" id="tab-finance" class="hover:text-amber-300 pb-1 text-slate-300 whitespace-nowrap">Accounts</button>
                     <button onclick="switchTab('website')" id="tab-website" class="hover:text-amber-300 pb-1 text-slate-300 whitespace-nowrap">Website</button>
-                    <a href="index.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-1.5 rounded-lg text-white whitespace-nowrap transition shadow">Public Site <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="index.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-1.5 rounded-lg text-white whitespace-nowrap transition shadow">Public Site</a>
                 </div>
             </div>
         </nav>
@@ -89,7 +85,7 @@
             <!-- SECTION 1: STUDENTS -->
             <div id="section-students" class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
-                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>Cadet Registration & ID Cards</h3>
+                    <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-user-graduate text-amber-600 mr-2"></i>Cadet Registration</h3>
                     <span id="total-registered-badge" class="bg-emerald-800 text-white text-xs px-4 py-1.5 rounded-full font-bold shadow">Total Registered: 0</span>
                 </div>
 
@@ -103,48 +99,48 @@
                 </div>
 
                 <form onsubmit="handleRegisterStudent(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-2xl border text-xs">
-                    <div><label class="block font-bold mb-1">Student Name *</label><input type="text" id="reg-name" required class="w-full p-2.5 border rounded-xl font-medium uppercase"></div>
-                    <div><label class="block font-bold mb-1">Father's Name *</label><input type="text" id="reg-father" required class="w-full p-2.5 border rounded-xl font-medium uppercase"></div>
-                    <div><label class="block font-bold mb-1">Student ID *</label><input type="text" id="reg-id" required class="w-full p-2.5 border rounded-xl font-bold uppercase"></div>
+                    <div><label class="block font-bold mb-1">Student Name *</label><input type="text" id="reg-name" required class="w-full p-2.5 border rounded-xl font-medium uppercase outline-none focus:border-emerald-600"></div>
+                    <div><label class="block font-bold mb-1">Father's Name *</label><input type="text" id="reg-father" required class="w-full p-2.5 border rounded-xl font-medium uppercase outline-none focus:border-emerald-600"></div>
+                    <div><label class="block font-bold mb-1">Student ID *</label><input type="text" id="reg-id" required class="w-full p-2.5 border rounded-xl font-bold uppercase outline-none focus:border-emerald-600"></div>
                     <div>
                         <label class="block font-bold mb-1">Level / Class *</label>
-                        <select id="reg-class" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
+                        <select id="reg-class" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer outline-none">
                             <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
                             <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
                             <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
-                    <div><label class="block font-bold mb-1">Mobile</label><input type="tel" id="reg-phone" class="w-full p-2.5 border rounded-xl"></div>
+                    <div><label class="block font-bold mb-1">Mobile</label><input type="tel" id="reg-phone" class="w-full p-2.5 border rounded-xl outline-none focus:border-emerald-600"></div>
                     <div>
                         <label class="block font-bold mb-1">Gender *</label>
-                        <select id="reg-gender" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer">
+                        <select id="reg-gender" required class="w-full p-2.5 border rounded-xl bg-white font-semibold cursor-pointer outline-none">
                             <option value="Male">Male</option><option value="Female">Female</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold mb-1 text-emerald-800">Accommodation *</label>
                         <select id="reg-accommodation" required class="w-full p-2.5 border border-emerald-300 rounded-xl bg-emerald-50 font-bold cursor-pointer outline-none">
-                            <option value="Non-Residential">Non-Residential (Day Shift)</option>
-                            <option value="Residential">Residential (Hostel)</option>
+                            <option value="Non-Residential">Non-Residential</option>
+                            <option value="Residential">Residential</option>
                             <option value="Day Care">Day Care</option>
                         </select>
                     </div>
-                    <div><label class="block font-bold mb-1">Photo (optional)</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white"></div>
+                    <div><label class="block font-bold mb-1">Photo (optional)</label><input type="file" id="reg-photo-file" accept="image/*" class="w-full p-1.5 border rounded-xl bg-white outline-none"></div>
                     <div>
                         <label class="block font-bold mb-1">Status</label>
-                        <select id="reg-status" class="w-full p-2.5 border rounded-xl bg-white font-semibold">
+                        <select id="reg-status" class="w-full p-2.5 border rounded-xl bg-white font-semibold outline-none">
                             <option value="Active" selected>Active</option>
                             <option value="Deactivated">Deactivated</option>
                         </select>
                     </div>
-                    <div class="md:col-span-3 flex items-end justify-end"><button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-6 rounded-xl shadow w-full md:w-auto hover:bg-emerald-900 transition">Register Cadet</button></div>
+                    <div class="md:col-span-3 flex items-end justify-end"><button type="submit" id="reg-submit-btn" class="bg-emerald-800 text-white font-bold py-2.5 px-8 rounded-xl shadow w-full md:w-auto hover:bg-emerald-900 transition">Register Cadet</button></div>
                 </form>
 
                 <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <div><label class="block font-bold text-amber-900 mb-1">Search Student:</label><input type="text" id="student-db-search-personal" onkeyup="renderStudentDBTable()" placeholder="ID or Name..." class="p-2.5 border rounded-xl w-full bg-white font-medium"></div>
+                    <div><label class="block font-bold text-amber-900 mb-1">Search Student:</label><input type="text" id="student-db-search-personal" onkeyup="renderStudentDBTable()" placeholder="ID or Name..." class="p-2.5 border rounded-xl w-full bg-white font-medium outline-none"></div>
                     <div>
                         <label class="block font-bold text-amber-900 mb-1">Filter by Level:</label>
-                        <select id="student-db-search-class" onchange="renderStudentDBTable()" class="p-2.5 border rounded-xl w-full bg-white font-bold text-emerald-950">
+                        <select id="student-db-search-class" onchange="renderStudentDBTable()" class="p-2.5 border rounded-xl w-full bg-white font-bold text-emerald-950 outline-none">
                             <option value="ALL" selected>All Levels</option>
                             <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
                             <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
@@ -153,13 +149,15 @@
                     </div>
                 </div>
 
-                <div id="student-db-table-wrapper" class="overflow-x-auto border rounded-xl">
+                <div class="overflow-x-auto border rounded-xl">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-emerald-900 text-white">
-                                <th class="p-2 border">Photo</th><th class="p-2 border">ID</th><th class="p-2 border">Name</th>
-                                <th class="p-2 border">Level</th><th class="p-2 border">Type</th><th class="p-2 border">Mobile</th>
-                                <th class="p-2 border text-center">Status</th><th class="p-2 border text-center">Action</th>
+                                <th class="p-3 border text-center">Photo</th>
+                                <th class="p-3 border">ID</th><th class="p-3 border">Name</th>
+                                <th class="p-3 border">Level</th><th class="p-3 border">Type</th>
+                                <th class="p-3 border">Mobile</th><th class="p-3 border text-center">Status</th>
+                                <th class="p-3 border text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="student-db-table-body" class="bg-white"></tbody>
@@ -167,20 +165,20 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: MARKS ENTRY -->
+            <!-- SECTION 2: MARKS ENTRY (UPDATED LOGIC) -->
             <div id="section-marks" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
                 <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
                     <h3 class="text-lg font-bold text-emerald-950"><i class="fa-solid fa-file-excel text-green-600 mr-2"></i>Results & Marks Entry</h3>
                     <div class="flex gap-2">
-                        <button onclick="addSubjectColumn()" class="bg-amber-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-plus mr-1"></i> Add Subject</button>
-                        <button onclick="syncRegisteredStudentsToResults()" class="bg-blue-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-rotate mr-1"></i> Sync Students</button>
+                        <button onclick="addSubjectColumn()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 text-xs px-4 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-plus mr-1"></i> Add Subject</button>
+                        <button onclick="syncRegisteredStudentsToResults()" class="bg-emerald-800 hover:bg-emerald-900 text-white text-xs px-4 py-2 rounded-xl font-bold shadow"><i class="fa-solid fa-cloud-arrow-down mr-1"></i> Fetch Students</button>
                     </div>
                 </div>
 
-                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
                     <div>
                         <label class="block font-bold text-amber-900 mb-1">Select Level:</label>
-                        <select id="admin-global-class" onchange="loadClassSubjectsAndRender()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900">
+                        <select id="admin-global-class" onchange="loadClassSubjectsAndRender()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 outline-none">
                             <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
                             <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
                             <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
@@ -188,18 +186,22 @@
                     </div>
                     <div>
                         <label class="block font-bold text-amber-900 mb-1">Academic Session:</label>
-                        <select id="admin-global-session" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900">
-                            <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+                        <!-- Updated Year up to 2035 -->
+                        <select id="admin-global-session" onchange="renderExcelTable()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 outline-none">
+                            <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
+                            <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                            <option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+                            <option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-bold text-amber-900 mb-1">Examination Term:</label>
-                        <select id="admin-global-exam" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900">
-                            <option value="Monthly Examination">Monthly</option>
-                            <option value="1st Term Examination">1st Term</option>
-                            <option value="Mid Term Examination">Mid Term</option>
-                            <option value="2nd Term Examination">2nd Term</option>
-                            <option value="Annual Examination" selected>Annual</option>
+                        <select id="admin-global-exam" onchange="renderExcelTable()" class="w-full p-2.5 border rounded-xl font-bold bg-white text-emerald-900 outline-none">
+                            <option value="Monthly Examination">Monthly Examination</option>
+                            <option value="1st Term Examination">1st Term Examination</option>
+                            <option value="Mid Term Examination">Mid Term Examination</option>
+                            <option value="2nd Term Examination">2nd Term Examination</option>
+                            <option value="Annual Examination" selected>Annual Examination</option>
                         </select>
                     </div>
                 </div>
@@ -210,85 +212,138 @@
                         <tbody id="excel-table-body" class="bg-emerald-50/20"></tbody>
                     </table>
                 </div>
-                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow w-full md:w-auto"><i class="fa-solid fa-floppy-disk mr-1"></i> Save Results to Cloud</button>
+                <button onclick="saveExcelData()" class="bg-emerald-800 text-white px-8 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-lock mr-2"></i> Save Marks (Password Protected)</button>
             </div>
 
             <!-- SECTION 3: ATTENDANCE -->
             <div id="section-attendance" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-5">
+                <div class="flex justify-between items-center border-b pb-3 mb-5">
                     <h3 class="text-lg font-extrabold text-emerald-950"><i class="fa-solid fa-clipboard-user text-amber-500 mr-2"></i>Monthly Attendance Register</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
                     <div>
                         <label class="block font-bold text-slate-600 mb-1">Select Level *</label>
-                        <select id="attendance-class" class="p-3 border border-slate-300 rounded-xl w-full bg-slate-50 font-bold text-emerald-900 outline-none cursor-pointer">
+                        <select id="attendance-class" class="p-3 border rounded-xl w-full bg-slate-50 font-bold text-emerald-900 outline-none cursor-pointer">
                             <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
                             <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
                             <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block font-bold text-slate-600 mb-1">Month Name & Year *</label>
-                        <input type="text" id="attendance-month" placeholder="e.g. October 2026" class="p-3 border border-slate-300 rounded-xl w-full font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-600">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1">Month</label>
+                            <select id="attendance-month" class="p-3 border rounded-xl w-full font-bold outline-none">
+                                <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                                <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                                <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                                <option value="October" selected>October</option><option value="November">November</option><option value="December">December</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1">Year</label>
+                            <select id="attendance-year" class="p-3 border rounded-xl w-full font-bold outline-none">
+                                <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
+                                <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                                <option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+                                <option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <button onclick="generateAttendanceSheet()" class="w-full max-w-md mx-auto block bg-emerald-800 text-amber-400 py-3.5 rounded-xl text-sm font-bold shadow-lg hover:bg-emerald-900 transition tracking-wide">Generate Attendance Sheet</button>
+                <button onclick="generateAttendanceSheet()" class="w-full max-w-md mx-auto block bg-emerald-800 text-amber-400 py-3.5 rounded-xl text-sm font-bold shadow-lg hover:bg-emerald-900 transition">Generate Attendance Sheet</button>
             </div>
 
-            <!-- SECTION 4: FEES & PAYMENTS -->
+            <!-- SECTION 4: FEES & PAYMENTS (UPDATED WITH RECEIPTS & EXTRA FEES) -->
             <div id="section-fees" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-5">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-5">
+                <div class="flex justify-between items-center border-b pb-3 mb-5">
                     <h3 class="text-lg font-extrabold text-emerald-950"><i class="fa-solid fa-money-check-dollar text-amber-500 mr-2"></i>Fee & Payment Management</h3>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-                    <div>
-                        <label class="block font-bold text-slate-600 mb-1">Select Level *</label>
-                        <select id="fee-class" onchange="renderFeeTable()" class="p-3 border border-slate-300 rounded-xl w-full bg-slate-50 font-bold text-emerald-900 outline-none cursor-pointer">
-                            <option value="">-- Select Level --</option>
-                            <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
-                            <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
-                            <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-600 mb-1">Fee Month & Year *</label>
-                        <input type="text" id="fee-month" onkeyup="renderFeeTable()" placeholder="e.g. October 2026" class="p-3 border border-slate-300 rounded-xl w-full font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-600">
+                
+                <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-4 text-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1">Select Level *</label>
+                            <select id="fee-class" class="p-2.5 border border-slate-300 rounded-xl w-full bg-white font-bold text-emerald-900 outline-none cursor-pointer">
+                                <option value="">-- Select Level --</option>
+                                <option value="LEVEL-1">LEVEL-1</option><option value="LEVEL-2">LEVEL-2</option><option value="LEVEL-3">LEVEL-3</option>
+                                <option value="LEVEL-4">LEVEL-4</option><option value="LEVEL-5">LEVEL-5</option><option value="LEVEL-6">LEVEL-6</option>
+                                <option value="LEVEL-7">LEVEL-7</option><option value="LEVEL-8">LEVEL-8</option><option value="LEVEL-9">LEVEL-9</option><option value="LEVEL-10">LEVEL-10</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1">Fee Month *</label>
+                            <select id="fee-month" class="p-2.5 border border-slate-300 rounded-xl w-full font-bold bg-white outline-none">
+                                <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                                <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                                <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                                <option value="October" selected>October</option><option value="November">November</option><option value="December">December</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1">Year *</label>
+                            <select id="fee-year" class="p-2.5 border border-slate-300 rounded-xl w-full font-bold bg-white outline-none">
+                                <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
+                                <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                                <option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+                                <option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
+                            </select>
+                        </div>
+                        <button onclick="renderFeeTable()" class="bg-emerald-800 text-white font-bold p-2.5 rounded-xl shadow w-full">Fetch Students</button>
                     </div>
                 </div>
+
+                <div class="flex flex-wrap gap-4 items-center bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs">
+                    <h4 class="font-bold text-amber-900 w-full md:w-auto"><i class="fa-solid fa-plus-circle mr-1"></i> Global Extra Fee (Applies to all):</h4>
+                    <input type="text" id="fee-extra-name" placeholder="Fee Name (e.g. Exam Fee)" class="p-2 border rounded outline-none w-full md:w-48 font-bold">
+                    <input type="number" id="fee-extra-amount" placeholder="Amount (৳)" class="p-2 border rounded outline-none w-full md:w-32 font-bold" onkeyup="recalculateAllFees()">
+                </div>
                 
-                <div class="overflow-x-auto border rounded-xl">
+                <div class="overflow-x-auto border rounded-xl mt-4">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-emerald-900 text-white">
-                                <th class="p-3 border border-emerald-700 text-center w-10">SL</th>
-                                <th class="p-3 border border-emerald-700 text-center w-24">ID</th>
-                                <th class="p-3 border border-emerald-700">Student Name</th>
-                                <th class="p-3 border border-emerald-700 text-center w-32">Monthly Fee (৳)</th>
-                                <th class="p-3 border border-emerald-700 text-center w-32">Paid Amount (৳)</th>
-                                <th class="p-3 border border-emerald-700 text-center w-24">Due (৳)</th>
-                                <th class="p-3 border border-emerald-700 text-center w-24">Status</th>
+                                <th class="p-3 border text-center w-8">SL</th>
+                                <th class="p-3 border text-center w-20">ID</th>
+                                <th class="p-3 border">Student Name & Father</th>
+                                <th class="p-3 border text-center w-24">Monthly Fee</th>
+                                <th class="p-3 border text-center w-24">Extra Fee</th>
+                                <th class="p-3 border text-center bg-amber-600 w-24 text-emerald-950 font-black">Total Amount</th>
+                                <th class="p-3 border text-center w-28">Paid Amount</th>
+                                <th class="p-3 border text-center w-20">Due (৳)</th>
+                                <th class="p-3 border text-center w-20">Status</th>
+                                <th class="p-3 border text-center w-24">Receipt</th>
                             </tr>
                         </thead>
                         <tbody id="fee-table-body" class="bg-white">
-                            <tr><td colspan="7" class="p-4 text-center font-bold text-gray-500">Please select Level and enter Month to view fees.</td></tr>
+                            <tr><td colspan="10" class="p-4 text-center font-bold text-gray-500">Please fetch students to view fee records.</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <button onclick="saveFees()" class="bg-emerald-800 text-white px-6 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-floppy-disk mr-1"></i> Save Payment Records</button>
+                <button onclick="saveFees()" class="bg-emerald-800 text-white px-8 py-3 rounded-xl font-bold text-sm shadow w-full md:w-auto hover:bg-emerald-900 transition"><i class="fa-solid fa-floppy-disk mr-1"></i> Save All Payments</button>
             </div>
 
-            <!-- SECTION 5: ACCOUNTS & FINANCE (NEW FEATURE) -->
+            <!-- SECTION 5: ACCOUNTS & FINANCE (UPDATED WITH NAMES & VOUCHERS) -->
             <div id="section-finance" class="hidden space-y-6">
                 <div class="bg-emerald-950 p-6 rounded-2xl shadow-xl border-2 border-amber-500 text-white">
                     <h3 class="text-xl font-black text-amber-400 border-b border-emerald-800 pb-3 mb-5"><i class="fa-solid fa-chart-line mr-2"></i>Accounts & Finance Dashboard</h3>
                     
-                    <div class="flex flex-col md:flex-row gap-4 mb-6">
-                        <input type="text" id="finance-month" placeholder="Enter Month & Year (e.g. October 2026)" class="p-3 border-2 border-emerald-700 rounded-xl w-full md:w-1/2 bg-white text-emerald-950 font-bold outline-none focus:border-amber-400">
-                        <button onclick="renderFinanceDashboard()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-3 px-8 rounded-xl shadow transition whitespace-nowrap">Load Monthly Report</button>
+                    <div class="flex flex-wrap md:flex-nowrap gap-4 mb-6">
+                        <select id="finance-month" class="p-3 border-2 border-emerald-700 rounded-xl w-full md:w-1/3 bg-white text-emerald-950 font-bold outline-none">
+                            <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                            <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                            <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                            <option value="October" selected>October</option><option value="November">November</option><option value="December">December</option>
+                        </select>
+                        <select id="finance-year" class="p-3 border-2 border-emerald-700 rounded-xl w-full md:w-1/4 bg-white text-emerald-950 font-bold outline-none">
+                            <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
+                            <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                            <option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+                        </select>
+                        <button onclick="renderFinanceDashboard()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold py-3 px-8 rounded-xl shadow transition w-full md:w-auto">Load Report</button>
                     </div>
 
                     <!-- Summary Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <div class="bg-emerald-900 p-4 rounded-xl border border-emerald-700 shadow-inner">
                             <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-wider mb-1">Total Fees Collected</p>
                             <h4 class="text-2xl font-black text-white">৳ <span id="fin-total-fees">0</span></h4>
@@ -306,26 +361,37 @@
                             <h4 class="text-2xl font-black">৳ <span id="fin-balance">0</span></h4>
                         </div>
                     </div>
+                    
+                    <div class="flex gap-3 mb-8 border-b border-emerald-800 pb-6">
+                        <button onclick="printMonthlyReport('summary')" class="bg-white text-emerald-900 font-bold text-xs px-4 py-2 rounded shadow hover:bg-gray-100"><i class="fa-solid fa-file-invoice mr-1"></i> Print Summary Report</button>
+                        <button onclick="printMonthlyReport('detailed')" class="bg-white text-emerald-900 font-bold text-xs px-4 py-2 rounded shadow hover:bg-gray-100"><i class="fa-solid fa-list mr-1"></i> Print Detailed Report</button>
+                    </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-emerald-950">
                         <!-- Add Extra Income -->
                         <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-green-500">
-                            <h4 class="font-bold text-sm mb-3 text-green-700"><i class="fa-solid fa-arrow-turn-down mr-1"></i> Add Extra Income</h4>
+                            <h4 class="font-bold text-sm mb-3 text-green-700"><i class="fa-solid fa-arrow-turn-down mr-1"></i> Add Manual Income</h4>
                             <form onsubmit="addTransaction(event, 'INCOME')" class="space-y-3 text-xs font-bold">
-                                <div><label class="block mb-1 text-gray-600">Source / Category *</label><input type="text" id="inc-category" required placeholder="e.g. Donation, Admission Form" class="w-full p-2.5 border rounded-lg outline-none"></div>
-                                <div><label class="block mb-1 text-gray-600">Amount (৳) *</label><input type="number" id="inc-amount" required class="w-full p-2.5 border rounded-lg outline-none"></div>
-                                <div><label class="block mb-1 text-gray-600">Date *</label><input type="date" id="inc-date" required class="w-full p-2.5 border rounded-lg outline-none"></div>
-                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2.5 w-full rounded-lg shadow">Save Income</button>
+                                <div><label class="block mb-1 text-gray-600">Payer Name *</label><input type="text" id="inc-name" required placeholder="e.g. Mr. Rahim" class="w-full p-2 border rounded outline-none"></div>
+                                <div><label class="block mb-1 text-gray-600">Source / Category *</label><input type="text" id="inc-category" required placeholder="e.g. Donation" class="w-full p-2 border rounded outline-none"></div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label class="block mb-1 text-gray-600">Amount (৳) *</label><input type="number" id="inc-amount" required class="w-full p-2 border rounded outline-none"></div>
+                                    <div><label class="block mb-1 text-gray-600">Date *</label><input type="date" id="inc-date" required class="w-full p-2 border rounded outline-none"></div>
+                                </div>
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 w-full rounded shadow">Save Income</button>
                             </form>
                         </div>
                         <!-- Add Expense -->
                         <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-red-500">
                             <h4 class="font-bold text-sm mb-3 text-red-700"><i class="fa-solid fa-arrow-turn-up mr-1"></i> Add Expense</h4>
                             <form onsubmit="addTransaction(event, 'EXPENSE')" class="space-y-3 text-xs font-bold">
-                                <div><label class="block mb-1 text-gray-600">Purpose / Category *</label><input type="text" id="exp-category" required placeholder="e.g. Electricity Bill, Salary" class="w-full p-2.5 border rounded-lg outline-none"></div>
-                                <div><label class="block mb-1 text-gray-600">Amount (৳) *</label><input type="number" id="exp-amount" required class="w-full p-2.5 border rounded-lg outline-none"></div>
-                                <div><label class="block mb-1 text-gray-600">Date *</label><input type="date" id="exp-date" required class="w-full p-2.5 border rounded-lg outline-none"></div>
-                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2.5 w-full rounded-lg shadow">Save Expense</button>
+                                <div><label class="block mb-1 text-gray-600">Receiver Name *</label><input type="text" id="exp-name" required placeholder="e.g. Jamal (Electrician)" class="w-full p-2 border rounded outline-none"></div>
+                                <div><label class="block mb-1 text-gray-600">Purpose / Category *</label><input type="text" id="exp-category" required placeholder="e.g. Electricity Bill" class="w-full p-2 border rounded outline-none"></div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div><label class="block mb-1 text-gray-600">Amount (৳) *</label><input type="number" id="exp-amount" required class="w-full p-2 border rounded outline-none"></div>
+                                    <div><label class="block mb-1 text-gray-600">Date *</label><input type="date" id="exp-date" required class="w-full p-2 border rounded outline-none"></div>
+                                </div>
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 w-full rounded shadow">Save Expense</button>
                             </form>
                         </div>
                     </div>
@@ -336,10 +402,10 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs text-emerald-950">
                                 <thead class="bg-gray-100 border-b">
-                                    <tr><th class="p-3">Date</th><th class="p-3 text-center">Type</th><th class="p-3">Category / Purpose</th><th class="p-3 text-right">Amount (৳)</th><th class="p-3 text-center w-16">Action</th></tr>
+                                    <tr><th class="p-3">Date</th><th class="p-3 text-center">Type</th><th class="p-3">Name</th><th class="p-3">Category/Purpose</th><th class="p-3 text-right">Amount</th><th class="p-3 text-center">Action</th></tr>
                                 </thead>
                                 <tbody id="finance-table-body">
-                                    <tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No manual transactions found for this month.</td></tr>
+                                    <tr><td colspan="6" class="p-4 text-center text-gray-500 font-bold">No manual transactions found.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -365,7 +431,7 @@
                     
                     <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 space-y-3">
                         <h3 class="text-base font-bold border-b pb-2 text-emerald-950"><i class="fa-solid fa-key text-amber-500 mr-2"></i>Admin Password</h3>
-                        <input type="password" id="new-admin-pass" placeholder="Enter New Password" class="w-full p-2.5 border rounded-xl text-xs font-bold">
+                        <input type="password" id="new-admin-pass" placeholder="Enter New Password" class="w-full p-2.5 border rounded-xl text-xs font-bold outline-none">
                         <button onclick="changeAdminPassword()" class="bg-red-800 text-white px-4 py-2.5 rounded-xl font-bold w-full text-xs shadow-md">Update Admin Password</button>
                         
                         <div class="border-t pt-4 mt-2">
@@ -385,10 +451,10 @@
                 <div class="bg-white p-6 rounded-2xl shadow-lg border space-y-4">
                     <h3 class="text-base font-bold border-b pb-2 text-emerald-950">Notice Board</h3>
                     <form onsubmit="handleAddNotice(event)" class="space-y-3">
-                        <input type="text" id="notice-title" placeholder="Notice Title *" required class="w-full p-2.5 border rounded-xl text-xs font-bold">
-                        <textarea id="notice-details" placeholder="Full Notice Details..." class="w-full p-2.5 border rounded-xl text-xs h-20"></textarea>
-                        <input type="date" id="notice-date" required class="w-full p-2.5 border rounded-xl text-xs">
-                        <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl w-full font-bold text-xs">Publish Notice</button>
+                        <input type="text" id="notice-title" placeholder="Notice Title *" required class="w-full p-2.5 border rounded-xl text-xs font-bold outline-none">
+                        <textarea id="notice-details" placeholder="Full Notice Details..." class="w-full p-2.5 border rounded-xl text-xs h-20 outline-none"></textarea>
+                        <input type="date" id="notice-date" required class="w-full p-2.5 border rounded-xl text-xs outline-none">
+                        <button type="submit" class="bg-emerald-800 text-white py-2.5 rounded-xl w-full font-bold text-xs shadow">Publish Notice</button>
                     </form>
                     <ul id="admin-notice-list" class="divide-y border-t mt-3"></ul>
                 </div>
@@ -426,8 +492,8 @@
                 <div>
                     <label class="block font-bold mb-1 text-emerald-800">Accommodation Status</label>
                     <select id="edit-std-accommodation" required class="w-full p-2 border border-emerald-300 rounded-lg bg-emerald-50 font-bold outline-none cursor-pointer">
-                        <option value="Non-Residential">Non-Residential (Day Shift)</option>
-                        <option value="Residential">Residential (Hostel)</option>
+                        <option value="Non-Residential">Non-Residential</option>
+                        <option value="Residential">Residential</option>
                         <option value="Day Care">Day Care</option>
                     </select>
                 </div>
@@ -478,10 +544,7 @@
         function isDefaultAvatarPhoto(photo) { return photo === BOY_DEFAULT_AVATAR || photo === GIRL_DEFAULT_AVATAR || photo === 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' || !photo; }
 
         function safeCacheStudentsLocally() {
-            try {
-                const cacheSafeStudents = registeredStudents.map(({ photo, ...rest }) => rest);
-                localStorage.setItem('annur_final_db_2026', JSON.stringify(cacheSafeStudents));
-            } catch (err) {}
+            try { const cacheSafeStudents = registeredStudents.map(({ photo, ...rest }) => rest); localStorage.setItem('annur_final_db_2026', JSON.stringify(cacheSafeStudents)); } catch (err) {}
         }
         function safeCacheResultsLocally() {
             try { localStorage.setItem('annur_final_results_2026', JSON.stringify(excelStudents)); } catch (err) {}
@@ -492,21 +555,18 @@
             const file = event.target.files && event.target.files[0];
             if (!file) return;
             compressImage(file, 250, 250, 0.7).then(base64 => {
-                pendingEditPhotoBase64 = base64;
-                document.getElementById('edit-std-photo-preview').src = base64;
+                pendingEditPhotoBase64 = base64; document.getElementById('edit-std-photo-preview').src = base64;
             });
         }
 
         let universalLogo = localStorage.getItem('annur_universal_logo') || 'https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg';
         let madrasahName = "AN-NUR INTERNATIONAL CADET MADRASAH"; 
-        let resultPublishStatus = 'PUBLISHED';
-        let resultPublishDatetime = '';
-        let classSubjectConfig = {}; 
-        let currentClassSubjects = [];
+        let resultPublishStatus = 'PUBLISHED'; let resultPublishDatetime = '';
+        let classSubjectConfig = {}; let currentClassSubjects = [];
         let registeredStudents = JSON.parse(localStorage.getItem('annur_final_db_2026')) || [];
         let excelStudents = JSON.parse(localStorage.getItem('annur_final_results_2026')) || [];
         let studentFees = JSON.parse(localStorage.getItem('annur_final_fees_2026')) || {}; 
-        let transactions = []; // NEW: For Accounts & Finance
+        let transactions = []; 
         let notices = [];
 
         let subjectConfig = [
@@ -539,96 +599,67 @@
             if (pass === adminPass) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
-                applyAdminUniversalLogo();
-                initAdminFirebaseSync();
-            } else {
-                alert('Incorrect Admin Password!');
-            }
+                applyAdminUniversalLogo(); initAdminFirebaseSync();
+            } else { alert('Incorrect Admin Password!'); }
         }
 
         function initAdminFirebaseSync() {
-            db.ref('settings/universalLogo').on('value', snap => {
-                if (snap.exists()) { universalLogo = snap.val(); applyAdminUniversalLogo(); }
-            });
-            db.ref('settings/publishStatus').on('value', snap => {
-                if (snap.exists()) { resultPublishStatus = snap.val(); loadPublishSettings(); }
-            });
-            db.ref('settings/publishDatetime').on('value', snap => {
-                if (snap.exists()) { resultPublishDatetime = snap.val(); loadPublishSettings(); }
-            });
-            db.ref('settings/classSubjects').on('value', snap => {
-                if (snap.exists()) { classSubjectConfig = snap.val(); }
-                loadClassSubjectsAndRender();
-            });
+            db.ref('settings/universalLogo').on('value', snap => { if (snap.exists()) { universalLogo = snap.val(); applyAdminUniversalLogo(); } });
+            db.ref('settings/publishStatus').on('value', snap => { if (snap.exists()) { resultPublishStatus = snap.val(); loadPublishSettings(); } });
+            db.ref('settings/publishDatetime').on('value', snap => { if (snap.exists()) { resultPublishDatetime = snap.val(); loadPublishSettings(); } });
+            db.ref('settings/classSubjects').on('value', snap => { if (snap.exists()) { classSubjectConfig = snap.val(); loadClassSubjectsAndRender(); } });
             
-            // FEES SYNC
+            // FEES & TRANSACTIONS
             db.ref('fees').on('value', snap => {
-                if (snap.exists()) { 
-                    studentFees = snap.val(); 
-                    localStorage.setItem('annur_final_fees_2026', JSON.stringify(studentFees));
-                }
-                renderFeeTable();
-                if(document.getElementById('section-finance').classList.contains('hidden') === false) renderFinanceDashboard();
+                if (snap.exists()) { studentFees = snap.val(); localStorage.setItem('annur_final_fees_2026', JSON.stringify(studentFees)); }
+                renderFeeTable(); if(!document.getElementById('section-finance').classList.contains('hidden')) renderFinanceDashboard();
             });
-            
-            // TRANSACTIONS SYNC (ACCOUNTS)
             db.ref('transactions').on('value', snap => {
                 transactions = snap.exists() ? Object.values(snap.val()) : [];
-                if(document.getElementById('section-finance').classList.contains('hidden') === false) renderFinanceDashboard();
+                if(!document.getElementById('section-finance').classList.contains('hidden')) renderFinanceDashboard();
             });
 
             db.ref('students').on('value', snap => {
-                if (snap.exists()) {
-                    registeredStudents = Object.values(snap.val());
-                    safeCacheStudentsLocally();
-                }
+                if (snap.exists()) { registeredStudents = Object.values(snap.val()); safeCacheStudentsLocally(); }
                 renderStudentDBTable(); renderFeeTable();
             });
             db.ref('results').on('value', snap => {
                 if (snap.exists()) {
-                    const rawData = snap.val(); const uniqueMap = new Map();
-                    if (Array.isArray(rawData)) {
-                        rawData.forEach(item => { if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item); });
-                    } else if (typeof rawData === 'object') {
-                        Object.values(rawData).forEach(item => { if (item && item.id) uniqueMap.set(item.id + "_" + item.class, item); });
-                    }
-                    excelStudents = Array.from(uniqueMap.values());
+                    const rawData = snap.val(); excelStudents = [];
+                    Object.values(rawData).forEach(item => { if (item && item.id) excelStudents.push(item); });
                     safeCacheResultsLocally();
                 }
                 renderExcelTable();
             });
             db.ref('notices').on('value', snap => {
-                notices = snap.exists() ? Object.values(snap.val()) : [];
-                renderAdminNotices();
+                notices = snap.exists() ? Object.values(snap.val()) : []; renderAdminNotices();
             });
         }
 
         function compressImage(file, maxWidth = 350, maxHeight = 350, quality = 0.7) {
             return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
+                const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
+                    const img = new Image(); img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let width = img.width; let height = img.height;
-                        if (width > height) { if (width > maxWidth) { height = Math.round((height *= maxWidth / width)); width = maxWidth; } } 
-                        else { if (height > maxHeight) { width = Math.round((width *= maxHeight / height)); height = maxHeight; } }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
+                        let w = img.width, h = img.height;
+                        if (w > h) { if (w > maxWidth) { h *= maxWidth / w; w = maxWidth; } } 
+                        else { if (h > maxHeight) { w *= maxHeight / h; h = maxHeight; } }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
                         resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                 };
             });
         }
 
+        // DEEP CLEAN - GHOST DATA FIX
         function clearAllSystemStorageWithPassword() {
             const pass = prompt('Warning: Enter Admin Password to WIPE ALL CLOUD DATA:');
             const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
             if (pass === adminPass) {
-                if (confirm('Are you absolutely sure you want to delete all students, fees, and results?')) {
+                if (confirm('Are you absolutely sure you want to delete ALL students, fees, results, and transactions?')) {
                     db.ref('students').remove(); db.ref('results').remove(); db.ref('fees').remove(); db.ref('transactions').remove();
                     registeredStudents = []; excelStudents = []; studentFees = {}; transactions = [];
                     localStorage.removeItem('annur_final_db_2026'); localStorage.removeItem('annur_final_results_2026');
@@ -644,11 +675,8 @@
             if (fileInput.files && fileInput.files[0]) {
                 compressImage(fileInput.files[0], 250, 250, 0.8).then(compressedBase64 => {
                     universalLogo = compressedBase64;
-                    db.ref('settings/universalLogo').set(universalLogo);
-                    localStorage.setItem('annur_universal_logo', universalLogo);
-                    applyAdminUniversalLogo();
-                    alert('Logo updated globally!');
-                    fileInput.value = '';
+                    db.ref('settings/universalLogo').set(universalLogo); localStorage.setItem('annur_universal_logo', universalLogo);
+                    applyAdminUniversalLogo(); alert('Logo updated globally!'); fileInput.value = '';
                 });
             } else { alert('Please select a file!'); }
         }
@@ -660,23 +688,18 @@
         function savePublishSettings() {
             resultPublishStatus = document.getElementById('admin-publish-status').value;
             resultPublishDatetime = document.getElementById('admin-publish-datetime').value;
-            db.ref('settings/publishStatus').set(resultPublishStatus);
-            db.ref('settings/publishDatetime').set(resultPublishDatetime);
+            db.ref('settings/publishStatus').set(resultPublishStatus); db.ref('settings/publishDatetime').set(resultPublishDatetime);
             alert('Settings synced globally!');
         }
         function changeAdminPassword() {
             const newPass = document.getElementById('new-admin-pass').value.trim();
-            if(newPass) {
-                localStorage.setItem('annur_admin_pass', newPass);
-                alert('Admin Password Updated!');
-                document.getElementById('new-admin-pass').value = '';
-            }
+            if(newPass) { localStorage.setItem('annur_admin_pass', newPass); alert('Admin Password Updated!'); document.getElementById('new-admin-pass').value = ''; }
         }
 
+        // REGISTRATION
         async function handleRegisterStudent(e) {
             e.preventDefault();
-            const btn = document.getElementById('reg-submit-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...'; btn.disabled = true;
+            const btn = document.getElementById('reg-submit-btn'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...'; btn.disabled = true;
 
             const id = document.getElementById('reg-id').value.trim().toUpperCase();
             const name = document.getElementById('reg-name').value.trim().toUpperCase();
@@ -688,18 +711,14 @@
             const status = document.getElementById('reg-status').value;
             const photoInput = document.getElementById('reg-photo-file');
 
-            if (registeredStudents.some(s => s.id === id)) {
-                alert(`ID '${id}' is already registered!`);
-                btn.innerHTML = 'Register Cadet'; btn.disabled = false; return;
-            }
+            if (registeredStudents.some(s => s.id === id)) { alert(`ID '${id}' is already registered!`); btn.innerHTML = 'Register Cadet'; btn.disabled = false; return; }
 
             let photoBase64 = getDefaultAvatarByGender(gender);
             if (photoInput.files && photoInput.files[0]) photoBase64 = await compressImage(photoInput.files[0], 250, 250, 0.7);
 
             const newStudent = { id, name, father, class: stdClass, phone, gender, accommodation, status, photo: photoBase64 };
-            registeredStudents.unshift(newStudent);
-            safeCacheStudentsLocally();
-            renderStudentDBTable(); syncRegisteredStudentsToResults(false);
+            registeredStudents.unshift(newStudent); safeCacheStudentsLocally();
+            renderStudentDBTable();
 
             const resetRegisterButton = () => {
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-father').value = '';
@@ -707,35 +726,19 @@
                 photoInput.value = ''; btn.innerHTML = 'Register Cadet'; btn.disabled = false;
             };
             
-            const cloudSaveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000));
-            Promise.race([db.ref('students/' + id).set(newStudent), cloudSaveTimeout]).then(() => {
-                resetRegisterButton();
-                alert('Registered Successfully!');
-            }).catch(err => {
-                resetRegisterButton();
-                if (err && err.message === 'timeout') {
-                    alert('Saved locally. Cloud sync is taking longer than usual.');
-                } else { alert('Saved locally.'); }
-            });
+            db.ref('students/' + id).set(newStudent).then(() => { resetRegisterButton(); alert('Registered Successfully!'); });
         }
 
         function renderStudentDBTable() {
             const tbody = document.getElementById('student-db-table-body');
-            const badge = document.getElementById('total-registered-badge');
             const personalSearch = document.getElementById('student-db-search-personal') ? document.getElementById('student-db-search-personal').value.toUpperCase().trim() : '';
             const classSearch = document.getElementById('student-db-search-class') ? document.getElementById('student-db-search-class').value : 'ALL';
             
             if(!tbody) return; tbody.innerHTML = '';
-            if(badge) badge.innerText = `Total Registered: ${registeredStudents.length}`;
+            document.getElementById('total-registered-badge').innerText = `Total Registered: ${registeredStudents.length}`;
 
             let filtered = [...registeredStudents];
-            
-            filtered.sort((a, b) => {
-                const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
-                const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
-                return numA - numB;
-            });
-
+            filtered.sort((a, b) => { const numA = parseInt(a.id.replace(/\D/g, '')) || 0; const numB = parseInt(b.id.replace(/\D/g, '')) || 0; return numA - numB; });
             if (classSearch !== 'ALL') filtered = filtered.filter(s => s.class === classSearch);
             if (personalSearch !== '') filtered = filtered.filter(s => s.id.includes(personalSearch) || s.name.includes(personalSearch) || s.phone.includes(personalSearch));
 
@@ -752,7 +755,7 @@
 
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-emerald-50 text-xs">
-                        <td class="p-2 border"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border border-emerald-500"></td>
+                        <td class="p-2 border text-center"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border border-emerald-500 mx-auto"></td>
                         <td class="p-2 border font-bold text-emerald-950">${s.id}</td><td class="p-2 border font-bold">${s.name}</td>
                         <td class="p-2 border font-semibold text-emerald-900">${s.class}</td>
                         <td class="p-2 border text-center">${accBadge}</td>
@@ -783,7 +786,6 @@
             pendingEditPhotoBase64 = null;
             document.getElementById('student-edit-modal').classList.remove('hidden');
         }
-        
         function closeStudentEditModal() { document.getElementById('student-edit-modal').classList.add('hidden'); pendingEditPhotoBase64 = null; }
         
         function saveEditedStudentData(e) {
@@ -799,100 +801,139 @@
                 father: document.getElementById('edit-std-father').value.trim().toUpperCase(),
                 class: s.class, 
                 phone: document.getElementById('edit-std-phone').value.trim(),
-                gender: newGender,
-                accommodation: document.getElementById('edit-std-accommodation').value,
-                status: document.getElementById('edit-std-status').value,
-                photo: newPhoto
+                gender: newGender, accommodation: document.getElementById('edit-std-accommodation').value,
+                status: document.getElementById('edit-std-status').value, photo: newPhoto
             };
             
-            registeredStudents[realIdx] = updatedData;
-            safeCacheStudentsLocally();
-            renderStudentDBTable(); db.ref('students/' + updatedData.id).set(updatedData);
-            
-            const resIdx = excelStudents.findIndex(ex => ex.id === updatedData.id);
-            if(resIdx !== -1) {
-                excelStudents[resIdx].name = updatedData.name;
-                safeCacheResultsLocally();
-                db.ref('results/' + updatedData.id).set(excelStudents[resIdx]);
-            }
+            registeredStudents[realIdx] = updatedData; safeCacheStudentsLocally();
+            db.ref('students/' + updatedData.id).set(updatedData); renderStudentDBTable();
             closeStudentEditModal(); alert('Cadet updated successfully!');
         }
         
+        // DEEP GHOST DATA REMOVAL
         function deleteRegisteredStudent(studentId) {
-            if(confirm('Delete cadet completely from Database? (This is a permanent deep-clean across all tabs)')) {
+            const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
+            const pass = prompt('Warning! Enter Admin Password to permanently delete ' + studentId + ' from EVERYTHING (Students, Fees, Results):');
+            if (pass === adminPass) {
+                // Delete from Students
                 registeredStudents = registeredStudents.filter(s => s.id !== studentId);
-                excelStudents = excelStudents.filter(s => s.id !== studentId); 
+                db.ref('students/' + studentId).remove();
+                
+                // Delete all results of this student
+                excelStudents = excelStudents.filter(s => s.id !== studentId);
+                db.ref('results').once('value', snap => {
+                    snap.forEach(child => { if(child.val().id === studentId) child.ref.remove(); });
+                });
+
+                // Clean fees if any
+                Object.keys(studentFees).forEach(monthKey => {
+                    if(studentFees[monthKey][studentId]) {
+                        delete studentFees[monthKey][studentId];
+                        db.ref('fees/' + monthKey + '/' + studentId).remove();
+                    }
+                });
+
                 safeCacheStudentsLocally(); safeCacheResultsLocally();
-                renderStudentDBTable(); renderExcelTable(); 
-                db.ref('students/' + studentId).remove(); db.ref('results/' + studentId).remove();
-            }
+                renderStudentDBTable(); renderExcelTable(); renderFeeTable();
+                alert(studentId + ' has been permanently wiped from the cloud!');
+            } else { alert('Incorrect password! Deletion canceled.'); }
         }
 
         // ==========================================
-        // FEES & PAYMENTS MANAGEMENT
+        // FEES & PAYMENTS MANAGEMENT (WITH RECEIPTS)
         // ==========================================
         function renderFeeTable() {
             const cls = document.getElementById('fee-class').value;
-            const month = document.getElementById('fee-month').value.trim();
+            const month = document.getElementById('fee-month').value;
+            const year = document.getElementById('fee-year').value;
             const tbody = document.getElementById('fee-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
+            if(!tbody) return; tbody.innerHTML = '';
             
-            if(!cls || !month) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center font-bold text-gray-500">Please select Level and enter Month to view fees.</td></tr>`;
-                return;
+            if(!cls || !month || !year) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center font-bold text-gray-500">Please select Level, Month, and Year to load students.</td></tr>`; return;
             }
 
             let filtered = registeredStudents.filter(s => s.class === cls);
             filtered.sort((a,b) => parseInt(a.id.replace(/\D/g, '')) - parseInt(b.id.replace(/\D/g, '')));
 
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center font-bold text-gray-500">No students found in this class.</td></tr>`;
-                return;
+                tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center font-bold text-gray-500">No students found in this class.</td></tr>`; return;
             }
 
-            const monthKey = `${month}_${cls}`.replace(/\s+/g, '_').toUpperCase();
+            const monthKey = `${month}_${year}_${cls}`.replace(/\s+/g, '_').toUpperCase();
             const currentMonthFees = studentFees[monthKey] || {};
+            
+            const globalExtraName = document.getElementById('fee-extra-name').value.trim();
+            const globalExtraAmount = parseFloat(document.getElementById('fee-extra-amount').value) || 0;
 
             filtered.forEach((s, idx) => {
-                const fData = currentMonthFees[s.id] || { fee: '', paid: '' };
-                const feeVal = parseFloat(fData.fee) || 0;
+                const fData = currentMonthFees[s.id] || { base: '', extraName: '', extraAmount: '', paid: '' };
+                const baseFee = parseFloat(fData.base) || 0;
+                
+                // If saved extra fee exists, use it. Otherwise use the global input
+                const exName = fData.extraName || globalExtraName;
+                const exAmt = fData.extraAmount !== '' && fData.extraAmount !== undefined ? parseFloat(fData.extraAmount) : globalExtraAmount;
+                const totalFee = baseFee + (exAmt || 0);
+                
                 const paidVal = parseFloat(fData.paid) || 0;
-                const dueVal = Math.max(0, feeVal - paidVal);
+                const dueVal = Math.max(0, totalFee - paidVal);
                 
                 let statusBadge = `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold">Unpaid</span>`;
-                if(feeVal > 0) {
-                    if(paidVal >= feeVal) statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
-                    else if(paidVal > 0) statusBadge = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial Due</span>`;
+                if(totalFee > 0) {
+                    if(paidVal >= totalFee) statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
+                    else if(paidVal > 0) statusBadge = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial</span>`;
                 }
 
                 tbody.innerHTML += `
                     <tr class="border-b border-emerald-200 hover:bg-emerald-50 fee-row">
                         <td class="p-2 border text-center font-bold">${idx+1}</td>
                         <td class="p-2 border font-bold text-emerald-950"><input type="text" readonly value="${s.id}" class="fee-id bg-transparent w-full outline-none font-bold text-center uppercase text-[10px]"></td>
-                        <td class="p-2 border font-bold text-sm uppercase text-[11px]">${s.name}</td>
-                        <td class="p-2 border"><input type="number" value="${fData.fee}" class="fee-amount w-full p-1.5 border border-emerald-200 rounded outline-none text-center focus:ring-2 focus:ring-emerald-400 font-bold" placeholder="e.g. 1500" onkeyup="calcDue(this)"></td>
-                        <td class="p-2 border"><input type="number" value="${fData.paid}" class="fee-paid w-full p-1.5 border border-emerald-200 rounded outline-none text-center bg-emerald-50 focus:ring-2 focus:ring-emerald-400 font-bold" placeholder="e.g. 1500" onkeyup="calcDue(this)"></td>
-                        <td class="p-2 border text-center font-black text-red-600 text-sm fee-due">${dueVal > 0 ? dueVal : '0'}</td>
+                        <td class="p-2 border font-bold text-sm uppercase text-[11px] leading-tight">${s.name}<br><span class="text-[9px] text-gray-500">${s.father}</span></td>
+                        <td class="p-2 border"><input type="number" value="${fData.base}" class="fee-base w-full p-1.5 border border-emerald-200 rounded outline-none text-center focus:ring-2 focus:ring-emerald-400 font-bold text-emerald-900" placeholder="Base Fee" onkeyup="calcDue(this)"></td>
+                        <td class="p-2 border">
+                            <input type="hidden" value="${exName}" class="fee-ex-name">
+                            <input type="number" value="${exAmt}" class="fee-ex-amount w-full p-1.5 border border-emerald-200 rounded outline-none text-center text-emerald-700 font-bold" title="${exName}" placeholder="Extra" onkeyup="calcDue(this)">
+                        </td>
+                        <td class="p-2 border text-center font-black text-emerald-950 text-[13px] bg-amber-50 fee-total">${totalFee}</td>
+                        <td class="p-2 border"><input type="number" value="${fData.paid}" class="fee-paid w-full p-1.5 border-2 border-emerald-400 rounded outline-none text-center bg-white focus:ring-2 focus:ring-emerald-500 font-black text-green-700" placeholder="Paid Amt" onkeyup="calcDue(this)"></td>
+                        <td class="p-2 border text-center font-black text-red-600 text-[13px] fee-due">${dueVal}</td>
                         <td class="p-2 border text-center fee-status">${statusBadge}</td>
+                        <td class="p-2 border text-center"><button onclick="printFeeReceipt(this, '${s.name}', '${s.class}')" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-2 py-1.5 rounded text-[10px] shadow"><i class="fa-solid fa-print"></i> Receipt</button></td>
                     </tr>
                 `;
             });
         }
 
+        function recalculateAllFees() {
+            const rows = document.querySelectorAll('.fee-row');
+            const globalExtraName = document.getElementById('fee-extra-name').value.trim();
+            const globalExtraAmount = parseFloat(document.getElementById('fee-extra-amount').value) || 0;
+            
+            rows.forEach(row => {
+                row.querySelector('.fee-ex-name').value = globalExtraName;
+                row.querySelector('.fee-ex-amount').value = globalExtraAmount;
+                calcDue(row.querySelector('.fee-base')); // Trigger recount
+            });
+        }
+
         function calcDue(element) {
             const row = element.closest('.fee-row');
-            const fee = parseFloat(row.querySelector('.fee-amount').value) || 0;
+            const base = parseFloat(row.querySelector('.fee-base').value) || 0;
+            const extra = parseFloat(row.querySelector('.fee-ex-amount').value) || 0;
             const paid = parseFloat(row.querySelector('.fee-paid').value) || 0;
+            const totalCell = row.querySelector('.fee-total');
             const dueCell = row.querySelector('.fee-due');
             const statusCell = row.querySelector('.fee-status');
             
-            const due = Math.max(0, fee - paid);
+            const total = base + extra;
+            const due = Math.max(0, total - paid);
+            
+            totalCell.innerText = total;
             dueCell.innerText = due;
             
-            if(fee > 0) {
-                if(paid >= fee) statusCell.innerHTML = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
-                else if(paid > 0) statusCell.innerHTML = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial Due</span>`;
+            if(total > 0) {
+                if(paid >= total) statusCell.innerHTML = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Paid</span>`;
+                else if(paid > 0) statusCell.innerHTML = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Partial</span>`;
                 else statusCell.innerHTML = `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold">Unpaid</span>`;
             } else {
                 statusCell.innerHTML = `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold">Unpaid</span>`;
@@ -901,19 +942,26 @@
 
         function saveFees() {
             const cls = document.getElementById('fee-class').value;
-            const month = document.getElementById('fee-month').value.trim();
-            if(!cls || !month) { alert('Please select Level and Month'); return; }
+            const month = document.getElementById('fee-month').value;
+            const year = document.getElementById('fee-year').value;
+            if(!cls || !month || !year) { alert('Please select Level, Month and Year'); return; }
 
-            const monthKey = `${month}_${cls}`.replace(/\s+/g, '_').toUpperCase();
+            const pass = prompt('Enter Admin Password to save payments:');
+            const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
+            if (pass !== adminPass) { alert('Incorrect Password!'); return; }
+
+            const monthKey = `${month}_${year}_${cls}`.replace(/\s+/g, '_').toUpperCase();
             const rows = document.querySelectorAll('.fee-row');
             
             if(!studentFees[monthKey]) studentFees[monthKey] = {};
             
             rows.forEach(row => {
                 const id = row.querySelector('.fee-id').value;
-                const fee = row.querySelector('.fee-amount').value;
+                const base = row.querySelector('.fee-base').value;
+                const extraName = row.querySelector('.fee-ex-name').value;
+                const extraAmount = row.querySelector('.fee-ex-amount').value;
                 const paid = row.querySelector('.fee-paid').value;
-                studentFees[monthKey][id] = { fee, paid };
+                studentFees[monthKey][id] = { base, extraName, extraAmount, paid };
             });
 
             db.ref('fees/' + monthKey).set(studentFees[monthKey]).then(() => {
@@ -923,224 +971,85 @@
             });
         }
 
-        // ==========================================
-        // ACCOUNTS & FINANCE DASHBOARD (NEW)
-        // ==========================================
-        function renderFinanceDashboard() {
-            const monthInput = document.getElementById('finance-month').value.trim().toUpperCase();
-            if(!monthInput) return;
-            const searchPrefix = monthInput.replace(/\s+/g, '_');
-
-            // 1. Calculate Total Fees Collected from Student Fees
-            let totalFeesCollected = 0;
-            Object.keys(studentFees).forEach(key => {
-                if(key.startsWith(searchPrefix)) {
-                    Object.values(studentFees[key]).forEach(f => {
-                        totalFeesCollected += (parseFloat(f.paid) || 0);
-                    });
-                }
-            });
-
-            // 2. Calculate Manual Transactions
-            let manualIncome = 0;
-            let totalExpense = 0;
-            const monthTrans = transactions.filter(t => t.month === monthInput);
+        function printFeeReceipt(btn, studentName, studentClass) {
+            const row = btn.closest('.fee-row');
+            const studentId = row.querySelector('.fee-id').value;
+            const month = document.getElementById('fee-month').value;
+            const year = document.getElementById('fee-year').value;
             
-            let tbodyHTML = '';
-            monthTrans.forEach(t => {
-                if(t.type === 'INCOME') {
-                    manualIncome += parseFloat(t.amount);
-                    tbodyHTML += `<tr class="border-b"><td class="p-2 border">${t.date}</td><td class="p-2 border text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Income</span></td><td class="p-2 border">${t.category}</td><td class="p-2 border text-right font-bold text-green-700">+ ${t.amount}</td><td class="p-2 border text-center"><button onclick="deleteTransaction('${t.id}')" class="text-red-500 font-bold"><i class="fa-solid fa-trash"></i></button></td></tr>`;
-                } else if(t.type === 'EXPENSE') {
-                    totalExpense += parseFloat(t.amount);
-                    tbodyHTML += `<tr class="border-b"><td class="p-2 border">${t.date}</td><td class="p-2 border text-center"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold">Expense</span></td><td class="p-2 border">${t.category}</td><td class="p-2 border text-right font-bold text-red-700">- ${t.amount}</td><td class="p-2 border text-center"><button onclick="deleteTransaction('${t.id}')" class="text-red-500 font-bold"><i class="fa-solid fa-trash"></i></button></td></tr>`;
-                }
-            });
+            const baseFee = parseFloat(row.querySelector('.fee-base').value) || 0;
+            const extraName = row.querySelector('.fee-ex-name').value || 'Extra / Others';
+            const extraAmount = parseFloat(row.querySelector('.fee-ex-amount').value) || 0;
+            const totalFee = parseFloat(row.querySelector('.fee-total').innerText) || 0;
+            const paid = parseFloat(row.querySelector('.fee-paid').value) || 0;
+            const due = parseFloat(row.querySelector('.fee-due').innerText) || 0;
+            const dateStr = new Date().toLocaleDateString('en-GB');
 
-            const totalIncome = totalFeesCollected + manualIncome;
-            const netBalance = totalIncome - totalExpense;
-
-            document.getElementById('fin-total-fees').innerText = totalFeesCollected;
-            document.getElementById('fin-total-income').innerText = totalIncome;
-            document.getElementById('fin-total-expense').innerText = totalExpense;
-            document.getElementById('fin-balance').innerText = netBalance;
-
-            document.getElementById('finance-table-body').innerHTML = tbodyHTML || `<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No manual transactions found for ${monthInput}.</td></tr>`;
-        }
-
-        function addTransaction(e, type) {
-            e.preventDefault();
-            const monthInput = document.getElementById('finance-month').value.trim().toUpperCase();
-            if(!monthInput) { alert('Please enter Month & Year at the top of the dashboard first!'); return; }
-            
-            const id = Date.now().toString();
-            const category = document.getElementById(type === 'INCOME' ? 'inc-category' : 'exp-category').value.trim();
-            const amount = parseFloat(document.getElementById(type === 'INCOME' ? 'inc-amount' : 'exp-amount').value) || 0;
-            const date = document.getElementById(type === 'INCOME' ? 'inc-date' : 'exp-date').value;
-            
-            const newTrans = { id, month: monthInput, type, category, amount, date };
-            
-            db.ref('transactions/' + id).set(newTrans).then(() => {
-                e.target.reset();
-                alert(`${type === 'INCOME' ? 'Income' : 'Expense'} recorded successfully!`);
-            });
-        }
-
-        function deleteTransaction(id) {
-            if(confirm('Are you sure you want to delete this transaction record?')) {
-                db.ref('transactions/' + id).remove();
+            let extraRowHTML = '';
+            if(extraAmount > 0) {
+                extraRowHTML = `<div class="flex justify-between py-1 border-b border-dashed border-gray-300"><span class="text-gray-600">${extraName}</span><span class="font-bold">৳ ${extraAmount}</span></div>`;
             }
-        }
 
-
-        // ==========================================
-        // ID CARD GENERATION
-        // ==========================================
-        function renderDirectIDCardFromInput() {
-            const inputVal = document.getElementById('direct-idcard-input').value.trim().toUpperCase();
-            if (!inputVal) { alert('Enter Cadet ID!'); return; }
-            const cadetIndex = registeredStudents.findIndex(s => s.id === inputVal);
-            if (cadetIndex === -1) { alert('Cadet not found!'); return; }
-            renderIDCardDirectlyInAdmin(cadetIndex);
-        }
-
-        function renderIDCardDirectlyInAdmin(realIdx) {
-            const s = registeredStudents[realIdx]; if(!s) return;
-            const liveBox = document.getElementById('admin-idcard-live-box');
-            const levelWord = s.class.replace('LEVEL-', '').replace('10', 'TEN').replace('9', 'NINE').replace('8', 'EIGHT').replace('7', 'SEVEN').replace('6', 'SIX').replace('5', 'FIVE').replace('4', 'FOUR').replace('3', 'THREE').replace('2', 'TWO').replace('1', 'ONE');
-
-            const idCardHTML = `
-                <div id="target-id-card-node" class="id-card-exact-replica mx-auto font-sans text-left">
-                    <svg class="id-top-decor" viewBox="0 0 335 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0 H180 L140 44 H0 Z" fill="#0369a1"/><path d="M188 0 L152 44 H162 L198 0 Z" fill="#047857"/><path d="M206 0 L170 44 H180 L216 0 Z" fill="#047857"/><path d="M224 0 L188 44 H335 V0 Z" fill="#059669"/><line x1="0" y1="46" x2="335" y2="46" stroke="#0284c7" stroke-width="2"/></svg>
-                    <div>
-                        <div class="text-center pt-12 pb-1 px-3">
-                            <h2 class="text-[#0369a1] font-black text-[15.5px] tracking-tight font-serif uppercase leading-tight">An-Nur International Cadet Madrasah</h2>
-                            <p class="text-[11px] font-bold text-gray-800 mt-0.5">Mohara, Chandgaon, Chattogram,</p>
-                        </div>
-                        <div class="text-center mt-1"><span class="id-card-badge-box font-montserrat">ID CARD</span></div>
-                        <img src="${s.photo}" class="id-cadet-photo-frame shadow-sm" alt="Cadet Photo">
-                        <h3 class="text-center font-black text-[15.5px] text-[#0369a1] uppercase mt-1 tracking-wide px-2">${s.name}</h3>
-                        <div class="relative px-7 py-2 mt-1 border-y border-gray-100 bg-slate-50/40">
-                            <img src="${universalLogo}" class="id-info-watermark-bg" alt="Watermark">
-                            <div class="space-y-1.5 text-[14px] text-[#0369a1] font-black relative z-10 leading-snug">
-                                <div class="flex"><span class="w-24 text-[#0369a1]">FATHER</span><span class="mr-2">:</span><span class="uppercase text-[12px] pt-0.5">${s.father || 'N/A'}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">LEVEL</span><span class="mr-2">:</span><span class="uppercase">${levelWord}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">ID NO</span><span class="mr-2">:</span><span>${s.id}</span></div>
-                                <div class="flex"><span class="w-24 text-[#0369a1]">TYPE</span><span class="mr-2">:</span><span class="text-[12px] pt-0.5">${s.accommodation || 'DAY SHIFT'}</span></div>
-                            </div>
-                        </div>
+            const receiptHTML = `
+                <div id="target-receipt-node" class="bg-white mx-auto border-2 border-emerald-950 p-4 relative font-sans" style="width: 350px; height: auto;">
+                    <div class="text-center border-b-2 border-emerald-800 pb-2 mb-3">
+                        <img src="${universalLogo}" class="w-12 h-12 mx-auto mb-1">
+                        <h2 class="text-sm font-black text-emerald-950 font-brand">AN-NUR INTL. CADET MADRASAH</h2>
+                        <p class="text-[9px] font-bold text-gray-600">Mohara, Chandgaon, Chattogram</p>
+                        <span class="inline-block bg-emerald-100 text-emerald-800 px-3 py-0.5 rounded font-black text-[10px] mt-1 border border-emerald-300">MONEY RECEIPT</span>
                     </div>
-                    <div class="w-full relative">
-                        <div class="flex justify-end pr-7 pb-2"><div class="text-center"><span class="font-serif italic text-xs text-black block font-bold">A.Majed</span><div class="w-16 border-t border-dashed border-black"></div><span class="text-[10.5px] text-black font-black block tracking-wider">Director</span></div></div>
-                        <svg class="id-bottom-decor" viewBox="0 0 335 42" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="2" x2="335" y2="2" stroke="#047857" stroke-width="2"/><path d="M0 4 H145 L175 42 H0 Z" fill="#047857"/><path d="M153 4 L183 42 H193 L163 4 Z" fill="#0369a1"/><path d="M171 4 L201 42 H211 L181 4 Z" fill="#0369a1"/><path d="M189 4 L219 42 H335 V4 Z" fill="#0369a1"/></svg>
-                        <div class="h-10"></div>
+                    
+                    <div class="text-[11px] space-y-1 mb-4 font-bold text-emerald-950">
+                        <div class="flex justify-between"><span>Date: ${dateStr}</span><span>ID: ${studentId}</span></div>
+                        <div class="flex justify-between"><span>Name: ${studentName}</span><span>Level: ${studentClass.replace('LEVEL-','')}</span></div>
+                        <div class="flex justify-between"><span>Month: ${month} ${year}</span></div>
+                    </div>
+
+                    <div class="text-[11px] mb-4">
+                        <div class="bg-emerald-900 text-white flex justify-between px-2 py-1 font-bold"><span>Description</span><span>Amount</span></div>
+                        <div class="flex justify-between py-1 border-b border-dashed border-gray-300"><span class="text-gray-600">Monthly Tuition Fee</span><span class="font-bold">৳ ${baseFee}</span></div>
+                        ${extraRowHTML}
+                        <div class="flex justify-between py-1 border-b-2 border-emerald-950 bg-amber-50 px-1 mt-1"><span class="font-black text-emerald-900">Total Payable</span><span class="font-black text-emerald-900">৳ ${totalFee}</span></div>
+                        <div class="flex justify-between py-1 border-b border-dashed border-gray-300 px-1"><span class="font-bold text-green-700">Amount Paid</span><span class="font-black text-green-700">৳ ${paid}</span></div>
+                        <div class="flex justify-between py-1 px-1"><span class="font-bold text-red-600">Current Due</span><span class="font-black text-red-600">৳ ${due}</span></div>
+                    </div>
+
+                    <div class="mt-8 pt-2 flex justify-between text-[9px] font-bold text-gray-800">
+                        <div class="text-center"><div class="w-20 border-t border-gray-800 mb-0.5"></div><span>Cashier</span></div>
+                        <div class="text-center"><div class="w-20 border-t border-gray-800 mb-0.5"></div><span>Authority</span></div>
                     </div>
                 </div>
             `;
-            liveBox.classList.remove('hidden');
-            liveBox.innerHTML = idCardHTML + `
-                <div class="mt-4 no-print flex flex-wrap gap-3 justify-center">
-                    <button onclick="executeIsolatedIDCardPrint()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> Print Card</button>
-                    <button onclick="executeDirectIDCardPDFDownload('${s.id}', '${s.name}')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
-                    <button onclick="document.getElementById('admin-idcard-live-box').classList.add('hidden')" class="bg-gray-600 text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow">Close</button>
-                </div>
-            `;
-            liveBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function executeIsolatedIDCardPrint() {
-            const cardElement = document.getElementById('target-id-card-node');
-            if(!cardElement) return;
-            const printFrame = document.getElementById('isolated-print-frame');
-            const frameDoc = printFrame.contentWindow.document;
-            frameDoc.open();
-            frameDoc.write(`
-                <!DOCTYPE html><html><head><title>Print ID Card</title><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@600;800;900&display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"><\/script>
-                <style>@page{size:auto;margin:8mm;} body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;background:#fff;} .id-card-exact-replica{width:335px!important;height:550px!important;border:1.5px solid #cbd5e1!important;border-radius:8px!important;background-color:#ffffff!important;position:relative!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;} .id-top-decor{position:absolute;top:0;left:0;width:100%;height:48px;} .id-bottom-decor{position:absolute;bottom:0;right:0;width:100%;height:42px;} .id-info-watermark-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:155px;height:155px;opacity:0.08;} .id-card-badge-box{border:2px solid #005a8c;background:#e2e8f0;color:#003865;font-weight:900;font-size:15px;letter-spacing:2px;padding:3px 22px;display:inline-block;} .id-cadet-photo-frame{width:140px;height:140px;border:4px solid #047857;border-radius:50%;object-fit:cover;margin:6px auto;display:block;}</style></head><body>${cardElement.outerHTML}</body></html>
-            `);
-            frameDoc.close();
-            setTimeout(() => { printFrame.contentWindow.focus(); printFrame.contentWindow.print(); }, 600);
-        }
-
-        function executeDirectIDCardPDFDownload(cadetId, cadetName) {
-            const element = document.getElementById('target-id-card-node');
-            if(!element) return;
-            const opt = { margin: [5,5,5,5], filename: `ID_Card_${cadetId}_${cadetName.replace(/\s+/g, '_')}.pdf`, image: {type:'jpeg', quality:0.98}, html2canvas: {scale:3, useCORS:true, letterRendering:true}, jsPDF: {unit:'mm', format:[95, 155], orientation:'portrait'} };
-            html2pdf().set(opt).from(element).save();
+            
+            const printArea = document.getElementById('printable-area');
+            printArea.innerHTML = receiptHTML;
+            executeDirectPrint('target-receipt-node', 'portrait');
         }
 
         // ==========================================
-        // MARKS ENTRY & DB CALCULATION
+        // MARKS ENTRY & RESULTS (UPDATED FOR UNIQUE EXAMS)
         // ==========================================
-        function getGradePoint(percentage) {
-            if (percentage >= 80) return { point: 5.00, isFail: false };
-            if (percentage >= 70) return { point: 4.00, isFail: false };
-            if (percentage >= 60) return { point: 3.50, isFail: false };
-            if (percentage >= 50) return { point: 3.00, isFail: false };
-            if (percentage >= 40) return { point: 2.00, isFail: false };
-            if (percentage >= 33) return { point: 1.00, isFail: false };
-            return { point: 0.00, isFail: true };
-        }
-        function getLetterGrade(gpa) {
-            if (gpa >= 5.00) return 'A+'; if (gpa >= 4.00) return 'A';
-            if (gpa >= 3.50) return 'A-'; if (gpa >= 3.00) return 'B';
-            if (gpa >= 2.00) return 'C'; if (gpa >= 1.00) return 'D'; return 'F';
-        }
-
-        function calculateStudentResultStats(marks) {
-            let total = 0, mainSum = 0, mainCount = 0, bonus = 0, hasFail = false, anyMarkEntered = false;
-            (marks || []).forEach((mark, idx) => {
-                const subject = currentClassSubjects[idx];
-                if (!subject) return;
-                const raw = String(mark).trim();
-                if (raw === '') return;
-                const markNum = parseFloat(raw);
-                if (isNaN(markNum)) return;
-                anyMarkEntered = true; total += markNum;
-                const fullMark = subject.full || 100;
-                const percentage = (markNum / fullMark) * 100;
-                const { point, isFail } = getGradePoint(percentage);
-                if (subject.type === 'Optional') { bonus += Math.max(0, point - 2); } 
-                else { mainSum += point; mainCount++; if (isFail) hasFail = true; }
-            });
-            if (!anyMarkEntered) return { total: 0, gpa: '0.00', grade: 'N/A' };
-            if (hasFail || mainCount === 0) return { total, gpa: '0.00', grade: 'F' };
-            let gpa = (mainSum / mainCount) + bonus; if (gpa > 5) gpa = 5;
-            return { total, gpa: gpa.toFixed(2), grade: getLetterGrade(gpa) };
-        }
-
         function loadClassSubjectsAndRender() {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
-            if (classSubjectConfig[currentSelectedClass]) { currentClassSubjects = classSubjectConfig[currentSelectedClass]; } 
-            else { currentClassSubjects = []; }
+            const cls = document.getElementById('admin-global-class').value;
+            if (classSubjectConfig[cls]) { currentClassSubjects = classSubjectConfig[cls]; } 
+            else { currentClassSubjects = [...subjectConfig]; }
             renderExcelTable();
-        }
-
-        function syncRegisteredStudentsToResults(showAlert = true) {
-            registeredStudents.forEach(reg => {
-                const existing = excelStudents.find(s => s.id === reg.id);
-                if (!existing) {
-                    const emptyMarks = new Array(currentClassSubjects.length).fill('');
-                    excelStudents.push({ id: reg.id, name: reg.name, class: reg.class, session: '2026', exam: 'Annual Examination', marks: emptyMarks });
-                } else { existing.name = reg.name; existing.class = reg.class; }
-            });
-            renderExcelTable();
-            if(showAlert) alert('Synced Cadets to Results Board!');
         }
 
         function renderExcelTable() {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
+            const cls = document.getElementById('admin-global-class').value;
+            const ses = document.getElementById('admin-global-session').value;
+            const exm = document.getElementById('admin-global-exam').value;
             const headerRow = document.getElementById('excel-header-row');
             const tbody = document.getElementById('excel-table-body');
             
             if(!headerRow || !tbody) return;
-            const currentClassStudents = excelStudents.filter(s => s.class === currentSelectedClass);
+            
+            // Fetch UNIQUE results for this specific Class + Session + Exam
+            const currentExamResults = excelStudents.filter(s => s.class === cls && s.session === ses && s.exam === exm);
 
-            currentClassStudents.sort((a, b) => {
-                const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
-                const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
-                return numA - numB;
-            });
+            if (!classSubjectConfig[cls]) classSubjectConfig[cls] = [...subjectConfig];
+            currentClassSubjects = classSubjectConfig[cls];
 
             let headerHTML = `<th class="p-1 border w-16 text-center">ID</th><th class="p-1 border w-32">Name</th>`;
             currentClassSubjects.forEach((subObj, sIdx) => {
@@ -1156,119 +1065,282 @@
             headerHTML += `<th class="p-1 border bg-amber-600 text-emerald-950 font-extrabold w-12 text-center">Total</th><th class="p-1 border bg-amber-600 text-emerald-950 font-extrabold w-12 text-center">GPA</th><th class="p-1 border text-center w-8 bg-red-800">Del</th>`;
             headerRow.innerHTML = headerHTML; tbody.innerHTML = '';
 
-            if (currentClassStudents.length === 0) { tbody.innerHTML = `<tr><td colspan="${2 + currentClassSubjects.length + 3}" class="p-4 text-center font-bold text-gray-500">No students. Sync first.</td></tr>`; return; }
+            const registeredInClass = registeredStudents.filter(s => s.class === cls);
+            registeredInClass.sort((a,b) => parseInt(a.id.replace(/\D/g, '')) - parseInt(b.id.replace(/\D/g, '')));
 
-            currentClassStudents.forEach((s, rowIdx) => {
-                const realIndex = excelStudents.indexOf(s);
-                const stats = calculateStudentResultStats(s.marks || []);
-                let rowHTML = `<tr class="border-b border-emerald-200 hover:bg-emerald-100 spreadsheet-row"><td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1.5 font-bold text-center bg-transparent uppercase text-emerald-950 text-[10px]"></td><td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1.5 font-semibold bg-transparent uppercase text-[10px]"></td><input type="hidden" value="${s.session || '2026'}" class="ex-session">`;
+            if (registeredInClass.length === 0) { tbody.innerHTML = `<tr><td colspan="${2 + currentClassSubjects.length + 3}" class="p-4 text-center font-bold text-gray-500">No students found. Register students first.</td></tr>`; return; }
+
+            registeredInClass.forEach((s, rowIdx) => {
+                // Find if this student has marks for THIS SPECIFIC EXAM
+                const existingResult = currentExamResults.find(r => r.id === s.id);
+                const marksToDisplay = existingResult && existingResult.marks ? existingResult.marks : new Array(currentClassSubjects.length).fill('');
+                const dbKey = existingResult ? existingResult.dbKey : `${s.id}_${ses}_${exm}`.replace(/\s+/g, '_');
+
+                const stats = calculateStudentResultStats(marksToDisplay);
+                let rowHTML = `<tr class="border-b border-emerald-200 hover:bg-emerald-100 spreadsheet-row">
+                    <td class="p-0 border"><input type="text" value="${s.id}" readonly class="ex-id w-full p-1.5 font-bold text-center bg-transparent uppercase text-emerald-950 text-[10px]"></td>
+                    <td class="p-0 border"><input type="text" value="${s.name}" readonly class="ex-name w-full p-1.5 font-semibold bg-transparent uppercase text-[10px]"></td>`;
                 
                 currentClassSubjects.forEach((_, sIdx) => {
-                    const markVal = (s.marks && s.marks[sIdx] !== undefined) ? s.marks[sIdx] : '';
-                    rowHTML += `<td class="p-0 border"><input type="text" value="${markVal}" onkeydown="handleEnterNavigation(event, ${sIdx}, ${rowIdx})" class="ex-mark sub-mark-${sIdx} row-idx-${rowIdx} w-full p-1 border-0 text-center font-bold text-emerald-900 bg-transparent text-[11px] focus:bg-amber-100 focus:outline-none" tabindex="${sIdx + 1}"></td>`;
+                    const markVal = marksToDisplay[sIdx] !== undefined ? marksToDisplay[sIdx] : '';
+                    rowHTML += `<td class="p-0 border"><input type="text" value="${markVal}" onkeydown="handleEnterNavigation(event, ${sIdx}, ${rowIdx})" class="ex-mark sub-mark-${sIdx} row-idx-${rowIdx} w-full p-2 text-center font-bold text-emerald-900 bg-transparent text-[11px] focus:bg-amber-100 focus:outline-none" tabindex="${sIdx + 1}"></td>`;
                 });
                 
-                rowHTML += `<td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50 text-[10px]">${stats.total}</td><td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50 text-[10px]">${stats.gpa}</td><td class="p-0 border text-center"><button onclick="deleteExcelRow(${realIndex})" class="text-red-600 hover:text-red-800 font-bold p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                rowHTML += `<td class="p-1 border text-center font-extrabold text-amber-700 bg-amber-50 text-[10px]">${stats.total}</td>
+                    <td class="p-1 border text-center font-extrabold text-emerald-900 bg-emerald-50 text-[10px]">${stats.gpa}</td>
+                    <td class="p-0 border text-center"><button onclick="deleteSingleResult('${dbKey}')" class="text-red-600 hover:text-red-800 font-bold p-1"><i class="fa-solid fa-eraser"></i></button></td></tr>`;
                 tbody.innerHTML += rowHTML;
             });
         }
 
         function handleEnterNavigation(e, colIdx, rowIdx) {
-            if (e.key === 'Enter' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                const nextRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx + 1}`);
-                if (nextRowInput) { nextRowInput.focus(); nextRowInput.select(); }
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                const prevRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx - 1}`);
-                if (prevRowInput) { prevRowInput.focus(); prevRowInput.select(); }
-            }
+            if (e.key === 'Enter' || e.key === 'ArrowDown') { e.preventDefault(); const nextRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx + 1}`); if (nextRowInput) { nextRowInput.focus(); nextRowInput.select(); } } 
+            else if (e.key === 'ArrowUp') { e.preventDefault(); const prevRowInput = document.querySelector(`.sub-mark-${colIdx}.row-idx-${rowIdx - 1}`); if (prevRowInput) { prevRowInput.focus(); prevRowInput.select(); } }
         }
 
-        function updateSubjectFullMark(sIdx, newFull) { 
-            const currentClass = document.getElementById('admin-global-class').value;
-            currentClassSubjects[sIdx].full = parseInt(newFull); 
-            classSubjectConfig[currentClass] = currentClassSubjects;
-            db.ref('settings/classSubjects').set(classSubjectConfig); db.ref('settings/subjects').set(currentClassSubjects);
-            renderExcelTable(); 
-        }
-        function updateSubjectType(sIdx, newType) { 
-            const currentClass = document.getElementById('admin-global-class').value;
-            currentClassSubjects[sIdx].type = newType; 
-            classSubjectConfig[currentClass] = currentClassSubjects;
-            db.ref('settings/classSubjects').set(classSubjectConfig); db.ref('settings/subjects').set(currentClassSubjects);
-            renderExcelTable(); 
-        }
-        function addSubjectColumn() {
-            const currentClass = document.getElementById('admin-global-class').value;
-            saveExcelData(false); 
-            currentClassSubjects.push({ name: `Subject ${currentClassSubjects.length + 1}`, full: 100, type: 'Main' });
-            excelStudents.forEach(s => { if(s.class === currentClass) { if(!s.marks) s.marks = []; s.marks.push(''); } });
-            classSubjectConfig[currentClass] = currentClassSubjects;
-            db.ref('settings/classSubjects').set(classSubjectConfig); db.ref('settings/subjects').set(currentClassSubjects);
-            const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-            db.ref('results').set(updates); renderExcelTable();
-        }
-        function removeSubjectColumn(subIdx) {
-            const currentClass = document.getElementById('admin-global-class').value;
-            if(currentClassSubjects.length <= 1) { alert('Minimum 1 subject required!'); return; }
-            if(confirm(`Delete "${currentClassSubjects[subIdx].name}" from ${currentClass}?`)) {
-                saveExcelData(false); currentClassSubjects.splice(subIdx, 1);
-                excelStudents.forEach(s => { if(s.class === currentClass && s.marks) s.marks.splice(subIdx, 1); });
-                classSubjectConfig[currentClass] = currentClassSubjects;
-                db.ref('settings/classSubjects').set(classSubjectConfig); db.ref('settings/subjects').set(currentClassSubjects);
-                const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-                db.ref('results').set(updates); renderExcelTable();
-            }
+        function syncRegisteredStudentsToResults() {
+            // Because our table now auto-pulls from registeredStudents and maps empty arrays if no result exists, 
+            // the "Sync" button is mainly to refresh the table.
+            renderExcelTable();
+            alert('Table Refreshed with active Cadets!');
         }
 
-        function deleteExcelRow(realIdx) {
-            if (confirm('Delete this result row? (Remember to delete from "Students" tab too, or they will sync back!)')) {
-                excelStudents.splice(realIdx, 1);
-                safeCacheResultsLocally(); 
-                const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-                db.ref('results').set(updates).then(() => { renderExcelTable(); });
-            }
-        }
+        function saveExcelData() {
+            const pass = prompt('Enter Admin Password to Save Marks:');
+            const adminPass = localStorage.getItem('annur_admin_pass') || '1234';
+            if (pass !== adminPass) { alert('Incorrect Password! Changes not saved.'); return; }
 
-        function saveExcelData(showAlert = true) {
-            const currentSelectedClass = document.getElementById('admin-global-class').value;
-            const selectedExam = document.getElementById('admin-global-exam').value;
+            const cls = document.getElementById('admin-global-class').value;
+            const ses = document.getElementById('admin-global-session').value;
+            const exm = document.getElementById('admin-global-exam').value;
             const headerInputs = document.querySelectorAll('.sub-header-input');
             
             headerInputs.forEach((input, i) => { if(currentClassSubjects[i]) currentClassSubjects[i].name = input.value.trim() || 'Subject'; });
-            classSubjectConfig[currentSelectedClass] = currentClassSubjects;
-            db.ref('settings/classSubjects').set(classSubjectConfig);
-            db.ref('settings/subjects').set(currentClassSubjects);
+            classSubjectConfig[cls] = currentClassSubjects;
+            db.ref('settings/classSubjects').set(classSubjectConfig); db.ref('settings/subjects').set(currentClassSubjects);
 
-            const otherClassStudents = excelStudents.filter(s => s.class !== currentSelectedClass);
             const rows = document.querySelectorAll('#excel-table-body tr.spreadsheet-row');
-            const updatedCurrentClassStudents = [];
-
+            const updates = {};
+            
             rows.forEach(row => {
                 const idInput = row.querySelector('.ex-id'); if(!idInput) return;
                 const id = idInput.value.trim().toUpperCase();
                 const name = row.querySelector('.ex-name').value.trim().toUpperCase();
-                const sessionInput = row.querySelector('.ex-session');
-                const session = sessionInput ? sessionInput.value.trim() : '2026';
-                if(id !== '') {
-                    const marks = [];
-                    currentClassSubjects.forEach((_, sIdx) => {
-                        const markInput = row.querySelector(`.sub-mark-${sIdx}`);
-                        marks.push(markInput ? markInput.value.trim() : '');
-                    });
-                    updatedCurrentClassStudents.push({ id, name, class: currentSelectedClass, session, exam: selectedExam, marks });
+                
+                const marks = [];
+                let hasMarks = false;
+                currentClassSubjects.forEach((_, sIdx) => {
+                    const markInput = row.querySelector(`.sub-mark-${sIdx}`);
+                    const mVal = markInput ? markInput.value.trim() : '';
+                    marks.push(mVal);
+                    if(mVal !== '') hasMarks = true; // Only save if they actually entered something
+                });
+                
+                if(hasMarks) {
+                    const dbKey = `${id}_${ses}_${exm}`.replace(/\s+/g, '_');
+                    updates[dbKey] = { id, name, class: cls, session: ses, exam: exm, marks, dbKey };
                 }
             });
 
-            excelStudents = [...otherClassStudents, ...updatedCurrentClassStudents];
-            safeCacheResultsLocally();
+            if(Object.keys(updates).length > 0) {
+                db.ref('results').update(updates).then(() => {
+                    alert(`${exm} Results Saved Successfully!`);
+                });
+            } else { alert('No marks entered to save!'); }
+        }
+
+        function deleteSingleResult(dbKey) {
+            if(confirm('Clear marks for this specific exam?')) {
+                db.ref('results/' + dbKey).remove().then(() => renderExcelTable());
+            }
+        }
+
+        function updateSubjectFullMark(sIdx, newFull) { const cls = document.getElementById('admin-global-class').value; classSubjectConfig[cls][sIdx].full = parseInt(newFull); db.ref('settings/classSubjects').set(classSubjectConfig); renderExcelTable(); }
+        function updateSubjectType(sIdx, newType) { const cls = document.getElementById('admin-global-class').value; classSubjectConfig[cls][sIdx].type = newType; db.ref('settings/classSubjects').set(classSubjectConfig); renderExcelTable(); }
+        function addSubjectColumn() {
+            const cls = document.getElementById('admin-global-class').value;
+            currentClassSubjects.push({ name: `Subject ${currentClassSubjects.length + 1}`, full: 100, type: 'Main' });
+            classSubjectConfig[cls] = currentClassSubjects; db.ref('settings/classSubjects').set(classSubjectConfig); renderExcelTable();
+        }
+        function removeSubjectColumn(subIdx) {
+            const cls = document.getElementById('admin-global-class').value;
+            if(currentClassSubjects.length <= 1) { alert('Minimum 1 subject required!'); return; }
+            if(confirm(`Delete "${currentClassSubjects[subIdx].name}" from ${cls}?`)) {
+                currentClassSubjects.splice(subIdx, 1);
+                classSubjectConfig[cls] = currentClassSubjects; db.ref('settings/classSubjects').set(classSubjectConfig); renderExcelTable();
+            }
+        }
+
+        // ==========================================
+        // ACCOUNTS & FINANCE DASHBOARD
+        // ==========================================
+        function renderFinanceDashboard() {
+            const monthInput = document.getElementById('finance-month').value;
+            const yearInput = document.getElementById('finance-year').value;
+            if(!monthInput || !yearInput) return;
             
-            const updates = {}; excelStudents.forEach(item => { if(item && item.id) updates[item.id] = item; });
-            db.ref('results').set(updates).then(() => {
-                renderExcelTable();
-                if(showAlert) alert(`${currentSelectedClass} Results saved successfully! Ghost data cleaned.`);
+            const searchPattern = `${monthInput}_${yearInput}_`.toUpperCase();
+
+            // 1. Calculate Total Fees Collected from Student Fees
+            let totalFeesCollected = 0;
+            Object.keys(studentFees).forEach(key => {
+                if(key.includes(searchPattern)) {
+                    Object.values(studentFees[key]).forEach(f => {
+                        totalFeesCollected += (parseFloat(f.paid) || 0);
+                    });
+                }
             });
+
+            // 2. Calculate Manual Transactions
+            let manualIncome = 0; let totalExpense = 0;
+            const monthTrans = transactions.filter(t => {
+                // Ensure date parsing matches month/year
+                if(!t.date) return false;
+                const d = new Date(t.date);
+                return d.toLocaleString('en', { month: 'long' }) === monthInput && String(d.getFullYear()) === yearInput;
+            });
+            
+            let tbodyHTML = '';
+            monthTrans.forEach(t => {
+                if(t.type === 'INCOME') {
+                    manualIncome += parseFloat(t.amount);
+                    tbodyHTML += `<tr class="border-b hover:bg-gray-50"><td class="p-2 border">${t.date}</td><td class="p-2 border text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Income</span></td><td class="p-2 border font-bold text-emerald-950">${t.personName || 'N/A'}</td><td class="p-2 border">${t.category}</td><td class="p-2 border text-right font-black text-green-700">+ ৳ ${t.amount}</td><td class="p-2 border text-center space-x-2"><button onclick="printTransactionVoucher('${t.id}')" class="text-emerald-700 hover:text-emerald-900" title="Print Voucher"><i class="fa-solid fa-print"></i></button><button onclick="deleteTransaction('${t.id}')" class="text-red-500 font-bold" title="Delete"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                } else if(t.type === 'EXPENSE') {
+                    totalExpense += parseFloat(t.amount);
+                    tbodyHTML += `<tr class="border-b hover:bg-gray-50"><td class="p-2 border">${t.date}</td><td class="p-2 border text-center"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold">Expense</span></td><td class="p-2 border font-bold text-emerald-950">${t.personName || 'N/A'}</td><td class="p-2 border">${t.category}</td><td class="p-2 border text-right font-black text-red-600">- ৳ ${t.amount}</td><td class="p-2 border text-center space-x-2"><button onclick="printTransactionVoucher('${t.id}')" class="text-emerald-700 hover:text-emerald-900" title="Print Voucher"><i class="fa-solid fa-print"></i></button><button onclick="deleteTransaction('${t.id}')" class="text-red-500 font-bold" title="Delete"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                }
+            });
+
+            const totalIncome = totalFeesCollected + manualIncome;
+            const netBalance = totalIncome - totalExpense;
+
+            document.getElementById('fin-total-fees').innerText = totalFeesCollected;
+            document.getElementById('fin-total-income').innerText = totalIncome;
+            document.getElementById('fin-total-expense').innerText = totalExpense;
+            document.getElementById('fin-balance').innerText = netBalance;
+
+            document.getElementById('finance-table-body').innerHTML = tbodyHTML || `<tr><td colspan="6" class="p-4 text-center text-gray-500 font-bold">No manual transactions found for ${monthInput} ${yearInput}.</td></tr>`;
+        }
+
+        function addTransaction(e, type) {
+            e.preventDefault();
+            const pass = prompt('Enter Admin Password to add transaction:');
+            if (pass !== (localStorage.getItem('annur_admin_pass') || '1234')) { alert('Incorrect Password!'); return; }
+
+            const id = Date.now().toString();
+            const personName = document.getElementById(type === 'INCOME' ? 'inc-name' : 'exp-name').value.trim();
+            const category = document.getElementById(type === 'INCOME' ? 'inc-category' : 'exp-category').value.trim();
+            const amount = parseFloat(document.getElementById(type === 'INCOME' ? 'inc-amount' : 'exp-amount').value) || 0;
+            const date = document.getElementById(type === 'INCOME' ? 'inc-date' : 'exp-date').value;
+            
+            const newTrans = { id, type, personName, category, amount, date };
+            db.ref('transactions/' + id).set(newTrans).then(() => { e.target.reset(); alert(`${type === 'INCOME' ? 'Income' : 'Expense'} recorded successfully!`); });
+        }
+
+        function deleteTransaction(id) {
+            if(confirm('Delete this transaction record?')) { db.ref('transactions/' + id).remove(); }
+        }
+
+        function printTransactionVoucher(id) {
+            const t = transactions.find(x => x.id === id); if(!t) return;
+            const isIncome = t.type === 'INCOME';
+            
+            const voucherHTML = `
+                <div id="target-voucher-node" class="bg-white mx-auto border-[3px] border-emerald-950 p-6 font-sans" style="width: 500px;">
+                    <div class="text-center border-b-2 border-emerald-800 pb-3 mb-4">
+                        <img src="${universalLogo}" class="w-14 h-14 mx-auto mb-1">
+                        <h2 class="text-lg font-black text-emerald-950 font-brand uppercase tracking-wider">${madrasahName}</h2>
+                        <span class="inline-block bg-${isIncome ? 'green' : 'red'}-100 text-${isIncome ? 'green' : 'red'}-800 px-4 py-1 rounded-full font-black text-[11px] mt-1 border border-${isIncome ? 'green' : 'red'}-300 tracking-widest">${isIncome ? 'CASH RECEIPT (INCOME)' : 'PAYMENT VOUCHER (EXPENSE)'}</span>
+                    </div>
+                    
+                    <div class="text-sm space-y-2 mb-6 font-bold text-gray-800">
+                        <div class="flex justify-between"><span>Date: ${t.date}</span><span>Voucher No: #${t.id.slice(-6)}</span></div>
+                        <div class="flex justify-between border-b border-dashed border-gray-300 pb-2"><span>${isIncome ? 'Received From:' : 'Paid To:'} <span class="text-emerald-950 text-base ml-1 uppercase">${t.personName}</span></span></div>
+                        <div class="flex justify-between pt-2"><span>Purpose / Category:</span><span class="text-emerald-950">${t.category}</span></div>
+                    </div>
+
+                    <div class="bg-amber-50 border-2 border-amber-300 p-4 text-center rounded-xl mb-8 shadow-inner">
+                        <span class="block text-xs uppercase font-bold text-amber-900 tracking-wide mb-1">Amount ${isIncome ? 'Received' : 'Paid'}</span>
+                        <span class="text-3xl font-black text-emerald-950">৳ ${t.amount}</span>
+                    </div>
+
+                    <div class="flex justify-between text-xs font-bold text-gray-800 pt-8">
+                        <div class="text-center"><div class="w-32 border-t-2 border-emerald-950 mb-1"></div><span>${isIncome ? 'Cashier Signature' : 'Receiver Signature'}</span></div>
+                        <div class="text-center"><div class="w-32 border-t-2 border-emerald-950 mb-1"></div><span>Authority Signature</span></div>
+                    </div>
+                </div>
+            `;
+            const printArea = document.getElementById('printable-area');
+            printArea.innerHTML = voucherHTML;
+            executeDirectPrint('target-voucher-node', 'portrait');
+        }
+
+        function printMonthlyReport(type) {
+            const monthInput = document.getElementById('finance-month').value;
+            const yearInput = document.getElementById('finance-year').value;
+            if(!monthInput || !yearInput) { alert('Load a report first!'); return; }
+
+            const totalFees = document.getElementById('fin-total-fees').innerText;
+            const totalIncome = document.getElementById('fin-total-income').innerText;
+            const totalExp = document.getElementById('fin-total-expense').innerText;
+            const balance = document.getElementById('fin-balance').innerText;
+
+            let detailedTable = '';
+            if(type === 'detailed') {
+                const monthTrans = transactions.filter(t => {
+                    if(!t.date) return false;
+                    const d = new Date(t.date);
+                    return d.toLocaleString('en', { month: 'long' }) === monthInput && String(d.getFullYear()) === yearInput;
+                });
+                
+                detailedTable = `
+                    <div class="mt-6">
+                        <h4 class="font-bold text-emerald-950 mb-2 border-b border-emerald-800 pb-1">Detailed Manual Transactions</h4>
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="bg-emerald-900 text-white"><tr><th class="p-2 border">Date</th><th class="p-2 border text-center">Type</th><th class="p-2 border">Name</th><th class="p-2 border">Purpose</th><th class="p-2 border text-right">Amount</th></tr></thead>
+                            <tbody>
+                                ${monthTrans.map(t => `<tr class="border-b"><td class="p-1.5 border">${t.date}</td><td class="p-1.5 border text-center font-bold text-${t.type==='INCOME'?'green':'red'}-700">${t.type}</td><td class="p-1.5 border uppercase font-bold">${t.personName}</td><td class="p-1.5 border">${t.category}</td><td class="p-1.5 border text-right font-black">৳ ${t.amount}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            const reportHTML = `
+                <div id="target-report-node" class="bg-white mx-auto border-[4px] border-emerald-950 p-8 font-sans" style="width: 794px;">
+                    <div class="text-center border-b-2 border-emerald-800 pb-4 mb-6">
+                        <img src="${universalLogo}" class="w-16 h-16 mx-auto mb-2">
+                        <h2 class="text-2xl font-black text-emerald-950 font-brand uppercase tracking-wider">${madrasahName}</h2>
+                        <h3 class="text-base font-bold text-gray-700 mt-1 uppercase tracking-wide">Monthly Financial ${type === 'summary' ? 'Summary' : 'Detailed'} Report</h3>
+                        <span class="inline-block bg-amber-200 text-amber-900 px-4 py-1 rounded-full font-black text-sm mt-2 border border-amber-400">${monthInput} ${yearInput}</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div class="bg-emerald-50 border-2 border-emerald-800 p-4 rounded-xl text-center shadow-inner">
+                            <span class="block text-xs uppercase font-bold text-emerald-800 tracking-wide mb-1">Total Income (Fees + Extra)</span>
+                            <span class="text-3xl font-black text-green-700">৳ ${totalIncome}</span>
+                        </div>
+                        <div class="bg-red-50 border-2 border-red-800 p-4 rounded-xl text-center shadow-inner">
+                            <span class="block text-xs uppercase font-bold text-red-800 tracking-wide mb-1">Total Expenses</span>
+                            <span class="text-3xl font-black text-red-600">৳ ${totalExp}</span>
+                        </div>
+                    </div>
+                    <div class="bg-amber-100 border-2 border-amber-600 p-4 rounded-xl text-center shadow-inner">
+                        <span class="block text-xs uppercase font-bold text-amber-900 tracking-wide mb-1">Net Balance (Cash in Hand)</span>
+                        <span class="text-4xl font-black text-emerald-950">৳ ${balance}</span>
+                    </div>
+
+                    ${detailedTable}
+
+                    <div class="mt-12 flex justify-between text-sm font-bold text-emerald-950 px-8">
+                        <div class="text-center"><div class="w-48 border-t-2 border-emerald-900 mb-1"></div><span>Accounts Officer</span></div>
+                        <div class="text-center"><div class="w-48 border-t-[2.5px] border-emerald-950 mb-1"></div><span>Principal / Director</span></div>
+                    </div>
+                </div>
+            `;
+            const printArea = document.getElementById('printable-area');
+            printArea.innerHTML = reportHTML;
+            executeDirectPrint('target-report-node', 'portrait');
         }
 
         // ==========================================
@@ -1276,6 +1348,8 @@
         // ==========================================
         function handleAddNotice(e) {
             e.preventDefault();
+            const pass = prompt('Enter Admin Password to publish notice:');
+            if (pass !== (localStorage.getItem('annur_admin_pass') || '1234')) { alert('Incorrect Password!'); return; }
             const id = Date.now().toString();
             db.ref('notices/' + id).set({
                 id, title: document.getElementById('notice-title').value.trim(),
