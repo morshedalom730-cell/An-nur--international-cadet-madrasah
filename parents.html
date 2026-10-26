@@ -34,17 +34,14 @@
             background-image: radial-gradient(circle at 50% 100%, transparent 20px, #f8faf9 21px);
             background-size: 40px 40px; background-repeat: repeat-x;
         }
-        
-        /* Loading Overlay */
-        #loading-overlay { position: absolute; inset: 0; background: rgba(248,250,249,0.95); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="selection:bg-amber-500 selection:text-white">
 
     <div class="app-container">
         
-        <!-- LOADER -->
-        <div id="loading-overlay" class="hidden">
+        <!-- LOADER (Fixed CSS Bug) -->
+        <div id="loading-overlay" class="hidden absolute inset-0 bg-white/95 z-[100] flex-col items-center justify-center">
             <i class="fa-solid fa-star-and-crescent fa-spin text-4xl text-amber-500 mb-3"></i>
             <p class="text-sm font-bold text-emerald-950">অনুগ্রহ করে অপেক্ষা করুন...</p>
         </div>
@@ -53,20 +50,17 @@
         <!-- 1. LOGIN SCREEN -->
         <!-- ========================================== -->
         <div id="screen-login" class="flex-grow flex flex-col bg-white">
-            
-            <!-- Islamic Header Design -->
             <div class="islamic-header pt-12 pb-16 px-6 text-center shadow-lg relative">
                 <div class="absolute top-4 left-0 right-0 opacity-20 pointer-events-none flex justify-between px-4">
                     <i class="fa-solid fa-mosque text-4xl text-amber-200"></i>
                     <i class="fa-solid fa-mosque text-4xl text-amber-200"></i>
                 </div>
                 <p class="font-arabic text-amber-400 text-lg mb-2 tracking-widest">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
-                <img id="app-logo" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="w-20 h-20 mx-auto mb-3 object-contain rounded-full border-2 border-amber-400 shadow-md bg-white relative z-10">
+                <img id="app-logo" src="https://i.ibb.co.com/jP4YpCjX/annur-logo.jpg" class="w-20 h-20 mx-auto mb-3 object-contain rounded-full border-2 border-amber-400 shadow-md bg-white relative z-10" alt="Logo">
                 <h1 class="text-4xl font-extrabold text-white mb-1 tracking-wide" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">আন্-নূর</h1>
                 <p class="text-[10px] text-emerald-200 font-bold uppercase tracking-[0.2em] relative z-10">Intl. Cadet Madrasah</p>
             </div>
 
-            <!-- Login Form -->
             <div class="flex-grow px-6 pt-4 pb-8 flex flex-col justify-center -mt-6 relative z-10">
                 <div class="bg-white p-6 rounded-3xl shadow-xl border border-emerald-100">
                     <h2 class="text-lg font-bold text-emerald-950 text-center mb-5 border-b pb-2"><i class="fa-solid fa-user-lock text-amber-500 mr-2"></i>প্যারেন্টস লগইন</h2>
@@ -120,7 +114,6 @@
                             <label class="block text-xs font-bold text-gray-600 mb-1 ml-1">Registered Mobile No.</label>
                             <input type="tel" id="rec-phone" required placeholder="01XXXXXXXXX" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold outline-none bg-gray-50 text-sm">
                         </div>
-                        
                         <div class="border-t border-gray-200 pt-4 mt-2">
                             <label class="block text-xs font-bold text-emerald-800 mb-1 ml-1">Set New Password</label>
                             <input type="password" id="rec-new-pass" required placeholder="আপনার ইচ্ছামতো পাসওয়ার্ড দিন" class="w-full p-3.5 border-2 border-emerald-300 rounded-xl font-bold outline-none focus:border-emerald-600 bg-emerald-50 text-sm">
@@ -135,7 +128,6 @@
         <!-- 3. MAIN APP DASHBOARD -->
         <!-- ========================================== -->
         <div id="screen-main" class="hidden flex-grow flex-col">
-            <!-- App Header -->
             <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white px-5 pt-8 pb-4 rounded-b-3xl shadow-lg relative z-10 border-b-4 border-amber-500">
                 <div class="flex justify-between items-center mb-4">
                     <div>
@@ -150,12 +142,9 @@
                 </div>
             </div>
 
-            <!-- Content Area (Scrollable) -->
             <div class="flex-grow overflow-y-auto hide-scrollbar p-5 pb-24 space-y-6">
-                
-                <!-- TAB: HOME / DASHBOARD -->
+                <!-- Tabs Content (Same as before) -->
                 <div id="tab-home" class="space-y-6">
-                    <!-- Quick Stats -->
                     <div class="grid grid-cols-2 gap-4">
                         <div onclick="switchAppTab('fees')" class="bg-white p-4 rounded-2xl shadow-sm border border-red-100 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 transition">
                             <div class="w-10 h-10 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-lg mb-2"><i class="fa-solid fa-file-invoice-dollar"></i></div>
@@ -168,8 +157,6 @@
                             <span class="text-[11px] font-bold text-blue-800 mt-1 bg-blue-100 px-2 py-0.5 rounded">শীঘ্রই আসছে</span>
                         </div>
                     </div>
-
-                    <!-- Recent Notices -->
                     <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4">
                         <h3 class="font-bold text-emerald-950 mb-3 flex items-center border-b pb-2"><i class="fa-solid fa-bullhorn text-amber-500 mr-2"></i> মাদ্রাসার নোটিশ বোর্ড</h3>
                         <ul id="app-notice-list" class="space-y-3 divide-y divide-gray-100 text-xs">
@@ -178,26 +165,19 @@
                     </div>
                 </div>
 
-                <!-- TAB: RESULTS -->
                 <div id="tab-results" class="hidden space-y-4">
                     <h3 class="font-black text-lg text-emerald-950 border-l-4 border-amber-500 pl-2">পরীক্ষার ফলাফল</h3>
-                    <div id="app-results-container" class="space-y-4">
-                        <p class="text-gray-500 text-sm text-center py-4 font-bold bg-white rounded-xl p-4 shadow-sm border">কোনো রেজাল্ট প্রকাশিত হয়নি।</p>
-                    </div>
+                    <div id="app-results-container" class="space-y-4"></div>
                 </div>
 
-                <!-- TAB: FEES -->
                 <div id="tab-fees" class="hidden space-y-4">
                     <div class="flex justify-between items-center border-l-4 border-amber-500 pl-2">
                         <h3 class="font-black text-lg text-emerald-950">বেতন ও ফি হিসাব</h3>
                         <span id="fee-total-due-badge" class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold border border-red-200">Total Due: ৳ 0</span>
                     </div>
-                    <div id="app-fees-container" class="space-y-3">
-                        <p class="text-gray-500 text-sm text-center py-4 font-bold bg-white rounded-xl p-4 shadow-sm border">কোনো ফি রেকর্ড পাওয়া যায়নি।</p>
-                    </div>
+                    <div id="app-fees-container" class="space-y-3"></div>
                 </div>
 
-                <!-- TAB: PROFILE -->
                 <div id="tab-profile" class="hidden space-y-4">
                     <h3 class="font-black text-lg text-emerald-950 border-l-4 border-amber-500 pl-2">শিক্ষার্থীর প্রোফাইল</h3>
                     <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4 space-y-3 text-sm font-semibold text-gray-700">
@@ -210,36 +190,28 @@
                     </div>
                     <button onclick="logout()" class="w-full bg-red-50 text-red-600 border border-red-200 font-bold py-3.5 rounded-xl mt-4 hover:bg-red-100 transition shadow-sm"><i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> লগ আউট করুন</button>
                 </div>
-
             </div>
 
-            <!-- Bottom Navigation Bar -->
+            <!-- Bottom Navigation -->
             <div class="bg-white border-t border-gray-200 fixed bottom-0 w-full max-w-[414px] flex justify-around items-center pb-safe pt-2 pb-2 px-2 z-50 shadow-[0_-4px_15px_-1px_rgba(0,0,0,0.1)]">
                 <button onclick="switchAppTab('home')" id="nav-home" class="flex flex-col items-center p-2 text-emerald-700 w-16 transition">
-                    <i class="fa-solid fa-mosque text-xl mb-1"></i>
-                    <span class="text-[10px] font-bold">হোম</span>
+                    <i class="fa-solid fa-mosque text-xl mb-1"></i><span class="text-[10px] font-bold">হোম</span>
                 </button>
                 <button onclick="switchAppTab('results')" id="nav-results" class="flex flex-col items-center p-2 text-gray-400 hover:text-emerald-600 w-16 transition">
-                    <i class="fa-solid fa-square-poll-vertical text-xl mb-1"></i>
-                    <span class="text-[10px] font-bold">রেজাল্ট</span>
+                    <i class="fa-solid fa-square-poll-vertical text-xl mb-1"></i><span class="text-[10px] font-bold">রেজাল্ট</span>
                 </button>
                 <button onclick="switchAppTab('fees')" id="nav-fees" class="flex flex-col items-center p-2 text-gray-400 hover:text-emerald-600 w-16 transition relative">
-                    <i class="fa-solid fa-money-check-dollar text-xl mb-1"></i>
-                    <span class="text-[10px] font-bold">ফি/বেতন</span>
+                    <i class="fa-solid fa-money-check-dollar text-xl mb-1"></i><span class="text-[10px] font-bold">ফি/বেতন</span>
                     <span id="nav-due-dot" class="hidden absolute top-1 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm"></span>
                 </button>
                 <button onclick="switchAppTab('profile')" id="nav-profile" class="flex flex-col items-center p-2 text-gray-400 hover:text-emerald-600 w-16 transition">
-                    <i class="fa-solid fa-user-graduate text-xl mb-1"></i>
-                    <span class="text-[10px] font-bold">প্রোফাইল</span>
+                    <i class="fa-solid fa-user-graduate text-xl mb-1"></i><span class="text-[10px] font-bold">প্রোফাইল</span>
                 </button>
             </div>
         </div>
-
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
-        // FIREBASE INITIALIZATION
         const firebaseConfig = {
             apiKey: "AIzaSyDG57Z-2T1KqzTzF-DuP7Mfk84D2SRPMZ4",
             authDomain: "annur-international-madrasah.firebaseapp.com",
@@ -256,10 +228,16 @@
         let allResults = [];
         let allFees = {};
         let systemNotices = [];
-        let subjectConfig = []; // Loaded from DB
+        let subjectConfig = [];
 
-        function showLoading() { document.getElementById('loading-overlay').classList.remove('hidden'); }
-        function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+        function showLoading() { 
+            const l = document.getElementById('loading-overlay');
+            l.classList.remove('hidden'); l.classList.add('flex');
+        }
+        function hideLoading() { 
+            const l = document.getElementById('loading-overlay');
+            l.classList.add('hidden'); l.classList.remove('flex');
+        }
 
         function switchScreen(screenId) {
             ['screen-login', 'screen-recover', 'screen-main'].forEach(s => {
@@ -271,9 +249,6 @@
             if(screenId !== 'screen-main') sc.classList.add('flex');
         }
 
-        // ==========================================
-        // AUTHENTICATION LOGIC
-        // ==========================================
         function handleLogin(e) {
             e.preventDefault();
             const id = document.getElementById('login-id').value.trim().toUpperCase();
@@ -311,7 +286,6 @@
             db.ref('students/' + id).once('value').then(snap => {
                 if (snap.exists()) {
                     const studentData = snap.val();
-                    // Check phone matching last 11 digits
                     const dbPhone = studentData.phone ? studentData.phone.trim().slice(-11) : '';
                     const inputPhone = phone.slice(-11);
                     
@@ -338,9 +312,6 @@
             document.getElementById('login-pass').value = '';
         }
 
-        // ==========================================
-        // APP DASHBOARD INIT & DATA FETCHING
-        // ==========================================
         function initAppDashboard() {
             switchScreen('screen-main');
             document.getElementById('dash-student-name').innerText = loggedInStudent.name;
@@ -348,7 +319,6 @@
             document.getElementById('dash-student-class').innerText = loggedInStudent.class;
             document.getElementById('dash-student-photo').src = loggedInStudent.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 
-            // Set Profile Details
             document.getElementById('prof-father').innerText = loggedInStudent.father || 'N/A';
             document.getElementById('prof-phone').innerText = loggedInStudent.phone || 'N/A';
             document.getElementById('prof-gender').innerText = loggedInStudent.gender || 'N/A';
@@ -361,7 +331,6 @@
         }
 
         function fetchAppData() {
-            // Fetch Notices
             db.ref('notices').limitToLast(5).once('value', snap => {
                 const list = document.getElementById('app-notice-list');
                 if(snap.exists()) {
@@ -376,7 +345,6 @@
                 }
             });
 
-            // Fetch Global Subject Config for accurate Result calculation
             db.ref('settings/classSubjects').once('value', snap => {
                 if(snap.exists()) {
                     const allConfigs = snap.val();
@@ -384,7 +352,6 @@
                 }
             });
 
-            // Fetch Results specifically for this student
             db.ref('results').orderByChild('id').equalTo(loggedInStudent.id).once('value', snap => {
                 if(snap.exists()) {
                     allResults = Object.values(snap.val()).sort((a,b) => b.session.localeCompare(a.session));
@@ -392,7 +359,6 @@
                 }
             });
 
-            // Fetch Fees for color badges
             db.ref('fees').once('value', snap => {
                 if(snap.exists()) {
                     allFees = snap.val();
@@ -414,9 +380,6 @@
             activeBtn.classList.add('text-emerald-700');
         }
 
-        // ==========================================
-        // RENDER LOGIC
-        // ==========================================
         function getGradePoint(percentage) {
             if (percentage >= 80) return { point: 5.00, isFail: false };
             if (percentage >= 70) return { point: 4.00, isFail: false };
@@ -426,6 +389,7 @@
             if (percentage >= 33) return { point: 1.00, isFail: false };
             return { point: 0.00, isFail: true };
         }
+        
         function getLetterGrade(gpa) {
             if (gpa >= 5.00) return 'A+'; if (gpa >= 4.00) return 'A';
             if (gpa >= 3.50) return 'A-'; if (gpa >= 3.00) return 'B';
@@ -438,7 +402,6 @@
             
             container.innerHTML = allResults.map(r => {
                 let total = 0, mainSum = 0, mainCount = 0, bonus = 0, hasFail = false;
-                
                 let marksHTML = '';
                 r.marks.forEach((mark, idx) => {
                     if(!subjectConfig[idx]) return;
@@ -481,7 +444,6 @@
             let totalDueAccumulated = 0;
             let myFees = [];
 
-            // Extract student's fees
             Object.keys(allFees).forEach(monthKey => {
                 if(monthKey.includes(loggedInStudent.class.replace(/\s+/g, '_').toUpperCase())) {
                     if(allFees[monthKey][loggedInStudent.id]) {
@@ -491,8 +453,6 @@
             });
 
             if(myFees.length === 0) return;
-
-            // Sort chronologically (simple reverse for now)
             myFees.reverse(); 
 
             container.innerHTML = myFees.map(f => {
@@ -534,7 +494,6 @@
                 `;
             }).join('');
 
-            // Update Due Badges in UI
             document.getElementById('fee-total-due-badge').innerText = `Total Due: ৳ ${totalDueAccumulated}`;
             document.getElementById('home-due-amount').innerText = `৳ ${totalDueAccumulated}`;
             
@@ -543,9 +502,6 @@
             else redDot.classList.add('hidden');
         }
 
-        // ==========================================
-        // APP LIFECYCLE
-        // ==========================================
         window.onload = function() {
             const session = localStorage.getItem('annur_parent_session');
             if(session) {
